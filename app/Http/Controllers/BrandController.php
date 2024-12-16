@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Material;
+use App\Models\Brand;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class MaterialController extends Controller {
+class BrandController extends Controller {
 
-    protected $material;
-    public function __construct(Material $material) {
-        $this->material = $material;
+    protected $brand;
+    public function __construct(Brand $brand) {
+        $this->brand = $brand;
     }
 
     /**
@@ -18,7 +18,7 @@ class MaterialController extends Controller {
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
-        $query = $this->material->query()->orderBy('material');
+        $query = $this->brand->query()->orderBy('brand');
         $perPage = $request->get('per_page', 10);
         return response()->json($query->paginate($perPage));
     }
@@ -28,14 +28,17 @@ class MaterialController extends Controller {
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse {
-        $validatedData = $request->validate($this->material->rules(), $this->material->messages());
+        $validatedData = $request->validate(
+            $this->brand->rules(),
+            $this->brand->messages()
+        );
 
         try {
-            $material = $this->material->query()->create($validatedData);
-            return response()->json($material, 201);
+            $brand = $this->brand->query()->create($validatedData);
+            return response()->json($brand, 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage()
             ]);
         }
@@ -46,15 +49,15 @@ class MaterialController extends Controller {
      * @return JsonResponse
      */
     public function show(int $id): JsonResponse {
-        $material = $this->material->query()->find($id);
+        $brand = $this->brand->query()->find($id);
 
-        if (!$material) {
+        if (!$brand) {
             return response()->json([
-                'error' => 'O Material selecionado não existe na base de dados.'
+                'error' => 'A Grife selecionada não existe na base de dados.'
             ], 404);
         }
 
-        return response()->json($material);
+        return response()->json($brand);
     }
 
     /**
@@ -63,33 +66,33 @@ class MaterialController extends Controller {
      * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse {
-        $material = $this->material->query()->find($id);
+        $brand = $this->brand->query()->find($id);
 
-        if (!$material) {
+        if (!$brand) {
             return response()->json([
-                'error' => 'O Material selecionado não existe na base de dados.'
+                'error' => 'A Grife selecionada não existe na base de dados.'
             ], 404);
         }
 
         $validatedData = $request->validate(
-            $this->material->rules(true),
-            $this->material->messages()
+            $this->brand->rules(true),
+            $this->brand->messages()
         );
 
-        $materialExists = $this->material->query()
-            ->where('material', $validatedData['material'])
+        $materialExists = $this->brand->query()
+            ->where('brand', $validatedData['brand'])
             ->where('id', '<>', $id)
             ->exists();
 
         if ($materialExists) {
             return response()->json([
-                'error' => 'Material já cadastrado na base de dados.'
+                'error' => 'Grife já cadastrado na base de dados.'
             ], 409);
         }
 
         try {
-            $material->update($validatedData);
-            return response()->json($material);
+            $brand->update($validatedData);
+            return response()->json($brand);
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
@@ -98,21 +101,17 @@ class MaterialController extends Controller {
         }
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
     public function destroy(int $id): JsonResponse {
-        $material = $this->material->query()->find($id);
+        $brand = $this->brand->query()->find($id);
 
-        if (!$material) {
+        if (!$brand) {
             return response()->json([
-                'error' => 'O Material selecionado não existe na base de dados.'
+                'error' => 'A Grife selecionada não existe na base de dados.'
             ], 404);
         }
 
         try {
-            $material->delete();
+            $brand->delete();
             return response()->json(null, 204);
         } catch (\Throwable $th) {
             return response()->json([
@@ -121,4 +120,5 @@ class MaterialController extends Controller {
             ]);
         }
     }
+
 }
