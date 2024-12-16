@@ -21,6 +21,13 @@ class AuthController extends Controller {
         return response()->json(['message' => 'Sucesso!'])->withCookie($cookie);
     }
 
+    public function logout(Request $request): JsonResponse{
+        $user = Auth::user();
+        $user->tokens()->delete();
+        $cookie = cookie('jwt', '', -1);
+        return response()->json(['message' => 'Logout realizado com sucesso!'])->withCookie($cookie);
+    }
+
     public function me(): JsonResponse {
         $user = Auth::user();
         return response()->json($user);
