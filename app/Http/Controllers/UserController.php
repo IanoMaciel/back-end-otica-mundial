@@ -41,8 +41,12 @@ class UserController extends Controller {
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate($this->user->rules(), $this->user->messages());
 
+        $data = array_merge($validatedData, [
+            'password' => bcrypt($validatedData['password'])
+        ]);
+        
         try {
-            $user = $this->user->query()->create($validatedData);
+            $user = $this->user->query()->create($data);
             return response()->json($user, 201);
         } catch (Throwable $th) {
             return response()->json([
