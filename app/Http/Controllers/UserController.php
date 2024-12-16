@@ -44,7 +44,7 @@ class UserController extends Controller {
         $data = array_merge($validatedData, [
             'password' => bcrypt($validatedData['password'])
         ]);
-        
+
         try {
             $user = $this->user->query()->create($data);
             return response()->json($user, 201);
