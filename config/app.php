@@ -175,6 +175,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /**
+         * pt-br-validator: Validações brasileiras para Laravel.
+         */
+        LaravelLegends\PtBrValidator\ValidatorProvider::class,
+
     ],
 
     /*

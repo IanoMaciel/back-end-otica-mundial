@@ -25,4 +25,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // armação
     Route::apiResource('material', 'MaterialController');
     Route::apiResource('brand', 'BrandController');
+    Route::apiResource('supplier', 'SupplierController');
 });
