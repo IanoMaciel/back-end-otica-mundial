@@ -19,8 +19,19 @@ class UserController extends Controller {
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
+        $query = $this->user->query();
+
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%');
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
-        return response()->json(User::query()->paginate($perPage));
+        $users = $query->paginate($perPage);
+
+        return response()->json($users);
     }
 
     /**
