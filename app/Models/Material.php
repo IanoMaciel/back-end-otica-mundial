@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Material extends Model
 {
@@ -24,5 +25,10 @@ class Material extends Model
             'material.max' => 'O campo Material não pode ter mais do que 30 caracteres.',
             'material.unique' => 'O material já está cadastrado.'
         ];
+    }
+
+    # Relationships
+    public function frame(): BelongsTo {
+        return $this->belongsTo(Frame::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Supplier extends Model {
     use HasFactory;
@@ -40,5 +41,10 @@ class Supplier extends Model {
             'description.string' => 'A descrição deve ser uma string.',
             'description.max' => 'A descrição não pode ter mais que 255 caracteres.',
         ];
+    }
+
+    # Relationships
+    public function frame(): BelongsTo {
+        return $this->belongsTo(Frame::class);
     }
 }

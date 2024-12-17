@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Brand extends Model {
     use HasFactory;
@@ -27,5 +28,10 @@ class Brand extends Model {
             'brand.max' => 'O campo Grife não pode ter mais do que 30 caracteres.',
             'discount.numeric' => 'O campo Desconto deve ser um valor numérico.'
         ];
+    }
+
+    # Relationships
+    public function frame(): BelongsTo {
+        return $this->belongsTo(Frame::class);
     }
 }
