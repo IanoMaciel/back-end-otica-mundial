@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 class SupplierController extends Controller {
 
     protected $supplier;
+
     public function __construct(Supplier $supplier){
         $this->supplier = $supplier;
     }
-
 
     /**
      * @param Request $request
@@ -53,4 +53,66 @@ class SupplierController extends Controller {
             ]);
         }
     }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse {
+        $supplier = $this->supplier->query()->find($id);
+        if (!$supplier) return response()->json(['error' => 'O Fornecedor selecionado não existe na base de dados.'], 404);
+        return response()->json($supplier);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(Request $request, int $id): JsonResponse {
+        $supplier = $this->supplier->query()->find($id);
+        if (!$supplier) return response()->json(['error' => 'O Fornecedor selecionado não existe na base de dados.'], 404);
+
+        $validatedData = $request->validate(
+            $this->supplier->rules(true),
+            $this->supplier->messages()
+        );
+
+        $nameExists = $this->supplier->query()
+            ->where('name', $validatedData['name'])
+            ->where('id', '<>', $id)
+            ->exists();
+
+        if ($nameExists) return response()->json(['Error' => 'Fornecedor já cadastrado na base de dados.'], 409);
+
+        try {
+            $supplier->update($validatedData);
+            return response()->json($supplier);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse {
+        $supplier = $this->supplier->query()->find($id);
+        if (!$supplier) return response()->json(['error' => 'O Fornecedor selecionado não existe na base de dados.'], 404);
+
+        try {
+            $supplier->delete();
+            return response()->json(null, 204);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
 }
