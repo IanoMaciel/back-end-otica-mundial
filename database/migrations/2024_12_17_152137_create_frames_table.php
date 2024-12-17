@@ -14,6 +14,8 @@ class CreateFramesTable extends Migration {
         Schema::create('frames', function (Blueprint $table) {
             $table->id();
 
+            $table->string('barcode')->unique()->nullable();    // código de barra
+
             $table->integer('code')->nullable();            // código da armação
             $table->integer('size')->nullable();            // tamanho da armação
             $table->integer('haste')->nullable();           // haste da armação
