@@ -11,6 +11,7 @@ class Material extends Model
     use HasFactory;
 
     protected $fillable = ['material'];
+    public $timestamps = false;
 
     public function rules(bool $update = false): array {
         return [

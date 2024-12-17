@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Brand extends Model {
     use HasFactory;
     protected $fillable = ['brand', 'discount'];
+    public $timestamps = false;
 
     /**
      * @return string[]
