@@ -17,7 +17,6 @@ class CreateBrandsTable extends Migration
             $table->id();
             $table->string('brand', 30)->unique();
             $table->decimal('discount', 10, 2)->default(0);
-            $table->timestamps();
         });
     }
 
