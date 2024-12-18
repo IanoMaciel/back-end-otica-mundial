@@ -114,5 +114,4 @@ class SupplierController extends Controller {
             ]);
         }
     }
-
 }

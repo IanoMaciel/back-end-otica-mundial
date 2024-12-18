@@ -6,11 +6,12 @@ use App\Models\Frame;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\ProductPrefix;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FrameController extends Controller {
-    protected $frame;
 
+    protected $frame;
     public function __construct(Frame $frame) {
         $this->frame = $frame;
     }
@@ -30,6 +31,12 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+        
         $validatedData = $request->validate(
             $this->frame->rules(),
             $this->frame->messages(),
@@ -70,6 +77,12 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
         $frame = $this->frame->query()->with('suppliers', 'brands', 'materials')->find($id);
         if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
 
@@ -98,6 +111,12 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
         $frame = $this->frame->query()->find($id);
         if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
 
@@ -111,4 +130,10 @@ class FrameController extends Controller {
             ], 500);
         }
     }
+
+    private function isAuthorization(): bool {
+        $user = Auth::user();
+        return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
+    }
+
 }
