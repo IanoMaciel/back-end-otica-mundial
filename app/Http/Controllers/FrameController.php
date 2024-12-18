@@ -92,4 +92,23 @@ class FrameController extends Controller {
             ], 500);
         }
     }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse {
+        $frame = $this->frame->query()->find($id);
+        if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
+
+        try {
+            $frame->delete();
+            return response()->json(null, 204);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
