@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Frame extends Model {
 
@@ -98,15 +98,15 @@ class Frame extends Model {
 
     # relationships
 
-    public function brands(): HasMany {
-        return $this->hasMany(Brand::class);
+    public function brands(): BelongsTo {
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 
-    public function materials(): HasMany {
-        return $this->hasMany(Material::class);
+    public function materials(): BelongsTo {
+        return $this->belongsTo(Material::class, 'material_id');
     }
 
-    public function suppliers(): HasMany {
-        return $this->hasMany(Supplier::class);
+    public function suppliers(): BelongsTo {
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 }

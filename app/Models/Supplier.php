@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Supplier extends Model {
     use HasFactory;
@@ -44,7 +45,7 @@ class Supplier extends Model {
     }
 
     # Relationships
-    public function frame(): BelongsTo {
-        return $this->belongsTo(Frame::class);
+    public function frame(): HasMany {
+        return $this->hasMany(Frame::class);
     }
 }
