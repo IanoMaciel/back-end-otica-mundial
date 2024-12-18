@@ -19,11 +19,15 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
-        $query = $this->frame->query()->with(['suppliers', 'brands', 'materials']);
+        $query = $this->frame->query()->with('suppliers', 'brands', 'materials');
         $perPage = $request->get('per_page', 10);
         return response()->json($query->paginate($perPage));
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
             $this->frame->rules(),
@@ -41,5 +45,17 @@ class FrameController extends Controller {
                 'message' => $th->getMessage(),
             ]);
         }
+    }
+
+    public function show(int $id): JsonResponse {
+        $frame = $this->frame->query()->with('suppliers', 'brands', 'materials')->find($id);
+
+        if (!$frame) {
+            return response()->json([
+                'error' => 'A Armação selecionada não existe na base de dados.'
+            ], 404);
+        }
+
+        return response()->json($frame);
     }
 }
