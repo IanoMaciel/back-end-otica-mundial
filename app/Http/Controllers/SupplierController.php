@@ -50,7 +50,7 @@ class SupplierController extends Controller {
             return response()->json([
                 'error' => 'Error ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -92,7 +92,7 @@ class SupplierController extends Controller {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação',
                 'message' => $th->getMessage()
-            ]);
+            ], 500);
         }
     }
 
@@ -111,7 +111,7 @@ class SupplierController extends Controller {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação',
                 'message' => $th->getMessage()
-            ]);
+            ], 500);
         }
     }
 }

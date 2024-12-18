@@ -37,7 +37,7 @@ class MaterialController extends Controller {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação',
                 'message' => $th->getMessage()
-            ]);
+            ], 500);
         }
     }
 
@@ -94,7 +94,7 @@ class MaterialController extends Controller {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -118,7 +118,7 @@ class MaterialController extends Controller {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

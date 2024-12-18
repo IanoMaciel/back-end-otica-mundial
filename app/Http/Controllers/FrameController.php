@@ -36,7 +36,7 @@ class FrameController extends Controller {
                 'error' => 'Ops! Você não possui autorização para realizar está operação.'
             ], 403);
         }
-        
+
         $validatedData = $request->validate(
             $this->frame->rules(),
             $this->frame->messages(),
@@ -135,5 +135,4 @@ class FrameController extends Controller {
         $user = Auth::user();
         return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
     }
-
 }
