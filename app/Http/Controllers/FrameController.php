@@ -6,6 +6,7 @@ use App\Models\Frame;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\ProductPrefix;
+use Illuminate\Support\Facades\DB;
 
 class FrameController extends Controller {
     protected $frame;
@@ -34,28 +35,32 @@ class FrameController extends Controller {
             $this->frame->messages(),
         );
 
+        DB::beginTransaction();
+
         try {
             $frame = $this->frame->query()->create($validatedData);
             $frame->barcode = ProductPrefix::FRAMES . '-' . str_pad($frame->id, 6, '0', STR_PAD_LEFT);
             $frame->save();
+
+            DB::commit();
+
             return response()->json($frame, 201);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'error' => 'Erro ao processar a solicitação',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
     public function show(int $id): JsonResponse {
         $frame = $this->frame->query()->with('suppliers', 'brands', 'materials')->find($id);
-
-        if (!$frame) {
-            return response()->json([
-                'error' => 'A Armação selecionada não existe na base de dados.'
-            ], 404);
-        }
-
+        if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
         return response()->json($frame);
     }
 }
