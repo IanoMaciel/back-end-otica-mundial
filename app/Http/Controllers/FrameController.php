@@ -63,4 +63,33 @@ class FrameController extends Controller {
         if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
         return response()->json($frame);
     }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(Request $request, int $id): JsonResponse {
+        $frame = $this->frame->query()->with('suppliers', 'brands', 'materials')->find($id);
+        if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
+
+        $validatedData = $request->validate($this->frame->rules(true), $this->frame->messages());
+
+        $codeExists = $this->frame->query()
+            ->where('code', $validatedData['code'])
+            ->where('id', '<>', $id)
+            ->exists();
+
+        if ($codeExists) return response()->json(['error' => 'Código já cadastrado na base de dados.'], 409);
+
+        try {
+            $frame->update($validatedData);
+            return response()->json($frame);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
