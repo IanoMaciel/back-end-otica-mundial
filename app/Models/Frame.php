@@ -28,9 +28,9 @@ class Frame extends Model {
         'description'
     ];
 
-    public function rules(): array {
+    public function rules(bool $update=false): array {
         return [
-            'code' => 'required|numeric',
+            'code' => $update ? 'required|numeric' : 'required|numeric|unique:frames',
             'size' => 'required|numeric',
             'haste' => 'required|numeric',
             'bridge' => 'required|numeric',
@@ -51,6 +51,7 @@ class Frame extends Model {
         return [
             'code.required' => 'O campo código é obrigatório.',
             'code.numeric' => 'O campo código deve ser um valor numérico.',
+            'code.unique' => 'O código já está cadastrado na base de dados.',
 
             'size.required' => 'O campo tamanho é obrigatório.',
             'size.numeric' => 'O campo tamanho deve ser um valor numérico.',
