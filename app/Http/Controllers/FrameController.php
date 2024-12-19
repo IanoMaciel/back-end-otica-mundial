@@ -181,6 +181,37 @@ class FrameController extends Controller {
         }
     }
 
+    public function deleteMultiple(Request $request): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
+        $validatedData = $request->validate(
+            [
+                'id' => 'required|array',
+                'id.*' => 'integer|exists:frames,id'
+            ],
+            [
+                'id.required' => 'O campo id é obrigatório.',
+                'id.array' => 'O campo id é do tipo array.',
+                'id.*.integer' => 'Cada id deve ser um número inteiro.',
+                'id.*.exists' => 'Um ou mais registros selecionados não existe na base de dados.'
+            ]
+        );
+
+        try {
+            $this->frame->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Error ao processar a soliciatação.',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     private function isAuthorization(): bool {
         $user = Auth::user();
         return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
