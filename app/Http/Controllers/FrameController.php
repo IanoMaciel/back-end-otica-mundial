@@ -22,6 +22,56 @@ class FrameController extends Controller {
      */
     public function index(Request $request): JsonResponse {
         $query = $this->frame->query()->with('suppliers', 'brands', 'materials');
+
+        // filter by search
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', '%' . $search . '%');
+            });
+        }
+
+        // filter by size
+        if ($size = $request->input('size')) {
+            $query->where(function ($q) use ($size) {
+                $q->where('size', 'like', '%' . $size . '%');
+            });
+        }
+
+        // filter by haste
+        if ($haste = $request->input('haste')) {
+            $query->where(function ($q) use ($haste) {
+                $q->where('haste', 'like', '%' . $haste . '%');
+            });
+        }
+
+        // filter by bridge
+        if ($bridge = $request->input('bridge')) {
+            $query->where(function ($q) use ($bridge) {
+                $q->where('bridge', 'like', '%' . $bridge . '%');
+            });
+        }
+
+        // filter by color
+        if ($color = $request->input('color')) {
+            $query->where(function ($q) use ($color) {
+                $q->where('color', 'like', '%' . $color . '%');
+            });
+        }
+
+        // filter by brand
+        if ($brand = $request->input('brand')) {
+            $query->whereHas('brands', function ($q) use ($brand) {
+                $q->where('brand', 'like', '%' . $brand . '%');
+            });
+        }
+
+        // filter by material
+        if ($material = $request->input('material')) {
+            $query->whereHas('materials', function ($q) use ($material) {
+                $q->where('material', 'like', '%' . $material . '%');
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
         return response()->json($query->paginate($perPage));
     }
