@@ -18,7 +18,7 @@ class AuthController extends Controller {
         $token = $user->createToken('token')->plainTextToken;
         $cookie = cookie('jwt', $token, 60 * 24);
 
-        return response()->json(['message' => 'Sucesso!'])->withCookie($cookie);
+        return response()->json(['token' => $token])->withCookie($cookie);
     }
 
     public function logout(Request $request): JsonResponse{
