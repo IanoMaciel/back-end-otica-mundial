@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('user', 'UserController');
 
-    // armação
+    // frame
     Route::apiResource('material', 'MaterialController');
     Route::apiResource('brand', 'BrandController');
     Route::apiResource('supplier', 'SupplierController');
@@ -30,3 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('frame', 'FrameController');
     Route::delete('frame-delete-multiple','FrameController@deleteMultiple');
 });
+
+Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
+Route::post('password/reset', [PasswordResetController::class, 'resetPassword']);

@@ -40,7 +40,7 @@ class Frame extends Model {
             'profit' => 'required|numeric|gt:0',
             'discount' => 'numeric|min:0|max:100',
             'price' => 'required|numeric|gt:0',
-            'description' => 'string|max:255',
+            'description' => 'max:255',
             'supplier_id' => 'required|exists:suppliers,id',
             'brand_id' => 'required|exists:brands,id',
             'material_id' => 'required|exists:materials,id',
