@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Frame;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\ProductPrefix;
@@ -14,6 +15,13 @@ class FrameController extends Controller {
     protected $frame;
     public function __construct(Frame $frame) {
         $this->frame = $frame;
+    }
+
+    public function exportPdf() {
+        $frames = $this->frame->query()->with('suppliers', 'brands', 'materials')->get();
+
+        $pdf = Pdf::loadView('pdf.frames', compact('frames'))->setPaper('a4', 'landscape');
+        return $pdf->download('frames.pdf');
     }
 
     /**
