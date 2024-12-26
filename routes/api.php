@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('frame', 'FrameController');
     Route::delete('frame-delete-multiple','FrameController@deleteMultiple');
+    Route::get('frame-export-pdf', 'FrameController@exportPdf');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

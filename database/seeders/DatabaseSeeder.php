@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Brand;
+use App\Models\Frame;
 use App\Models\Material;
 use App\Models\Supplier;
 use App\Models\User;
@@ -21,5 +22,6 @@ class DatabaseSeeder extends Seeder
          Brand::factory(3)->create();
          Material::factory(3)->create();
          Supplier::factory(3)->create();
+         Frame::factory(100)->create();
     }
 }
