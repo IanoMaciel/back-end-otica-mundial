@@ -24,7 +24,7 @@ class Supplier extends Model {
             'name' => $update ? 'required|string|max:60' : 'required|string|max:60|unique:suppliers',
             'email' => 'email',
             'contact' => 'celular_com_ddd',
-            'description' => 'string|max:255'
+            'description' => 'nullable|string|max:255'
         ];
     }
 
