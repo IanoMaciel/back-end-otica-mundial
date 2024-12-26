@@ -36,11 +36,11 @@ class Frame extends Model {
             'bridge' => 'required|numeric',
             'color' => 'string|max:30',
             'amount' => 'required|numeric',
-            'purchase_value' => 'required|numeric',
-            'profit' => 'required|numeric|gt:0',
+            'purchase_value' => 'numeric',
+            'profit' => 'numeric|gt:0',
             'discount' => 'numeric|min:0|max:100',
             'price' => 'required|numeric|gt:0',
-            'description' => 'string|max:255',
+            'description' => 'nullable|max:255',
             'supplier_id' => 'required|exists:suppliers,id',
             'brand_id' => 'required|exists:brands,id',
             'material_id' => 'required|exists:materials,id',
@@ -68,10 +68,8 @@ class Frame extends Model {
             'amount.required' => 'O campo quantidade é obrigatório.',
             'amount.numeric' => 'O campo quantidade deve ser um valor numérico.',
 
-            'purchase_value.required' => 'O campo valor de compra é obrigatório.',
             'purchase_value.numeric' => 'O campo valor de compra deve ser um valor numérico.',
 
-            'profit.required' => 'O campo lucro é obrigatório.',
             'profit.numeric' => 'O campo lucro deve ser um valor numérico.',
             'profit.gt' => 'O campo lucro deve ser maior que zero.',
 
