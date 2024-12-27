@@ -20,7 +20,7 @@ class FrameController extends Controller {
     public function exportPdf() {
         $frames = $this->frame->query()
             ->with('suppliers', 'brands', 'materials')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at')
             ->get();
 
         $pdf = Pdf::loadView('pdf.frames', compact('frames'))->setPaper('a4', 'landscape');
