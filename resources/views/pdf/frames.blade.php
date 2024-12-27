@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Exportação de Armação</title>
+    <title>Estoque de Armação</title>
     <style>
         body {
-            font-family: Times New Roman, "sans-serif";
+            /*font-family: Ubuntu Light, "sans-serif";*/
             margin: 20px;
             color: #333;
         }
 
         h1 {
             font-weight: 700;
-            color: #4CAF50;
-            text-align: center;
+            color: #1c1c1c;
+            text-align: left;
         }
 
         table {
@@ -23,8 +23,8 @@
         }
 
         thead th {
-            background-color: #4CAF50; /* Verde */
-            color: #fff;
+            background-color: #474747; /* Verde */
+            color: #ffffff;
             text-align: left;
             padding: 12px;
             font-weight: 500;
@@ -38,20 +38,12 @@
         }
 
         tr {
-            border-bottom: 1px solid #ddd;
-        }
-
-        tbody tr:hover {
-            background-color: #f1f1f1; /* Cinza claro ao passar o mouse */
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9; /* Linhas pares com fundo diferente */
+            border-bottom: 1px solid #dadada;
         }
     </style>
 </head>
 <body>
-<h1>Estoque de Armação</h1>
+<h1>Registro de Armação</h1>
 <table>
     <thead>
     <tr>

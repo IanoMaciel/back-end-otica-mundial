@@ -18,7 +18,10 @@ class FrameController extends Controller {
     }
 
     public function exportPdf() {
-        $frames = $this->frame->query()->with('suppliers', 'brands', 'materials')->get();
+        $frames = $this->frame->query()
+            ->with('suppliers', 'brands', 'materials')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         $pdf = Pdf::loadView('pdf.frames', compact('frames'))->setPaper('a4', 'landscape');
         return $pdf->download('frames.pdf');
@@ -29,7 +32,9 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
-        $query = $this->frame->query()->with('suppliers', 'brands', 'materials');
+        $query = $this->frame->query()
+            ->with('suppliers', 'brands', 'materials')
+            ->orderBy('created_at', 'desc');
 
         // filter by search
         if ($search = $request->input('search')) {
