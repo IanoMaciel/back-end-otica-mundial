@@ -15,6 +15,9 @@ use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller {
 
+    public function showResetForm($token) {
+        return view('auth.passwords.reset', ['token' => $token]);
+    }
 
     /**
      * @param Request $request
@@ -39,7 +42,7 @@ class PasswordResetController extends Controller {
         return response()->json(['message' => 'Link de recuperação enviado para o seu e-mail.']);
     }
 
-    public function resetPassword(Request $request): JsonResponse {
+    public function resetPassword(Request $request) {
         $rules = [
             'email' => 'required|email|exists:users,email',
             'token' => 'required',
@@ -56,6 +59,7 @@ class PasswordResetController extends Controller {
             'password.required' => 'O campo Senha é obrigatório.',
             'password.string' => 'O campo Senha deve ser do tipo string.',
             'password.confirmed' => 'A confirmação da senha não corresponde.',
+            'password.min' => 'A senha deve ter pelo menos 8 caracteres.'
         ];
 
         $request->validate($rules, $messages);
@@ -66,7 +70,7 @@ class PasswordResetController extends Controller {
         ])->first();
 
         if (!$passwordReset || Carbon::parse($passwordReset->created_at)->addMinutes(15)->isPast()) {
-            return response()->json(['message' => 'Token inválido ou expirado.'], 422);
+            return back()->withErrors(['message' => 'Token inválido ou expirado.'], 422);
         }
 
         $user = User::query()->where('email', $request->email)->first();
@@ -78,6 +82,7 @@ class PasswordResetController extends Controller {
         // registra a operação de recuperação de senha
         Log::info('Recuperação de senha realizada para o e-mail: ' . $request->email);
 
-        return response()->json(['message' => 'Senha alterada com sucesso.']);
+//        return response()->json(['message' => 'Senha alterada com sucesso.']);
+        return redirect()->away('https://www.google.com.br/?hl=pt-BR');
     }
 }
