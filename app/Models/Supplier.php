@@ -22,8 +22,8 @@ class Supplier extends Model {
     public function rules(bool $update = false): array {
         return [
             'name' => $update ? 'required|string|max:60' : 'required|string|max:60|unique:suppliers',
-            'email' => 'email',
-            'contact' => 'celular_com_ddd',
+            'email' => 'nullable|email',
+            'contact' => 'nullable|celular_com_ddd',
             'description' => 'nullable|string|max:255'
         ];
     }

@@ -31,19 +31,19 @@ class Frame extends Model {
     public function rules(bool $update=false): array {
         return [
             'code' => $update ? 'required|numeric' : 'required|numeric|unique:frames',
-            'size' => 'required|numeric',
-            'haste' => 'required|numeric',
-            'bridge' => 'required|numeric',
-            'color' => 'string|max:30',
-            'amount' => 'required|numeric',
-            'purchase_value' => 'numeric',
-            'profit' => 'numeric|gt:0',
-            'discount' => 'numeric|min:0|max:100',
-            'price' => 'required|numeric|gt:0',
+            'size' => $update ? 'nullable|numeric' : 'required|numeric',
+            'haste' => $update ? 'nullable|numeric' : 'required|numeric',
+            'bridge' => $update ? 'nullable|numeric' : 'required|numeric',
+            'color' => 'nullable|string|max:30',
+            'amount' => $update ? 'nullable|numeric' : 'required|numeric',
+            'purchase_value' => 'nullable|numeric',
+            'profit' => 'nullable|numeric|gt:0',
+            'discount' => 'nullable|numeric|min:0|max:100',
+            'price' => $update ? 'nullable|numeric|gt:0' : 'required|numeric|gt:0',
             'description' => 'nullable|max:255',
-            'supplier_id' => 'required|exists:suppliers,id',
-            'brand_id' => 'required|exists:brands,id',
-            'material_id' => 'required|exists:materials,id',
+            'supplier_id' => $update ? 'nullable|exists:suppliers,id' : 'required|exists:suppliers,id',
+            'brand_id' => $update ? 'nullable|exists:brands,id' : 'required|exists:brands,id',
+            'material_id' => $update ? 'nullable|exists:materials,id' : 'required|exists:materials,id',
         ];
     }
 
