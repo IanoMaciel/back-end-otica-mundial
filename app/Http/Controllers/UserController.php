@@ -102,9 +102,12 @@ class UserController extends Controller {
             ], 409);
         }
 
-        $data = array_merge($validatedData, [
-            'password' => bcrypt($validatedData['password'])
-        ]);
+        $data = $validatedData;
+        if (isset($data['password']) && $data['password']) {
+            $data['password'] = bcrypt($data['password']);
+        } else {
+            unset($data['password']);
+        }
 
         try {
             $user->update($data);

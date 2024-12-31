@@ -54,7 +54,7 @@ class User extends Authenticatable
             'is_manager' => 'boolean',
             'discount' => 'numeric',
             'email' => $update ? 'required|string|email' : 'required|string|email|unique:users',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => $update ? 'nullable|string|confirmed|min:8' : 'required|string|confirmed|min:8',
         ];
     }
 
