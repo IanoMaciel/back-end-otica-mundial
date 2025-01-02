@@ -109,7 +109,7 @@ class FrameController extends Controller {
 
         try {
             $frame = $this->frame->query()->create($validatedData);
-            $frame->barcode = ProductPrefix::FRAMES . '-' . str_pad($frame->id, 6, '0', STR_PAD_LEFT);
+            $frame->barcode = $this->generateUniqueBarCode(ProductPrefix::FRAMES);
             $frame->save();
 
             DB::commit();
@@ -228,5 +228,22 @@ class FrameController extends Controller {
     private function isAuthorization(): bool {
         $user = Auth::user();
         return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
+    }
+
+    private function generateUniqueBarCode(string $prefix) {
+        do {
+            $baseCode = $prefix . str_pad(random_int(0, 999999999), 9, '0', STR_PAD_LEFT);
+
+            $sum = 0;
+
+            for ($i = 0; $i < strlen($baseCode); $i++) {
+                $sum += (int)$baseCode[$i] * ($i % 2 ? 3 : 1);
+            }
+
+            $checkDigit = (10 - ($sum % 10)) % 10;
+            $barcode = $baseCode . $checkDigit;
+
+        } while ($this->frame->query()->where('barcode', $barcode)->exists());
+        return $barcode;
     }
 }
