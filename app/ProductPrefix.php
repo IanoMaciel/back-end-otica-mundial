@@ -3,6 +3,6 @@
 namespace App;
 
 class ProductPrefix {
-    const FRAMES = 'FR';
-    const GLASSES = 'GL';
+    const FRAMES = 'FRA';
+    const GLASSES = 'GLA';
 }
