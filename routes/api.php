@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // customer
     Route::apiResource('agreement', 'AgreementController');
+    Route::apiResource('customer', 'CustomerController');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
