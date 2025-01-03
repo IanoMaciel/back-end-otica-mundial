@@ -13,8 +13,17 @@ class CustomerController extends Controller {
     }
 
     public function index(Request $request): JsonResponse {
+        $query = $this->customer->query()->with('agreements')->orderBy('full_name');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+               $q->where('full_name', 'like', '%' . $search . '%')
+                   ->orWhere('cpf', 'like', '%' . $search . '%');
+            });
+        }
+
         $perPage = $request->get('per_page', 100);
-        $customers = $this->customer->query()->with('agreements')->paginate($perPage);
+        $customers = $query->paginate($perPage);
         return response()->json($customers);
     }
 
