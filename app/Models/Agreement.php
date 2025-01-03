@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Agreement extends Model {
     use HasFactory;
@@ -23,5 +24,10 @@ class Agreement extends Model {
             'agreement.max' => 'O campo Convênio excedeu o limite de caracteres.',
             'agreement.unique' => 'O Convênio informado já está cadastrado na base de dados.'
         ];
+    }
+
+    // Relationships
+    public function customers(): HasMany {
+        return $this->hasMany(Customer::class);
     }
 }

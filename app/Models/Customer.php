@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model {
     use HasFactory;
@@ -49,5 +51,10 @@ class Customer extends Model {
             'agreement_id.exists' => 'O Convênio informado não existe na base de dados.',
             'number_agreement.string' => 'O campo Número do Convênio deve ser tipo texto.',
         ];
+    }
+
+    // Relationships
+    public function agreements(): BelongsTo {
+        return $this->belongsTo(Agreement::class, 'agreement_id');
     }
 }
