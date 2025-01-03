@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Customer extends Model {
     use HasFactory;
@@ -21,8 +22,8 @@ class Customer extends Model {
 
     public function rules(bool $update=false): array {
         return [
-            'full_name' => $update ? 'string|max:100' : 'required|string|max:100',
-            'cpf' => $update ? 'nullable|cpf|formato_cpf' : 'required|cpf|formato_cpf|unique:customers',
+            'full_name' => $update ? 'nullable|string|max:100' : 'required|string|max:100',
+            'cpf' => $update ? 'nullable|cpf|formato_cpf' : 'nullable|cpf|formato_cpf|unique:customers',
             'rg' => 'nullable|string',
             'phone_primary' => 'nullable|celular_com_ddd',
             'email' => 'nullable|string|email',
@@ -37,7 +38,6 @@ class Customer extends Model {
             'full_name.string' => 'O campo Nome deve ser do tipo texto.',
             'full_name.max' => 'O campo Nome não pode exceder 100 caracteres.',
 
-            'cpf.required' => 'O campo CPF é obrigatório.',
             'cpf.cpf' => 'O CPF informado não é válido.',
             'cpf.formato_cpf' => 'O campo CFP deve estar no seguinte formato: xxx.xxx.xxx-xx',
             'cpf.unique' => 'O CPF informado já está cadastrado na base de dados.',
@@ -56,5 +56,9 @@ class Customer extends Model {
     // Relationships
     public function agreements(): BelongsTo {
         return $this->belongsTo(Agreement::class, 'agreement_id');
+    }
+
+    public function address(): HasOne {
+        return $this->hasOne(Address::class, 'customer_id');
     }
 }
