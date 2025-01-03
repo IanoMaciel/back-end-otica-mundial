@@ -23,7 +23,6 @@ class Frame extends Model {
         'amount',
         'purchase_value',
         'profit',
-        'discount',
         'price',
         'description'
     ];
@@ -38,7 +37,6 @@ class Frame extends Model {
             'amount' => $update ? 'nullable|numeric' : 'required|numeric',
             'purchase_value' => 'nullable|numeric',
             'profit' => 'nullable|numeric|gt:0',
-            'discount' => 'nullable|numeric|min:0|max:100',
             'price' => $update ? 'nullable|numeric|gt:0' : 'required|numeric|gt:0',
             'description' => 'nullable|max:255',
             'supplier_id' => $update ? 'nullable|exists:suppliers,id' : 'required|exists:suppliers,id',
@@ -72,10 +70,6 @@ class Frame extends Model {
 
             'profit.numeric' => 'O campo lucro deve ser um valor numérico.',
             'profit.gt' => 'O campo lucro deve ser maior que zero.',
-
-            'discount.numeric' => 'O campo desconto deve ser um valor numérico.',
-            'discount.min' => 'O campo desconto não pode ser negativo.',
-            'discount.max' => 'O campo desconto não pode exceder 100%.',
 
             'price.required' => 'O campo preço é obrigatório.',
             'price.numeric' => 'O campo preço deve ser um valor numérico.',
