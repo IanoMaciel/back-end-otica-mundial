@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Customer extends Model {
     use HasFactory;
@@ -56,5 +57,9 @@ class Customer extends Model {
     // Relationships
     public function agreements(): BelongsTo {
         return $this->belongsTo(Agreement::class, 'agreement_id');
+    }
+
+    public function address(): HasOne {
+        return $this->hasOne(Address::class, 'customer_id');
     }
 }

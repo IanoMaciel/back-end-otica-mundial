@@ -13,7 +13,7 @@ class CustomerController extends Controller {
     }
 
     public function index(Request $request): JsonResponse {
-        $query = $this->customer->query()->with('agreements')->orderBy('full_name');
+        $query = $this->customer->query()->with('agreements', 'address')->orderBy('full_name');
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -45,7 +45,7 @@ class CustomerController extends Controller {
     }
 
     public function show(int $id): JsonResponse {
-        $customer = $this->customer->query()->with('agreements')->find($id);
+        $customer = $this->customer->query()->with('agreements', 'address')->find($id);
         if (!$customer) {
             return response()->json([
                 'error' => 'O cliente informado não existe na base de dados.'
