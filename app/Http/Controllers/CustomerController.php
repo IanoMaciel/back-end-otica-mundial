@@ -34,7 +34,7 @@ class CustomerController extends Controller {
                 'error' => 'Ops! Você não possui autorização para realizar está operação.'
             ], 403);
         }
-        
+
         $validatedData = $request->validate(
             $this->customer->rules(),
             $this->customer->messages(),
