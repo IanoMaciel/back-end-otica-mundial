@@ -2,30 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
+use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CustomerController extends Controller {
-    protected $customer;
-    public function __construct(Customer $customer) {
-        $this->customer = $customer;
+class ServiceController extends Controller {
+    protected $service;
+    public function __construct(Service $service){
+        $this->service = $service;
     }
 
     public function index(Request $request): JsonResponse {
-        $query = $this->customer->query()->with('agreements', 'address')->orderBy('full_name');
-
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-               $q->where('full_name', 'like', '%' . $search . '%')
-                   ->orWhere('cpf', 'like', '%' . $search . '%');
-            });
-        }
-
-        $perPage = $request->get('per_page', 100);
-        $customers = $query->paginate($perPage);
-        return response()->json($customers);
+        $query = $this->service->query()->orderBy('name');
+        $perPage = $request->get('per_page', 10);
+        $services = $query->paginate($perPage);
+        return response()->json($services);
     }
 
     public function store(Request $request): JsonResponse {
@@ -36,29 +28,29 @@ class CustomerController extends Controller {
         }
 
         $validatedData = $request->validate(
-            $this->customer->rules(),
-            $this->customer->messages(),
+            $this->service->rules(),
+            $this->service->messages()
         );
 
         try {
-            $customer = $this->customer->query()->create($validatedData);
-            return response()->json($customer, 201);
+            $service = $this->service->query()->create($validatedData);
+            return response()->json($service, 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
-                'message' => $th->getMessage()
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage(),
             ], 500);
         }
     }
 
     public function show(int $id): JsonResponse {
-        $customer = $this->customer->query()->with('agreements', 'address')->find($id);
-        if (!$customer) {
+        $service = $this->service->query()->find($id);
+        if (!$service) {
             return response()->json([
-                'error' => 'O cliente informado não existe na base de dados.'
+                'error' => 'O Serviço informado não existe na base de dados.'
             ], 404);
         }
-        return response()->json($customer);
+        return response()->json($service);
     }
 
     public function update(Request $request, int $id): JsonResponse {
@@ -68,33 +60,36 @@ class CustomerController extends Controller {
             ], 403);
         }
 
-        $customer = $this->customer->query()->with('agreements')->find($id);
-        if (!$customer) {
+        $service = $this->service->query()->find($id);
+        if (!$service) {
             return response()->json([
-                'error' => 'O cliente informado não existe na base de dados.'
+                'error' => 'O Serviço informado não existe na base de dados.'
             ], 404);
         }
 
-        $validatedData = $request->validate($this->customer->rules(true), $this->customer->messages());
+        $validatedData = $request->validate(
+            $this->service->rules(true),
+            $this->service->messages()
+        );
 
-        $cpfExists = $this->customer->query()
-            ->where('cpf', $validatedData['cpf'])
+        $nameExists = $this->service->query()
+            ->where('name', $validatedData['name'])
             ->where('id', '<>', $id)
             ->exists();
 
-        if ($cpfExists) {
+        if ($nameExists) {
             return response()->json([
-                'error' => 'O CPF informado já está cadastrado na base de dados.'
+                'error' => 'O Nome informado já está cadastrado na base de dados. '
             ], 409);
         }
 
         try {
-            $customer->update($validatedData);
-            return response()->json($customer);
+            $service->update($validatedData);
+            return response()->json($service);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Error ao processar a solicitação',
-                'message' => $th->getMessage()
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage(),
             ], 500);
         }
     }
@@ -106,20 +101,20 @@ class CustomerController extends Controller {
             ], 403);
         }
 
-        $customer = $this->customer->query()->with('agreements')->find($id);
-        if (!$customer) {
+        $service = $this->service->query()->find($id);
+        if (!$service) {
             return response()->json([
-                'error' => 'O cliente informado não existe na base de dados.'
+                'error' => 'O Serviço informado não existe na base de dados.'
             ], 404);
         }
 
         try {
-            $customer->delete();
+            $service->delete();
             return response()->json(null, 204);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Error ao processar a solicitação',
-                'message' => $th->getMessage()
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage(),
             ], 500);
         }
     }
@@ -134,7 +129,7 @@ class CustomerController extends Controller {
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
-                'id.*' => 'integer|exists:customers,id'
+                'id.*' => 'integer|exists:services,id'
             ],
             [
                 'id.required' => 'O campo id é obrigatório.',
@@ -145,7 +140,7 @@ class CustomerController extends Controller {
         );
 
         try {
-            $this->customer->query()->whereIn('id', $validatedData['id'])->delete();
+            $this->service->query()->whereIn('id', $validatedData['id'])->delete();
             return response()->json(['message' => 'Registros excluídos com sucesso.']);
         } catch (\Throwable $th) {
             return response()->json([
