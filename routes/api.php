@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // customer
     Route::apiResource('agreement', 'AgreementController');
     Route::apiResource('customer', 'CustomerController');
+    Route::delete('customer-delete-multiple', 'CustomerController@deleteMultiple');
     Route::apiResource('address', 'AddressController');
 
     // services
