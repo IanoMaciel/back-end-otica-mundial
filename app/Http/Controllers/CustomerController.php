@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller {
     protected $customer;
@@ -28,6 +29,12 @@ class CustomerController extends Controller {
     }
 
     public function store(Request $request): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+        
         $validatedData = $request->validate(
             $this->customer->rules(),
             $this->customer->messages(),
@@ -55,6 +62,12 @@ class CustomerController extends Controller {
     }
 
     public function update(Request $request, int $id): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
         $customer = $this->customer->query()->with('agreements')->find($id);
         if (!$customer) {
             return response()->json([
@@ -87,6 +100,12 @@ class CustomerController extends Controller {
     }
 
     public function destroy(int $id): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
         $customer = $this->customer->query()->with('agreements')->find($id);
         if (!$customer) {
             return response()->json([
@@ -103,5 +122,41 @@ class CustomerController extends Controller {
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    public function deleteMultiple(Request $request): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
+        $validatedData = $request->validate(
+            [
+                'id' => 'required|array',
+                'id.*' => 'integer|exists:customers,id'
+            ],
+            [
+                'id.required' => 'O campo id é obrigatório.',
+                'id.array' => 'O campo id é do tipo array.',
+                'id.*.integer' => 'Cada id deve ser um número inteiro.',
+                'id.*.exists' => 'Um ou mais registros selecionados não existe na base de dados.'
+            ]
+        );
+
+        try {
+            $this->customer->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Error ao processar a soliciatação.',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    private function isAuthorization(): bool {
+        $user = Auth::user();
+        return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
     }
 }
