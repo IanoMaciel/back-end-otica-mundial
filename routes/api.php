@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // services
     Route::apiResource('service', 'ServiceController');
+    Route::delete('service-delete-multiple', 'ServiceController@deleteMultiple');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
