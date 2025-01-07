@@ -9,7 +9,7 @@ class ServiceFactory extends Factory {
         return [
             'name' => $this->faker->sentence(5),
             'description' => $this->faker->sentence(10),
-            'price' => $this->faker->numberBetween(50, 200),
+            'price' => $this->faker->randomFloat(2, 10, 500),
         ];
     }
 }
