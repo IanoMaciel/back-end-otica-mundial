@@ -53,12 +53,16 @@ class Customer extends Model {
         ];
     }
 
-    // Relationships
+    # Relationships
     public function agreements(): BelongsTo {
         return $this->belongsTo(Agreement::class, 'agreement_id');
     }
 
     public function address(): HasOne {
         return $this->hasOne(Address::class, 'customer_id');
+    }
+
+    public function sales(): HasMany {
+        return $this->hasMany(Sale::class, 'customer_id');
     }
 }

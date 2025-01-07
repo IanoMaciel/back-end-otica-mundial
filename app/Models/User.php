@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -84,6 +85,11 @@ class User extends Authenticatable
             'password.confirmed' => 'A confirmação da senha não corresponde.',
             'password.min' => 'O campo Senha deve ter no mínimo 8 caracteres.',
         ];
+    }
+
+    # Relationships
+    public function sales(): HasMany {
+        return $this->hasMany(Sale::class, 'user_id');
     }
 
 }

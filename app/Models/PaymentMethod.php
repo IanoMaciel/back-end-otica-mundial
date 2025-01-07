@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PaymentMethod extends Model {
     use HasFactory;
@@ -23,5 +24,10 @@ class PaymentMethod extends Model {
             'payment_method.max' => 'O campo Método de Pagamento não deve exceder o limite de 30 caracteres.',
             'payment_method.unique' => 'O campo Método de Pagamento já está cadastrado na base de dados.',
         ];
+    }
+
+    # Relationships
+    public function sales(): HasMany {
+        return $this->hasMany(Sale::class, 'payment_method_id');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Service extends Model {
     use HasFactory;
@@ -35,5 +36,12 @@ class Service extends Model {
             'price.required' => 'O campo Preço é obrigatório.',
             'price.numeric' => 'O campo Preço deve ser do tipo númerico.'
         ];
+    }
+
+    # Relationships
+    public function sales(): BelongsToMany {
+        return $this->belongsToMany(Sale::class, 'sale_items')
+            ->withPivot('quantity', 'price')
+            ->withTimestamps();
     }
 }
