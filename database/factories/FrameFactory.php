@@ -18,16 +18,12 @@ class FrameFactory extends Factory {
             'bridge' => $this->faker->numberBetween(100, 130),
             'color' => $this->faker->safeColorName(),
             'supplier_id' => $this->faker->randomElement([1,2,3]),
-            'brand_id' => $this->faker->randomElement([1,2,3]),
+            'brand_id' => $this->faker->randomElement([1,2,3,4]),
             'material_id' => $this->faker->randomElement([1,2,3]),
-            'amount' => $this->faker->numberBetween(1, 100),
+            'amount' => $this->faker->numberBetween(1, 2),
             'purchase_value' => $this->faker->randomFloat(2, 10, 500),
             'profit' => $this->faker->randomFloat(2, 0.1, 1),
-            'discount' => $this->faker->randomFloat(2, 0, 0.5),
-            'price' => function (array $attributes) {
-                $price = $attributes['purchase_value'] * (1 + $attributes['profit']);
-                return $price * (1 - $attributes['discount']);
-            },
+            'price' => $this->faker->numberBetween(100, 2000),
             'description' => $this->faker->sentence(10),
         ];
     }
