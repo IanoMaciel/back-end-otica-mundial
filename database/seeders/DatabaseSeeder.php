@@ -33,7 +33,6 @@ class DatabaseSeeder extends Seeder {
         Customer::factory()->count(100)->create();
         Address::factory(100)->create();
 
-        // Financy
-        PaymentMethod::factory()->count(6)->create();
+        PaymentMethod::factory()->count(6)->create(); // Não remover
     }
 }
