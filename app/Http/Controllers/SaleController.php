@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Frame;
+use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\Service;
 use App\Models\User;
@@ -16,6 +17,17 @@ class SaleController extends Controller {
         $this->sale = $sale;
     }
 
+    public function index(Request $request): JsonResponse {
+        $query = $this->sale->with('customer', 'user', 'paymentMethod', 'frames', 'services');
+        $perPage = $request->get('per_page', 10);
+        $sales = $query->paginate($perPage);
+        return response()->json($sales);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
             $this->sale->rules(),
@@ -26,20 +38,18 @@ class SaleController extends Controller {
         $discountUser = $user->discount ?: null;
         $discountSale = $validatedData['discount'] ?: null;
 
+        $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
+
         if (isset($discountSale) && $discountSale > $discountUser) {
             return response()->json([
                 'error' => 'O desconto deve ser menor ou igual a '. $discountUser,
             ], 422);
         }
 
-        
-
         try {
 
             $sale = $this->sale->query()->create($validatedData);
-
             $totalAmount = 0;
-
             foreach ($validatedData['items'] as $item) {
                 $model = $item['type'] === 'frame' ? Frame::class : Service::class;
                 $sellable = $model::query()->find($item['id']);
@@ -70,6 +80,10 @@ class SaleController extends Controller {
             }
 
             $sale->total_amount = $totalAmount;
+            if ($paymentMethod->payment_method != 'Crediário da Loja') {
+                $sale->status = 'Pago';
+            }
+            $sale->save();
 
             return response()->json($sale->load(['customer', 'user', 'paymentMethod', 'frames', 'services']));
 
