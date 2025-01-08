@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Sale extends Model {
 
@@ -68,6 +69,11 @@ class Sale extends Model {
     }
 
     # Relationships
+    public function items(): MorphMany
+    {
+        return $this->morphMany(SaleItem::class, 'sellable');
+    }
+
     public function customer(): BelongsTo {
         return $this->belongsTo(Customer::class);
     }
