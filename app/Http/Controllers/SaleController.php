@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Frame;
 use App\Models\Sale;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -16,11 +17,22 @@ class SaleController extends Controller {
     }
 
     public function store(Request $request): JsonResponse {
-
         $validatedData = $request->validate(
             $this->sale->rules(),
             $this->sale->messages(),
         );
+
+        $user = User::query()->find($validatedData['user_id']);
+        $discountUser = $user->discount ?: null;
+        $discountSale = $validatedData['discount'] ?: null;
+
+        if (isset($discountSale) && $discountSale > $discountUser) {
+            return response()->json([
+                'error' => 'O desconto deve ser menor ou igual a '. $discountUser,
+            ], 422);
+        }
+
+        
 
         try {
 

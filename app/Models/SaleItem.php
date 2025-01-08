@@ -12,9 +12,10 @@ class SaleItem extends Model {
 
     protected $fillable = [
         'sale_id',
-        'sellable',
+        'sellable_type',
+        'sellable_id',
         'quantity',
-        'price'
+        'price',
     ];
 
     public function sellable(): MorphTo {

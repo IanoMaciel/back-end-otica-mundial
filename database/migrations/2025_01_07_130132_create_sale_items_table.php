@@ -16,7 +16,7 @@ class CreateSaleItemsTable extends Migration
         Schema::create('sale_items', function (Blueprint $table) {
             $table->id();
 
-                $table->unsignedBigInteger('sale_id')->nullable();
+            $table->unsignedBigInteger('sale_id')->nullable();
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
 
             $table->morphs('sellable');

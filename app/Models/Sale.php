@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Sale extends Model {
@@ -69,9 +70,9 @@ class Sale extends Model {
     }
 
     # Relationships
-    public function items(): MorphMany
+    public function items(): HasMany
     {
-        return $this->morphMany(SaleItem::class, 'sellable');
+        return $this->hasMany(SaleItem::class);
     }
 
     public function customer(): BelongsTo {
@@ -83,17 +84,29 @@ class Sale extends Model {
     }
 
     public function paymentMethod(): BelongsTo {
-        return $this->belongsTo(BelongsTo::class);
+        return $this->belongsTo(PaymentMethod::class);
     }
 
     public function frames(): BelongsToMany {
-        return $this->BelongsToMany(Frame::class, 'sale_items')
+        return $this->BelongsToMany(
+            Frame::class,
+            'sale_items',
+            'sale_id',
+            'sellable_id'
+        )
+            ->where('sellable_type', Frame::class)
             ->withPivot('quantity', 'price')
             ->withTimestamps();
     }
 
     public function services(): BelongsToMany {
-        return $this->BelongsToMany(Frame::class, 'sale_items')
+        return $this->BelongsToMany(
+            Service::class,
+            'sale_items',
+            'sale_id',
+            'sellable_id'
+        )
+            ->where('sellable_type', Service::class)
             ->withPivot('quantity', 'price')
             ->withTimestamps();
     }
