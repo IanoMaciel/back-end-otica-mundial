@@ -4,7 +4,7 @@
     <title>Estoque de Armação</title>
     <style>
         body {
-            /*font-family: Ubuntu Light, "sans-serif";*/
+            font-family: 'Nunito', sans-serif;
             margin: 20px;
             color: #333;
         }
