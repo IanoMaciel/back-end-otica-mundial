@@ -15,8 +15,16 @@ class ServiceController extends Controller {
 
     public function index(Request $request): JsonResponse {
         $query = $this->service->query()->orderBy('name');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+               $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
         $services = $query->paginate($perPage);
+
         return response()->json($services);
     }
 

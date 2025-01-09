@@ -4,24 +4,23 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BrandFactory extends Factory {
+class AgreementFactory extends Factory {
 
-    protected  $brands = [
-        'Ray Ban',
-        'Oakley',
-        'Prada',
-        'Gucci'
+    protected $agreements = [
+        'Clínica de Olhos',
+        'Unimed Rondonópolis',
+        'Mil Madeiras',
+        'Hermasa Navegação'
     ];
 
     protected static  $i = 0;
 
     public function definition(): array {
-        $currentBrand = $this->brands[static::$i % count($this->brands)];
+        $currentAgreement = $this->agreements[static::$i % count($this->agreements)];
         static::$i++;
 
         return [
-            'brand' => $currentBrand,
-            'discount' => $this->faker->randomElement([1, 10]),
+            'agreement' => $currentAgreement
         ];
     }
 

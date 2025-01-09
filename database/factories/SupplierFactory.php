@@ -11,10 +11,10 @@ class SupplierFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->firstName() . ' ' . $this->faker->lastName(),
             'email' => $this->faker->email(),
             'contact' => $this->faker->phoneNumber(),
-            'description' => $this->faker->text(100),
+            'description' => $this->faker->text(50),
         ];
     }
 }
