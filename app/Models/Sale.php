@@ -14,6 +14,7 @@ class Sale extends Model {
     use HasFactory;
 
     protected $fillable = [
+        'number_ata',
         'customer_id',
         'user_id',
         'payment_method_id',
@@ -24,6 +25,7 @@ class Sale extends Model {
 
     public function rules(): array {
         return [
+            'number_ata' => 'required|string',
             'customer_id' => 'required|exists:customers,id',
             'user_id' => 'required|exists:users,id',
             'payment_method_id' => 'required|exists:payment_methods,id',
@@ -39,6 +41,9 @@ class Sale extends Model {
 
     public function messages(): array {
         return [
+            'number_ata.required' => 'O campo ATA é obrigatório.',
+            'number_ata.string' => 'O campo ATA deve ser do tipo texto.',
+
             'customer_id.required' => 'O campo cliente é obrigatório.',
             'customer_id.exists' => 'O cliente informado não existe na base de dados.',
 
