@@ -22,16 +22,16 @@ class DatabaseSeeder extends Seeder {
         Material::factory()->count(3)->create(); // não remover
 
         // Suppliers
-        Supplier::factory(3)->create();
+//        Supplier::factory(3)->create();
 
         // Products and services
-        Frame::factory(100)->create();
-        Service::factory(20)->create();
+//        Frame::factory(100)->create();
+//        Service::factory(20)->create();
 
         // Customers
-        Agreement::factory()->count(4)->create();
-        Customer::factory()->count(100)->create();
-        Address::factory(100)->create();
+//        Agreement::factory()->count(4)->create();
+//        Customer::factory()->count(100)->create();
+//        Address::factory(100)->create();
 
         PaymentMethod::factory()->count(6)->create(); // Não remover
     }
