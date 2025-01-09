@@ -20,7 +20,9 @@ class FrameController extends Controller {
     public function exportPdf() {
         $frames = $this->frame->query()
             ->with('suppliers', 'brands', 'materials')
-            ->orderBy('created_at')
+            ->join('brands', 'frames.brand_id', '=', 'brands.id')
+            ->orderBy('brands.brand')
+            ->select('frames.*')
             ->get();
 
         $pdf = Pdf::loadView('pdf.frames', compact('frames'))->setPaper('a4', 'landscape');
@@ -230,7 +232,7 @@ class FrameController extends Controller {
         return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
     }
 
-    private function generateUniqueBarCode(string $prefix) {
+    private function generateUniqueBarCode($prefix): string {
         do {
             $baseCode = $prefix . str_pad(random_int(0, 999999999), 9, '0', STR_PAD_LEFT);
 

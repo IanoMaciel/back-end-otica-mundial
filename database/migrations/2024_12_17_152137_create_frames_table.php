@@ -25,7 +25,6 @@ class CreateFramesTable extends Migration {
             $table->integer('amount')->nullable();                               // quantidade estoque
             $table->decimal('purchase_value', 10, 2)->nullable();   // valor da compra
             $table->decimal('profit', 10, 2)->nullable();           // lucro
-            $table->decimal('discount', 10, 2)->nullable();         // desconto
             $table->decimal('price', 10, 2)->nullable();            // valor de venda
             $table->text('description', 255)->nullable();                        // descrição
 
