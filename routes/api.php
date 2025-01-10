@@ -44,7 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // financial
     Route::apiResource('payment-method', 'PaymentMethodController');
+
     Route::apiResource('sale', 'SaleController');
+    Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

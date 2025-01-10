@@ -19,7 +19,7 @@ class Sale extends Model {
         'user_id',
         'payment_method_id',
         'status',
-        'discount',
+        'discount_frame',
         'total_amount',
     ];
 
@@ -30,7 +30,8 @@ class Sale extends Model {
             'user_id' => 'required|exists:users,id',
             'payment_method_id' => 'required|exists:payment_methods,id',
             'status' => 'nullable|in:Pago,Pendente,Cancelado,Atrasado',
-            'discount' => 'nullable|numeric',
+            'discount_frame' => 'nullable|numeric',
+            'discount_lens' => 'nullable|numeric',
             'total_amount' => 'nullable|numeric',
             'items' => 'required|array',
             'items.*.type' => 'required|in:frame,service',
@@ -55,7 +56,8 @@ class Sale extends Model {
 
             'status.in' => 'O status deve ser um dos seguintes: Pago, Pendente, Cancelado ou Atrasado.',
 
-            'discount.numeric' => 'O campo desconto deve ser numérico.',
+            'discount_frame.numeric' => 'O campo desconto deve ser numérico.',
+            'discount_lens.numeric' => 'O campo desconto deve ser numérico.',
 
             'total_amount.numeric' => 'O campo valor total deve ser numérico.',
 
