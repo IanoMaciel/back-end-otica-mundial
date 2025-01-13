@@ -23,7 +23,7 @@ class SaleController extends Controller {
      */
     public function index(Request $request): JsonResponse {
         $query = $this->sale
-            ->with('customer', 'user', 'paymentMethod', 'frames', 'services')
+            ->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'creditCards')
             ->orderBy('created_at', 'desc');
 
         if ($search = $request->input('search')) {
@@ -143,7 +143,7 @@ class SaleController extends Controller {
      */
     public function show(int $id): JsonResponse {
         $sale = $this->sale->query()
-            ->with('customer', 'user', 'paymentMethod', 'frames', 'services')
+            ->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'creditCards')
             ->find($id);
 
         if (!$sale) {

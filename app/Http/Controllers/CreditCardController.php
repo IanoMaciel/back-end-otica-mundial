@@ -58,4 +58,58 @@ class CreditCardController extends Controller {
             ], 500);
         }
     }
+
+    public function show(int $id): JsonResponse {
+        $creditCard = $this->creditCard->query()->find($id);
+
+        if (!$creditCard) {
+            return response()->json([
+                'error' => 'O pagamento no credito informado não existe na base de dados.'
+            ], 404);
+        }
+
+        return response()->json($creditCard);
+    }
+
+    public function update(Request $request, int $id): JsonResponse {
+        $creditCard = $this->creditCard->query()->find($id);
+
+        if (!$creditCard) {
+            return response()->json([
+                'error' => 'O pagamento no credito informado não existe na base de dados.'
+            ], 404);
+        }
+
+        $validatedData = $request->validate($this->creditCard->rules(true), $this->creditCard->messages());
+
+        try {
+            $creditCard->update($validatedData);
+            return response()->json($creditCard);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function destroy(int $id): JsonResponse {
+        $creditCard = $this->creditCard->query()->find($id);
+
+        if (!$creditCard) {
+            return response()->json([
+                'error' => 'O pagamento no credito informado não existe na base de dados.'
+            ], 404);
+        }
+
+        try {
+            $creditCard->delete();
+            return response()->json(null, 204);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

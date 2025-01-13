@@ -16,7 +16,7 @@ class CreditCard extends Model {
         'total_amount',
     ];
 
-    public function rules(): array {
+    public function rules(bool $update=false): array {
         return [
             'sale_id' => 'required|exists:sales,id',
             'card_id' => 'required|exists:cards,id',
