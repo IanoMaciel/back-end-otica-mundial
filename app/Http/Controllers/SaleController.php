@@ -115,9 +115,13 @@ class SaleController extends Controller {
                 $totalAmount += $itemTotal;
             }
             $sale->total_amount = $totalAmount;
-            if ($paymentMethod->payment_method != 'Crediário da Loja') {
+
+            if ($paymentMethod->payment_method === 'Crediário da Loja' || $paymentMethod->payment_method === 'Cartão de Crédito') {
+                $sale->status = 'Pendente';
+            } else {
                 $sale->status = 'Pago';
             }
+
             $sale->save();
 
             return response()->json($sale->load([

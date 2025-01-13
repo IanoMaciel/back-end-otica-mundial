@@ -44,10 +44,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // financial
     Route::apiResource('payment-method', 'PaymentMethodController');
+    Route::apiResource('card', 'CardController');
 
     Route::apiResource('sale', 'SaleController');
     Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
     Route::get('sale-search-stock', 'SaleController@searchStock');
+
+    Route::apiResource('credit-card', 'CreditCardController');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

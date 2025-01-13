@@ -114,4 +114,8 @@ class Sale extends Model {
             ->withPivot('quantity', 'price', 'discount', 'total')
             ->withTimestamps();
     }
+
+    public function creditCards(): HasMany {
+        return $this->hasMany(CreditCard::class, 'sale_id');
+    }
 }
