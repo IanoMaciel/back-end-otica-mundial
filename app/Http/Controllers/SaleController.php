@@ -41,17 +41,31 @@ class SaleController extends Controller {
             $this->sale->messages(),
         );
 
-        $user = User::query()->find($validatedData['user_id']);
-        $discountUser = $user->discount ?: null;
-        $discountSale = $validatedData['discount'] ?: null;
+        foreach ($validatedData['items'] as $item) {
+            if ($item['type'] === 'frame') {
+                $frame = Frame::query()->find($item['id']);
+
+                if ($item['discount'] > $frame->brands->discount) {
+                    return response()->json([
+                        'error' => 'O desconto aplicado na armação deve ser igual ou inferior a ' . $frame->brands->discount . '%',
+                    ], 422);
+                }
+
+                if (!$frame) {
+                    return response()->json([
+                        'error' => 'O produto informado não existe na base de dados.',
+                    ], 404);
+                }
+
+                if ($frame->amount < $item['quantity']) {
+                    return response()->json([
+                        'error' => 'O produto (CÓDIGO DA ARMAÇÃO: ' . $frame->code . ') não possui estoque suficiente para realizar a venda.',
+                    ], 422);
+                }
+            }
+        }
 
         $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
-
-        if (isset($discountSale) && $discountSale > $discountUser) {
-            return response()->json([
-                'error' => 'O desconto deve ser menor ou igual a '. $discountUser,
-            ], 422);
-        }
 
         try {
 
@@ -67,15 +81,15 @@ class SaleController extends Controller {
                     ], 404);
                 }
 
-                if ($item['type'] === 'frame' && $sellable->amount < $item['quantity']) {
-                    return response()->json(['error' => 'Ops! O produto informado não possui estoque para realizar a venda.'], 422);
-                }
+                $itemTotal = ($sellable->price - ($sellable->price * ($item['discount']/100))) * $item['quantity'];
 
                 $sale->items()->create([
                     'sellable_type' => $model,
                     'sellable_id' => $sellable->id,
                     'quantity' => $item['quantity'],
                     'price' => $sellable->price,
+                    'discount' => $item['discount'],
+                    'total' => $itemTotal
                 ]);
 
                 if ($item['type'] === 'frame') {
@@ -83,16 +97,18 @@ class SaleController extends Controller {
                     $sellable->save();
                 }
 
-                $totalAmount += $sellable->price * $item['quantity'];
+                $totalAmount += $itemTotal;
             }
-
             $sale->total_amount = $totalAmount;
             if ($paymentMethod->payment_method != 'Crediário da Loja') {
                 $sale->status = 'Pago';
             }
             $sale->save();
 
-            return response()->json($sale->load(['customer', 'user', 'paymentMethod', 'frames', 'services']));
+            return response()->json($sale->load([
+                'customer',
+                'user', 'paymentMethod', 'frames', 'services'
+            ]), 201);
 
         } catch (\Throwable $th) {
             return response()->json([

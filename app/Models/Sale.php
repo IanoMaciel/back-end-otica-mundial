@@ -19,7 +19,6 @@ class Sale extends Model {
         'user_id',
         'payment_method_id',
         'status',
-        'discount_frame',
         'total_amount',
     ];
 
@@ -30,13 +29,12 @@ class Sale extends Model {
             'user_id' => 'required|exists:users,id',
             'payment_method_id' => 'required|exists:payment_methods,id',
             'status' => 'nullable|in:Pago,Pendente,Cancelado,Atrasado',
-            'discount_frame' => 'nullable|numeric',
-            'discount_lens' => 'nullable|numeric',
             'total_amount' => 'nullable|numeric',
             'items' => 'required|array',
             'items.*.type' => 'required|in:frame,service',
             'items.*.id' => 'required|integer',
-            'items.*.quantity' => 'required|integer|min:1'
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.discount' => 'nullable|numeric'
         ];
     }
 
@@ -56,9 +54,6 @@ class Sale extends Model {
 
             'status.in' => 'O status deve ser um dos seguintes: Pago, Pendente, Cancelado ou Atrasado.',
 
-            'discount_frame.numeric' => 'O campo desconto deve ser numérico.',
-            'discount_lens.numeric' => 'O campo desconto deve ser numérico.',
-
             'total_amount.numeric' => 'O campo valor total deve ser numérico.',
 
             'items.required' => 'É necessário informar ao menos um item.',
@@ -73,6 +68,8 @@ class Sale extends Model {
             'items.*.quantity.required' => 'O campo "quantidade" do item é obrigatório.',
             'items.*.quantity.integer' => 'O campo "quantidade" do item deve ser um número inteiro.',
             'items.*.quantity.min' => 'A quantidade do item deve ser pelo menos 1.',
+
+            'items.*.numeric' => 'O campo "desconto" deve ser do tipo númerico'
         ];
     }
 
@@ -102,7 +99,7 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Frame::class)
-            ->withPivot('quantity', 'price')
+            ->withPivot('quantity', 'price', 'discount', 'total')
             ->withTimestamps();
     }
 
@@ -114,7 +111,7 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Service::class)
-            ->withPivot('quantity', 'price')
+            ->withPivot('quantity', 'price', 'discount', 'total')
             ->withTimestamps();
     }
 }

@@ -16,6 +16,8 @@ class SaleItem extends Model {
         'sellable_id',
         'quantity',
         'price',
+        'discount',
+        'total'
     ];
 
     public function sellable(): MorphTo {

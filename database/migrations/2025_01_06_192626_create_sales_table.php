@@ -26,8 +26,7 @@ class CreateSalesTable extends Migration
             $table->foreign('payment_method_id')->references('id')->on('payment_methods')->nullOnDelete();
 
             $table->enum('status', ['Pendente', 'Atrasado', 'Pago', 'Cancelado'])->default('Pendente');
-            $table->decimal('discount_frame', 10, 2)->nullable();
-            $table->decimal('discount_lens', 10, 2)->nullable();
+
             $table->decimal('total_amount', 10, 2)->nullable();
             $table->timestamps();
         });
