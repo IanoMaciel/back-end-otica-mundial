@@ -6,7 +6,6 @@ use App\Models\Frame;
 use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\Service;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +25,22 @@ class SaleController extends Controller {
         $query = $this->sale
             ->with('customer', 'user', 'paymentMethod', 'frames', 'services')
             ->orderBy('created_at', 'desc');
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('frames', function ($query) use ($search) {
+                    $query->where('code', 'LIKE', "%$search%");
+                })->orWhereHas('services', function ($query) use ($search) {
+                   $query->where('name', 'LIKE', "%$search%");
+                });
+            });
+        }
+
+        $filterType = $request->get('type');
+        if($filterType) {
+            $query->whereHas($filterType === 'frame' ? 'frames' : 'services');
+        }
+
         $perPage = $request->get('per_page', 10);
         $sales = $query->paginate($perPage);
         return response()->json($sales);
