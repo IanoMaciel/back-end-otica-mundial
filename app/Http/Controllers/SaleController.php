@@ -183,6 +183,24 @@ class SaleController extends Controller {
         }
     }
 
+    public function searchStock(Request $request): JsonResponse {
+        $search = $request->input('search');
+
+        $frames = Frame::query()
+            ->where('code', 'LIKE', "%$search%")
+            ->get();
+
+        $services = Service::query()
+            ->where('name', 'LIKE', "%$search%")
+            ->get();
+
+        return response()->json([
+            'frames' => $frames,
+            'services' => $services,
+        ]);
+    }
+
+
     public function deleteMultiple(Request $request) {
         if (!$this->isAuthorization()) {
             return response()->json([

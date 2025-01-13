@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('sale', 'SaleController');
     Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
+    Route::get('sale-search-stock', 'SaleController@searchStock');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
