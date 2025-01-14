@@ -7,6 +7,7 @@ use App\Models\Agreement;
 use App\Models\Brand;
 use App\Models\Card;
 use App\Models\Customer;
+use App\Models\FormPayment;
 use App\Models\Frame;
 use App\Models\Material;
 use App\Models\PaymentMethod;
@@ -35,6 +36,7 @@ class DatabaseSeeder extends Seeder {
         Address::factory(100)->create();
 
         PaymentMethod::factory()->count(6)->create(); // Não remover
+        FormPayment::factory()->count(4)->create(); // Não remover
         Card::factory()->count(6)->create(); // Não remover
     }
 }
