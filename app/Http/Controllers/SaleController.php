@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agreement;
 use App\Models\Frame;
 use App\Models\PaymentMethod;
 use App\Models\Sale;
@@ -146,13 +147,21 @@ class SaleController extends Controller {
             ->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'creditCards')
             ->find($id);
 
+        $agreementID = $sale->customer->agreement_id ?? null;
+        $agreement = null;
+
+        if ($agreementID) $agreement = Agreement::query()->find($agreementID)->agreement ?? null;
+
         if (!$sale) {
             return response()->json([
                 'error' => 'A venda informada não existe na base de dados.'
             ], 404);
         }
 
-        return response()->json($sale);
+        return response()->json([
+            $sale,
+            'agreement' => $agreement
+        ]);
     }
 
     /**
