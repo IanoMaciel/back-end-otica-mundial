@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('credit-card', 'CreditCardController'); // pagamento no crédito
     Route::apiResource('combined-payment', 'CombinedPaymentController'); // pagamento combinado
+    Route::apiResource('payment-credit', 'PaymentCreditController'); // pagamento no crediário
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
