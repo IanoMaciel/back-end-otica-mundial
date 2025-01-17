@@ -95,6 +95,10 @@ class Sale extends Model {
         return $this->hasMany(PaymentCredit::class);
     }
 
+    public function combinedPayment(): HasMany {
+        return $this->hasMany(CombinedPayment::class);
+    }
+
     public function frames(): BelongsToMany {
         return $this->BelongsToMany(
             Frame::class,
