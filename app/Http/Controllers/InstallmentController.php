@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Card;
 use App\Models\Installment;
+use App\Models\PaymentCredit;
+use App\Models\Sale;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -44,6 +46,20 @@ class InstallmentController extends Controller {
             $this->installment->rules(),
             $this->installment->messages(),
         );
+
+        $paymentCredit = PaymentCredit::query()->with('installments')->find($validatedData['payment_credit_id']);
+        $sale = Sale::query()->find($paymentCredit->sale_id);
+
+        if ($paymentCredit && $sale) {
+            $allInstallmentsPaid = $paymentCredit->installments->every(function ($installment) {
+                return $installment->status === "Pago";
+            });
+
+            if ($allInstallmentsPaid) {
+                $sale->status = "Pago";
+                $sale->save();
+            }
+        }
 
         $cardID = $validatedData['card_id'] ?? null;
         if ($cardID != null) {
