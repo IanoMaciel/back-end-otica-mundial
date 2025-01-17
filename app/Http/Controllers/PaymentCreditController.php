@@ -18,7 +18,10 @@ class PaymentCreditController extends Controller {
     }
 
     public function index(Request $request): JsonResponse {
-        $paymentCredit = $this->paymentCredit->query()->with('installments');
+        $paymentCredit = $this->paymentCredit->query()
+            ->with('installments')
+            ->orderBy('created_at', 'desc');
+
         $perPage = $request->get('per_page', 10);
         return response()->json($paymentCredit->paginate($perPage));
     }
@@ -50,8 +53,10 @@ class PaymentCreditController extends Controller {
 
             $paymentCredit = $this->paymentCredit->query()->create($data);
 
+            $count = 1;
             foreach ($data['installments'] as $installment) {
                 Installment::query()->create([
+                    'installment' => $count++,
                     'payment_credit_id' => $paymentCredit->id ?? 1,
                     'form_payment_id' => $installment['form_payment_id'] ?? null,
                     'card_id' => $installment['card_id'] ?? null,

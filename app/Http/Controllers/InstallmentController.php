@@ -45,10 +45,18 @@ class InstallmentController extends Controller {
             $this->installment->messages(),
         );
 
-        $card = Card::query()->findOrFail($validatedData['card_id'])->interest_rate ?? null;
+        $cardID = $validatedData['card_id'] ?? null;
+        if ($cardID != null) {
+            $card = Card::query()->findOrFail($validatedData['card_id'])->interest_rate;
+            $validatedData['amount'] += $validatedData['amount'] * ($card/100);
+
+            $validatedData = array_merge($validatedData, [
+                'amount' => $validatedData['amount'],
+            ]);
+        }
 
         try {
-//            $installment->update($validatedData);
+            $installment->update($validatedData);
             return response()->json($installment);
         } catch (\Throwable $th) {
             return response()->json([

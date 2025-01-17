@@ -16,6 +16,7 @@ class Installment extends Model {
         'due_date',
         'status',
         'amount',
+        'installment'
     ];
 
     public function rules(): array {
@@ -26,6 +27,7 @@ class Installment extends Model {
             'due_date' => 'nullable|date',
             'status' => 'nullable|string|in:Pendente,Pago,Atrasado',
             'amount' => 'nullable|numeric',
+            'installment' => 'nullable|numeric'
         ];
     }
 
@@ -37,6 +39,7 @@ class Installment extends Model {
             'due_date.date' => 'A data de vencimento deve ser uma data válida.',
             'status.in' => 'O status deve ser um dos seguintes: Pendente, Pago, Atrasado.',
             'amount.numeric' => 'O valor deve ser um número válido.',
+            'installment.numeric' => 'O campo parcela deve ser um número válido.',
         ];
     }
 

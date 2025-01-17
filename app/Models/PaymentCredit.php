@@ -33,6 +33,7 @@ class PaymentCredit extends Model {
             'installments.*.due_date' => 'required|date',
             'installments.*.status' => 'nullable|string|in:Pendente,Pago,Atrasado',
             'installments.*.amount' => 'required|numeric',
+            'installments.*.installment' => 'nullable|numeric',
         ];
     }
 
@@ -61,6 +62,7 @@ class PaymentCredit extends Model {
             'installments.*.status.in' => 'O status deve ser um dos seguintes valores: Pendente, Pago, Atrasado.',
             'installments.*.amount.required' => 'O valor é obrigatório.',
             'installments.*.amount.numeric' => 'O valor deve ser numérico.',
+            'installments.*.installment.numeric' => 'O campo parcela deve ser um número válido.',
         ];
     }
 

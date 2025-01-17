@@ -91,6 +91,10 @@ class Sale extends Model {
         return $this->belongsTo(PaymentMethod::class);
     }
 
+    public function paymentCredits(): HasMany {
+        return $this->hasMany(PaymentCredit::class);
+    }
+
     public function frames(): BelongsToMany {
         return $this->BelongsToMany(
             Frame::class,
