@@ -27,6 +27,12 @@ class SaleController extends Controller {
             ->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'creditCards', 'paymentCredits', 'combinedPayment')
             ->orderBy('created_at', 'desc');
 
+        if ($status = $request->input('status')) {
+            $query->where(function ($q) use ($status) {
+                $q->where('status', 'LIKE', "%$status%");
+            });
+        }
+
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('frames', function ($query) use ($search) {
