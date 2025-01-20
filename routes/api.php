@@ -23,6 +23,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('user', 'UserController');
 
+    // customer
+    Route::apiResource('agreement', 'AgreementController');
+    Route::apiResource('customer', 'CustomerController');
+    Route::delete('customer-delete-multiple', 'CustomerController@deleteMultiple');
+    Route::apiResource('address', 'AddressController');
+
+    // lenses
+    Route::apiResource('type-lens', 'TypeLensController');
+
     // frame
     Route::apiResource('material', 'MaterialController');
     Route::apiResource('brand', 'BrandController');
@@ -31,12 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('frame', 'FrameController');
     Route::delete('frame-delete-multiple','FrameController@deleteMultiple');
     Route::get('frame-export-pdf', 'FrameController@exportPdf');
-
-    // customer
-    Route::apiResource('agreement', 'AgreementController');
-    Route::apiResource('customer', 'CustomerController');
-    Route::delete('customer-delete-multiple', 'CustomerController@deleteMultiple');
-    Route::apiResource('address', 'AddressController');
 
     // services
     Route::apiResource('service', 'ServiceController');
