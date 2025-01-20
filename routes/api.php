@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('sensitivity', 'SensitivityController');
     Route::apiResource('lens', 'LensController');
     Route::delete('lens-delete-multiple', 'LensController@deleteMultiple');
+    Route::get('lens-export-pdf', 'LensController@exportPdf');
 
     // frame
     Route::apiResource('material', 'MaterialController');

@@ -26,6 +26,7 @@ class CreateLensesTable extends Migration {
             $table->decimal('spherical', 10, 2)->nullable();
             $table->decimal('cylindrical', 10, 2)->nullable();
 
+            $table->decimal('index', 10, 2)->nullable();
             $table->integer('amount')->nullable();
             $table->decimal('purchase_value', 10, 2)->nullable();
             $table->decimal('profit', 10, 2)->nullable();

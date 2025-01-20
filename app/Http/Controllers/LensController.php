@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Lens;
 use App\ProductPrefix;
+//use Barryvdh\DomPDF\Facade\Pdf;
+//use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -151,6 +153,18 @@ class LensController extends Controller {
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    public function exportPdf() {
+        $lenses = $this->lens->query()
+            ->with('typeLens', 'treatment', 'sensitivity')
+            ->get();
+
+//        $pdf = Pdf::loadView('pdf.lenses', compact('lenses'))
+//            ->setPaper('a4', 'landscape');
+//        return $pdf->download('lenses.pdf');
+
+        return view('pdf.lenses', compact('lenses'));
     }
 
     private function isAuthorization(): bool {

@@ -13,6 +13,7 @@ class Lens extends Model {
         'type_lens_id',
         'treatment_id',
         'sensitivity_id',
+        'index',
         'filter',
         'name_lens',
         'spherical',
@@ -31,6 +32,7 @@ class Lens extends Model {
             'type_lens_id' => 'required|exists:type_lenses,id',
             'treatment_id' => 'required|exists:treatments,id',
             'sensitivity_id' => 'required|exists:sensitivities,id',
+            'index' => 'required|numeric',
             'filter' => 'required|boolean',
             'name_lens' => 'required|string',
             'spherical' => 'required|numeric',
@@ -56,6 +58,9 @@ class Lens extends Model {
 
             'sensitivity_id.required' => 'A sensibilidade é obrigatória.',
             'sensitivity_id.exists' => 'A sensibilidade deve ser válida.',
+
+            'index.required' => 'O índice é obrigatória.',
+            'index.numeric' => 'O índice deve ser um número.',
 
             'filter.required' => 'O filtro é obrigatório.',
             'filter.boolean' => 'O filtro deve ser verdadeiro ou falso.',
