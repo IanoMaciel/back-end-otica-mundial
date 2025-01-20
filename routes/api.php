@@ -32,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // lenses
     Route::apiResource('type-lens', 'TypeLensController');
     Route::apiResource('treatment', 'TreatmentController');
+    Route::apiResource('sensitivity', 'SensitivityController');
+    Route::apiResource('lens', 'LensController');
 
     // frame
     Route::apiResource('material', 'MaterialController');
