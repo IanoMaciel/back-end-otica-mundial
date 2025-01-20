@@ -71,4 +71,18 @@ class CombinedPaymentController extends Controller {
             ]);
         }
     }
+
+    public function show(int $id): JsonResponse{
+        $combinedPayments = $this->combinedPayment->query()
+            ->with('sale', 'portions')
+            ->find($id);
+
+        if (!$combinedPayments) {
+            return response()->json([
+                'error' => 'O Pagamento informado não existe na base de dados.'
+            ], 404);
+        }
+
+        return response()->json($combinedPayments);
+    }
 }
