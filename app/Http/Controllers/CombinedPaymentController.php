@@ -26,19 +26,29 @@ class CombinedPaymentController extends Controller {
     }
 
     public function store(Request $request): JsonResponse {
-        $validatedData = $request->validate(
+        $data = $request->validate(
             $this->combinedPayment->rules(),
             $this->combinedPayment->messages(),
         );
 
-        $discount = $validatedData['discount'] ?? null;
-        $totalAmount = Sale::query()->find($validatedData['sale_id'])->total_amount;
-
-        if($discount != 'null') {
-            $totalAmount = $totalAmount - ($discount * ($discount/10));
+        # a soma das parcelas não deve ser menor que o valor da venda
+        $sum = 0;
+        foreach ($data['portions'] as $portion) {
+            $sum += $portion['amount'];
         }
 
-        $data = array_merge($validatedData, [
+        $discount = $validatedData['discount'] ?? null;
+        $totalAmount = Sale::query()->find($data['sale_id'])->getAttribute('total_amount');
+
+        if($sum < $totalAmount) {
+            return response()->json([
+                'error' => 'A soma dos valores não corresponde com o valor da compra'
+            ], 422);
+        }
+
+        if($discount != 'null')  $totalAmount = $totalAmount - ($discount * ($discount/10));
+
+        $data = array_merge($data, [
             'total_amount' => $totalAmount,
             'discount' => $discount,
         ]);
@@ -49,7 +59,7 @@ class CombinedPaymentController extends Controller {
             $combinedPayment = CombinedPayment::query()->create($data);
 
             foreach ($data['portions'] as $portion) {
-                $interestRate = $portion['card_id'] ?? 0 ? Card::query()->find($portion['card_id'])->interest_rate : 0;
+                $interestRate = $portion['card_id'] ?? 0 ? Card::query()->find($portion['card_id'])->getAttribute('interest_rate') : 0;
                 $portion['amount'] += ($portion['amount'] * ($interestRate/100));
 
                 PaymentPortion::query()->create([
