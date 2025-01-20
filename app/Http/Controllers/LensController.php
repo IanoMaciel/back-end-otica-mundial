@@ -6,6 +6,7 @@ use App\Models\Lens;
 use App\ProductPrefix;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LensController extends Controller {
@@ -60,6 +61,101 @@ class LensController extends Controller {
         }
 
         return response()->json($lens);
+    }
+
+    public function update(Request $request, int $id): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
+        $lens = $this->lens->query()
+            ->with('typeLens', 'treatment', 'sensitivity')
+            ->find($id);
+
+        if (!$lens) {
+            return response()->json([
+                'error' => 'A lente informada não existe na base de dados.',
+            ], 404);
+        }
+
+        $validatedData = $request->validate(
+            $this->lens->rules(),
+            $this->lens->messages()
+        );
+
+        try {
+            $lens->update($validatedData);
+            return response()->json($lens);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function destroy(int $id): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
+        $lens = $this->lens->query()->find($id);
+
+        if (!$lens) {
+            return response()->json([
+                'error' => 'A lente informada não existe na base de dados.',
+            ], 404);
+        }
+
+        try {
+            $lens->delete();
+            return response()->json(null, 204);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteMultiple(Request $request): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
+        $validatedData = $request->validate(
+            [
+                'id' => 'required|array',
+                'id.*' => 'integer|exists:lenses,id'
+            ],
+            [
+                'id.required' => 'O campo id é obrigatório.',
+                'id.array' => 'O campo id é do tipo array.',
+                'id.*.integer' => 'Cada id deve ser um número inteiro.',
+                'id.*.exists' => 'Um ou mais registros selecionados não existe na base de dados.'
+            ]
+        );
+
+        try {
+            $this->lens->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Error ao processar a soliciatação.',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    private function isAuthorization(): bool {
+        $user = Auth::user();
+        return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
     }
 
     private function generateUniqueBarCode(): string {

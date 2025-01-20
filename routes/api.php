@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('treatment', 'TreatmentController');
     Route::apiResource('sensitivity', 'SensitivityController');
     Route::apiResource('lens', 'LensController');
+    Route::delete('lens-delete-multiple', 'LensController@deleteMultiple');
 
     // frame
     Route::apiResource('material', 'MaterialController');
