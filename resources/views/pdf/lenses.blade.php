@@ -23,7 +23,7 @@
         }
 
         thead th {
-            background-color: #474747; /* Verde */
+            background-color: #ff0000;
             color: #ffffff;
             text-align: left;
             padding: 12px;
@@ -40,25 +40,54 @@
         tr {
             border-bottom: 1px solid #dadada;
         }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
-<h1>Ótica Mundial | Estoque de Lentes</h1>
+    <div class="header">
+        <h1>Ótica Mundial | Estoque de Lentes</h1>
+        <p>Total de Registros: 10</p>
+    </div>
 <table>
     <thead>
     <tr>
         <th>ID</th>
+        <th>Código</th>
+        <th>Nome</th>
+        <th>QTD</th>
+        <th>Esférico</th>
+        <th>Cilíndrico</th>
         <th>Tipo</th>
         <th>Antirreflexo</th>
         <th>Filtro</th>
+        <th>Foco Sen.</th>
         <th>Tipo</th>
-        <th>Tipo</th>
-        <th>Tipo</th>
+        <th>Custo(R$)</th>
+        <th>Venda(R$)</th>
+        <th>Desconto(%)</th>
     </tr>
     </thead>
     <tbody>
     @foreach ($lenses as $lens)
         <tr>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
+            <td>{{ $lens->id }}</td>
             <td>{{ $lens->id }}</td>
         </tr>
     @endforeach

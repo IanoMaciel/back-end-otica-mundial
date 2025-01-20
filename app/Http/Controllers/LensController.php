@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lens;
 use App\ProductPrefix;
-//use Barryvdh\DomPDF\Facade\Pdf;
-//use http\Env\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
