@@ -17,6 +17,7 @@ class Lens extends Model {
         'name_lens',
         'spherical',
         'cylindrical',
+        'amount',
         'purchase_value',
         'profit',
         'discount',
@@ -34,6 +35,7 @@ class Lens extends Model {
             'name_lens' => 'required|string',
             'spherical' => 'required|numeric',
             'cylindrical' => 'required|numeric',
+            'amount' => 'required|numeric',
             'purchase_value' => 'nullable|numeric',
             'profit' => 'nullable|numeric',
             'discount' => 'nullable|numeric',
@@ -64,6 +66,9 @@ class Lens extends Model {
             'spherical.numeric' => 'O campo esférico deve ser numérico.',
             'cylindrical.required' => 'O campo cilíndrico é obrigatório.',
             'cylindrical.numeric' => 'O campo cilíndrico deve ser numérico.',
+
+            'amount.required' => 'O campo quantidade é obrigatório.',
+            'amount.numeric' => 'A quantidade deve ser numérico.',
 
             'purchase_value.numeric' => 'O valor da compra deve ser numérico.',
             'profit.numeric' => 'O lucro deve ser numérico.',
