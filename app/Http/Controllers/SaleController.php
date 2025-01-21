@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agreement;
 use App\Models\Frame;
+use App\Models\Lens;
 use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\Service;
@@ -63,6 +64,7 @@ class SaleController extends Controller {
             $this->sale->messages(),
         );
 
+        # Validation in frame
         foreach ($validatedData['items'] as $item) {
             if ($item['type'] === 'frame') {
                 $frame = Frame::query()->find($item['id']);
@@ -81,7 +83,22 @@ class SaleController extends Controller {
 
                 if ($frame->amount < $item['quantity']) {
                     return response()->json([
-                        'error' => 'O produto (CÓDIGO DA ARMAÇÃO: ' . $frame->code . ') não possui estoque suficiente para realizar a venda.',
+                        'error' => 'O armção (Código da armação: ' . $frame->code . ') não possui estoque suficiente para realizar a venda.',
+                    ], 422);
+                }
+            }
+            if ($item['type'] === 'lens') {
+                $lens = Lens::query()->find($item['id']);
+
+                if ($item['discount'] > $lens->discount) {
+                    return response()->json([
+                        'error' => 'O desconto aplicado na lente deve ser igual ou inferior a ' . $lens->discount . '%',
+                    ], 422);
+                }
+
+                if ($lens->amount < $item['quantity']) {
+                    return response()->json([
+                        'error' => 'A lente (código de barras: ' . $lens->barcode . ') não possui estoque suficiente para realizar a venda.',
                     ], 422);
                 }
             }
@@ -94,7 +111,13 @@ class SaleController extends Controller {
             $sale = $this->sale->query()->create($validatedData);
             $totalAmount = 0;
             foreach ($validatedData['items'] as $item) {
-                $model = $item['type'] === 'frame' ? Frame::class : Service::class;
+
+                if ($item['type'] === 'frame')
+                    $model = Frame::class;
+                else if ($item['type'] === 'lens')
+                    $model = Lens::class;
+                else $model = Service::class;
+
                 $sellable = $model::query()->find($item['id']);
 
                 if (!$sellable) {
@@ -119,6 +142,11 @@ class SaleController extends Controller {
                     $sellable->save();
                 }
 
+                if ($item['type'] === 'lens') {
+                    $sellable->amount -= $item['quantity'];
+                    $sellable->save();
+                }
+
                 $totalAmount += $itemTotal;
             }
             $sale->total_amount = $totalAmount;
@@ -133,7 +161,9 @@ class SaleController extends Controller {
 
             return response()->json($sale->load([
                 'customer',
-                'user', 'paymentMethod', 'frames', 'services'
+                'user',
+                'paymentMethod',
+                'frames', 'services', 'lenses'
             ]), 201);
 
         } catch (\Throwable $th) {

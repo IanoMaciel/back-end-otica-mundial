@@ -31,7 +31,7 @@ class Sale extends Model {
             'status' => 'nullable|in:Pago,Pendente,Cancelado,Atrasado',
             'total_amount' => 'nullable|numeric',
             'items' => 'required|array',
-            'items.*.type' => 'required|in:frame,service',
+            'items.*.type' => 'required|in:frame,service,lens',
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.discount' => 'nullable|numeric'
@@ -60,7 +60,7 @@ class Sale extends Model {
             'items.array' => 'O campo itens deve ser um array.',
 
             'items.*.type.required' => 'O campo tipo do item é obrigatório.',
-            'items.*.type.in' => 'O tipo do item deve ser "frame" ou "service".',
+            'items.*.type.in' => 'O tipo do item deve ser "frame", "service" ou "lens".',
 
             'items.*.id.required' => 'O campo "ID" do item é obrigatório.',
             'items.*.id.integer' => 'O campo "ID" do item deve ser um número inteiro.',
@@ -107,6 +107,18 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Frame::class)
+            ->withPivot('quantity', 'price', 'discount', 'total')
+            ->withTimestamps();
+    }
+
+    public function lenses(): BelongsToMany {
+        return $this->belongsToMany(
+            Lens::class,
+            'sale_items',
+            'sale_id',
+            'sellable_id'
+        )
+            ->where('sellable_type', Lens::class)
             ->withPivot('quantity', 'price', 'discount', 'total')
             ->withTimestamps();
     }
