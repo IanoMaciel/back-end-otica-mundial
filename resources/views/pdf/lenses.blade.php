@@ -58,16 +58,17 @@
     <tr>
         <th>ID</th>
         <th>Código</th>
-        <th>Nome</th>
-        <th>QTD</th>
-        <th>Esférico</th>
-        <th>Cilíndrico</th>
         <th>Tipo</th>
+        <th>Indíce</th>
         <th>Antirreflexo</th>
         <th>Filtro</th>
         <th>Foco Sen.</th>
-        <th>Tipo</th>
+        <th>Nome</th>
+        <th>Esférico</th>
+        <th>Cilíndrico</th>
+        <th>QTD</th>
         <th>Custo(R$)</th>
+        <th>Lucro(%)</th>
         <th>Venda(R$)</th>
         <th>Desconto(%)</th>
     </tr>
@@ -75,19 +76,6 @@
     <tbody>
     @foreach ($lenses as $lens)
         <tr>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->id }}</td>
             <td>{{ $lens->id }}</td>
         </tr>
     @endforeach

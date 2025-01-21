@@ -26,9 +26,9 @@ class Lens extends Model {
     ];
 
     # Validations
-    public function rules(): array {
+    public function rules(bool $update=false): array {
         return [
-            'barcode' => 'nullable|string|unique:lenses',
+            'barcode' => $update ? 'nullable|string' : 'nullable|string|unique:lenses',
             'type_lens_id' => 'required|exists:type_lenses,id',
             'treatment_id' => 'required|exists:treatments,id',
             'sensitivity_id' => 'required|exists:sensitivities,id',

@@ -82,9 +82,20 @@ class LensController extends Controller {
         }
 
         $validatedData = $request->validate(
-            $this->lens->rules(),
+            $this->lens->rules(true),
             $this->lens->messages()
         );
+
+        $barcodeExists = $this->lens->query()
+            ->where('barcode', $validatedData['barcode'])
+            ->where('id', '<>', $id)
+            ->exists();
+
+        if ($barcodeExists) {
+            return response()->json([
+                'error' => 'O código de barra informado já existe na base de dados.'
+            ], 422);
+        }
 
         try {
             $lens->update($validatedData);
