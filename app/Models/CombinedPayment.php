@@ -53,4 +53,8 @@ class CombinedPayment extends Model {
     public function sale(): BelongsTo {
         return $this->belongsTo(Sale::class);
     }
+
+    public function formPayment(): BelongsTo {
+        return $this->belongsTo(FormPayment::class);
+    }
 }

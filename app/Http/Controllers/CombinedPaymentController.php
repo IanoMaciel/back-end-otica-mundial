@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Card;
 use App\Models\CombinedPayment;
+use App\Models\FormPayment;
 use App\Models\PaymentPortion;
 use App\Models\Sale;
 use Illuminate\Http\JsonResponse;
@@ -82,7 +83,7 @@ class CombinedPaymentController extends Controller {
         }
     }
 
-    public function show(int $id): JsonResponse{
+    public function show(int $id): JsonResponse {
         $combinedPayments = $this->combinedPayment->query()
             ->with('sale', 'portions')
             ->find($id);
@@ -93,6 +94,25 @@ class CombinedPaymentController extends Controller {
             ], 404);
         }
 
-        return response()->json($combinedPayments);
+        $response = $combinedPayments->toArray();
+
+        $response['portions'] = $combinedPayments->portions->map(function($portion) {
+            $formPayment = FormPayment::query()->find($portion->form_payment_id) ?? null;
+            $card = Card::query()->find($portion->card_id) ?? null;
+            return [
+                'id' => $portion->id,
+                'form_payment_id' =>  $formPayment->form_payment ?? null,
+                'card_id' => $card ? [
+                    'number_installment' => $card->number_installment,
+                    'interest_rate' => $card->interest_rate,
+                ] : null,
+                'amount' => $portion->amount,
+                'created_at' => $portion->created_at,
+                'updated_at' => $portion->updated_at,
+            ];
+        });
+
+        return response()->json($response);
     }
+
 }

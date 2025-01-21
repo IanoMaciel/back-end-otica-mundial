@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FormPayment extends Model {
     use HasFactory;
@@ -22,5 +23,9 @@ class FormPayment extends Model {
             'form_payment.max' => 'A forma de pagamento informada excedeu o tamanho de 30 caracteres.',
             'form_payment.unique' => 'A forma de pagamento informada já está registrado na base de dados.',
         ];
+    }
+
+    public function combinedPayment(): HasMany {
+        return $this->hasMany(HasMany::class);
     }
 }
