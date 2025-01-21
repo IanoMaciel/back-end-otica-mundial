@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Estoque de Armação</title>
+    <title>Estoque de Lentes</title>
     <style>
         body {
             font-family: 'Nunito', sans-serif;
@@ -50,8 +50,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>Ótica Mundial | Estoque de Lentes</h1>
-        <p>Total de Registros: 10</p>
+        <h3>Ótica Mundial - Estoque de Lentes</h3>
+        <p>Registros: {{ count($lenses) }}</p>
     </div>
 <table>
     <thead>
@@ -64,9 +64,9 @@
         <th>Filtro</th>
         <th>Foco Sen.</th>
         <th>Nome</th>
-        <th>Esférico</th>
-        <th>Cilíndrico</th>
-        <th>QTD</th>
+        <th>Esf.</th>
+        <th>Cil.</th>
+        <th>Qtd</th>
         <th>Custo(R$)</th>
         <th>Lucro(%)</th>
         <th>Venda(R$)</th>
@@ -77,6 +77,20 @@
     @foreach ($lenses as $lens)
         <tr>
             <td>{{ $lens->id }}</td>
+            <td>{{ $lens->barcode }}</td>
+            <td>{{ $lens->typeLens->type_lens }}</td>
+            <td>{{ $lens->index }}</td>
+            <td>{{ $lens->treatment->treatment }}</td>
+            <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>
+            <td>{{ $lens->sensitivity->sensitivity }}</td>
+            <td>{{ $lens->name_lens }}</td>
+            <td>{{ $lens->spherical }}</td>
+            <td>{{ $lens->cylindrical }}</td>
+            <td>{{ $lens->amount }}</td>
+            <td>{{ 'R$ ' . $lens->purchase_value }}</td>
+            <td>{{ $lens->profit . '%'}}</td>
+            <td>{{ 'R$ ' . $lens->price }}</td>
+            <td>{{ $lens->discount . '%'}}</td>
         </tr>
     @endforeach
     </tbody>

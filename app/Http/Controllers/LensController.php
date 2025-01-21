@@ -172,6 +172,7 @@ class LensController extends Controller {
 
 //        $pdf = Pdf::loadView('pdf.lenses', compact('lenses'))
 //            ->setPaper('a4', 'landscape');
+//
 //        return $pdf->download('lenses.pdf');
 
         return view('pdf.lenses', compact('lenses'));
