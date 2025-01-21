@@ -47,20 +47,6 @@ class InstallmentController extends Controller {
             $this->installment->messages(),
         );
 
-        $paymentCredit = PaymentCredit::query()->with('installments')->find($validatedData['payment_credit_id']);
-        $sale = Sale::query()->find($paymentCredit->sale_id);
-
-        if ($paymentCredit && $sale) {
-            $allInstallmentsPaid = $paymentCredit->installments->every(function ($installment) {
-                return $installment->status === "Pago";
-            });
-
-            if ($allInstallmentsPaid) {
-                $sale->status = "Pago";
-                $sale->save();
-            }
-        }
-
         $cardID = $validatedData['card_id'] ?? null;
         if ($cardID != null) {
             $card = Card::query()->findOrFail($validatedData['card_id'])->interest_rate;
@@ -73,6 +59,22 @@ class InstallmentController extends Controller {
 
         try {
             $installment->update($validatedData);
+
+            # verifica se todos as parcelas estão pagas e atualiza o status da venda para "pago"
+            $paymentCredit = PaymentCredit::query()->with('installments')->find($validatedData['payment_credit_id']);
+            $sale = Sale::query()->find($paymentCredit->sale_id);
+
+            if ($paymentCredit && $sale) {
+                $allInstallmentsPaid = $paymentCredit->installments->every(function ($installment) {
+                    return $installment->status === "Pago";
+                });
+
+                if ($allInstallmentsPaid) {
+                    $sale->status = "Pago";
+                    $sale->save();
+                }
+            }
+
             return response()->json($installment);
         } catch (\Throwable $th) {
             return response()->json([
