@@ -64,6 +64,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('payment-credit', 'PaymentCreditController'); // Payment on Credit
     Route::apiResource('installment', 'InstallmentController'); // Manager Installments
+
+    // cash flow
+    Route::get('cash-flow', 'CashFlowController@cashFlow');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

@@ -40,6 +40,8 @@ class SaleController extends Controller {
                     $query->where('code', 'LIKE', "%$search%");
                 })->orWhereHas('services', function ($query) use ($search) {
                    $query->where('name', 'LIKE', "%$search%");
+                })->orWhereHas('lenses', function ($query) use ($search) {
+                    $query->where('name_lens', 'LIKE', "%$search%");
                 });
             });
         }
@@ -243,9 +245,14 @@ class SaleController extends Controller {
             ->where('name', 'LIKE', "%$search%")
             ->get();
 
+        $lenses = Lens::query()
+            ->where('name_lens', 'LIKE', "%$search%")
+            ->get();
+
         return response()->json([
             'frames' => $frames,
             'services' => $services,
+            'lenses' => $lenses,
         ]);
     }
 
