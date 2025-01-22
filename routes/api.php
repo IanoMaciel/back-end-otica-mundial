@@ -65,6 +65,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('payment-credit', 'PaymentCreditController'); // Payment on Credit
     Route::apiResource('installment', 'InstallmentController'); // Manager Installments
 
+    // Expenses
+    Route::apiResource('category-expense', 'CategoryExpenseController');
+    Route::apiResource('expense', 'ExpenseController');
+
     // cash flow
     Route::get('cash-flow', 'CashFlowController@cashFlow');
 });

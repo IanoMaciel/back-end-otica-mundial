@@ -46,7 +46,7 @@ class FormPaymentController extends Controller {
         return response()->json($formPayment);
     }
 
-    public function update(Request $request): JsonResponse {
+    public function update(Request $request, int $id): JsonResponse {
         $formPayment = $this->formPayment->query()->find($id);
 
         if (!$formPayment) {
