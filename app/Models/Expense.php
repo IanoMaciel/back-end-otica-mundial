@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Expense extends Model {
     use HasFactory;
@@ -24,8 +25,10 @@ class Expense extends Model {
             'user_id' => $update ? 'nullable|exists:users,id' : 'required|exists:users,id',
             'total_amount' => $update ? 'nullable|numeric' : 'required|numeric',
             'date_proof' => $update ? 'nullable|date' : 'required|date',
-            'proof' => 'nullable|array',
-            'proof.*' => 'file|mimes:png,jpeg,pdf|max:2048'
+
+            'proofs' => 'nullable|array',
+            'proofs.*.expense_id' => 'required|',
+            'proofs.*.proof' => 'file|mimes:png,jpeg,pdf|max:2048'
         ];
     }
 
@@ -42,14 +45,19 @@ class Expense extends Model {
             'total_amount.numeric' => 'O valor total deve ser numérico.',
             'date_proof.required' => 'A data do comprovante é obrigatória.',
             'date_proof.date' => 'A data do comprovante deve ser uma data válida.',
-            'proof.array' => 'Os comprovantes devem ser um array.',
-            'proof.*.file' => 'Cada comprovante deve ser um arquivo.',
-            'proof.*.mimes' => 'Cada comprovante deve ser um arquivo do tipo: png, jpeg, pdf.',
-            'proof.*.max' => 'Cada comprovante não pode ser maior que 2MB.',
+
+            'proofs.*.proof.array' => 'Os comprovantes devem ser um array.',
+            'proofs.*.proof.file' => 'Cada comprovante deve ser um arquivo.',
+            'proofs.*.proof.mimes' => 'Cada comprovante deve ser um arquivo do tipo: png, jpeg, pdf.',
+            'proofs.*.proof.max' => 'Cada comprovante não pode ser maior que 2MB.',
         ];
     }
 
     public function categoryExpenses(): BelongsTo {
         return $this->belongsTo(CategoryExpense::class);
+    }
+
+    public function proofs(): HasMany {
+        return $this->hasMany(Proof::class);
     }
 }

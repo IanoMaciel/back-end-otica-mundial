@@ -29,7 +29,7 @@ class Frame extends Model {
 
     public function rules(bool $update=false): array {
         return [
-            'code' => $update ? 'required|numeric' : 'required|numeric|unique:frames',
+            'code' => $update ? 'required|string' : 'required|string|unique:frames',
             'size' => $update ? 'nullable|numeric' : 'required|numeric',
             'haste' => $update ? 'nullable|numeric' : 'required|numeric',
             'bridge' => $update ? 'nullable|numeric' : 'required|numeric',
@@ -48,7 +48,7 @@ class Frame extends Model {
     public function messages(): array {
         return [
             'code.required' => 'O campo código é obrigatório.',
-            'code.numeric' => 'O campo código deve ser um valor numérico.',
+            'code.string' => 'O campo código deve ser um valor texto.',
             'code.unique' => 'O código já está cadastrado na base de dados.',
 
             'size.required' => 'O campo tamanho é obrigatório.',

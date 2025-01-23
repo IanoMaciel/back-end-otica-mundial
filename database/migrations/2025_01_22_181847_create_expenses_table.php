@@ -26,7 +26,6 @@ class CreateExpensesTable extends Migration
 
             $table->decimal('total_amount', 10, 2)->nullable();
             $table->date('date_proof')->nullable();
-            $table->string('proof')->nullable();
 
             $table->timestamps();
         });

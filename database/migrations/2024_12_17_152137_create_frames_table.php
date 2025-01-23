@@ -16,7 +16,7 @@ class CreateFramesTable extends Migration {
 
             $table->string('barcode')->unique()->nullable();    // código de barra
 
-            $table->unsignedBigInteger('code')->nullable(); // código da armação
+            $table->string('code')->nullable(); // código da armação
             $table->integer('size')->nullable();            // tamanho da armação
             $table->integer('haste')->nullable();           // haste da armação
             $table->integer('bridge')->nullable();          // ponte da armação
