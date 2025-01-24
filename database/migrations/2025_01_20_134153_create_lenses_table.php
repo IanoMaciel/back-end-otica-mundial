@@ -18,7 +18,7 @@ class CreateLensesTable extends Migration {
             $table->foreign('treatment_id')->references('id')->on('treatments')->nullOnDelete();
 
             $table->unsignedBigInteger('sensitivity_id')->nullable();
-            $table->foreign('sensitivity_id')->references('id')->on('treatments')->nullOnDelete();
+            $table->foreign('sensitivity_id')->references('id')->on('sensitivities')->nullOnDelete();
 
             $table->boolean('filter')->nullable();
             $table->string('name_lens')->nullable();
