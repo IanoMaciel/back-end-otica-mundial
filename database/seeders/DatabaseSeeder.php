@@ -9,6 +9,7 @@ use App\Models\Card;
 use App\Models\Customer;
 use App\Models\FormPayment;
 use App\Models\Frame;
+use App\Models\Laboratory;
 use App\Models\Material;
 use App\Models\PaymentMethod;
 use App\Models\Sensitivity;
@@ -45,5 +46,6 @@ class DatabaseSeeder extends Seeder {
         TypeLens::factory()->count(5)->create(); // Não remover
         Treatment::factory()->count(3)->create(); // Não remover
         Sensitivity::factory()->count(5)->create(); // Não remover
+        Laboratory::factory(5)->create(); // Não remover
     }
 }

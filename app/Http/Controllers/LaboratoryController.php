@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Laboratory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Js;
 
 class LaboratoryController extends Controller {
 
