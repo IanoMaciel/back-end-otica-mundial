@@ -92,15 +92,15 @@ class SaleController extends Controller {
             if ($item['type'] === 'lens') {
                 $lens = Lens::query()->find($item['id']);
 
+                if (!$lens) {
+                    return response()->json([
+                        'error' => 'A lente informada não existe na base de dados.'
+                    ], 404);
+                }
+
                 if ($item['discount'] > $lens->discount) {
                     return response()->json([
                         'error' => 'O desconto aplicado na lente deve ser igual ou inferior a ' . $lens->discount . '%',
-                    ], 422);
-                }
-
-                if ($lens->amount < $item['quantity']) {
-                    return response()->json([
-                        'error' => 'A lente (código de barras: ' . $lens->barcode . ') não possui estoque suficiente para realizar a venda.',
                     ], 422);
                 }
             }
@@ -140,11 +140,6 @@ class SaleController extends Controller {
                 ]);
 
                 if ($item['type'] === 'frame') {
-                    $sellable->amount -= $item['quantity'];
-                    $sellable->save();
-                }
-
-                if ($item['type'] === 'lens') {
                     $sellable->amount -= $item['quantity'];
                     $sellable->save();
                 }
