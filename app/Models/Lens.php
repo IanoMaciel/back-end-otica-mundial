@@ -101,4 +101,8 @@ class Lens extends Model {
     public function sensitivity(): BelongsTo {
         return $this->belongsTo(Sensitivity::class);
     }
+
+    public function laboratory(): BelongsTo {
+        return $this->belongsTo(Laboratory::class);
+    }
 }

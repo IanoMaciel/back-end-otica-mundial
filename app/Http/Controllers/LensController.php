@@ -19,7 +19,7 @@ class LensController extends Controller {
 
     public function index(Request $request): JsonResponse {
         $lenses = $this->lens->query()
-            ->with('typeLens', 'treatment', 'sensitivity')
+            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory')
             ->orderBy('name_lens');
         $perPage = $request->get('per_page', 10);
         return response()->json($lenses->paginate($perPage));
@@ -52,7 +52,7 @@ class LensController extends Controller {
 
     public function show(int $id): JsonResponse {
         $lens = $this->lens->query()
-            ->with('typeLens', 'treatment', 'sensitivity')
+            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory')
             ->find($id);
 
         if (!$lens) {

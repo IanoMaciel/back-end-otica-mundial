@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Laboratory extends Model {
     use HasFactory;
@@ -29,5 +30,10 @@ class Laboratory extends Model {
 
             'email.email' => 'O campo email deve ser um endereço de email válido.',
         ];
+    }
+
+    # Relationships
+    public function lens(): HasMany {
+        return $this->hasMany(Lens::class);
     }
 }
