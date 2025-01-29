@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSaleItemsTable extends Migration
+class CreateCreditCardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreateSaleItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sale_items', function (Blueprint $table) {
+        Schema::create('credit_cards', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('sale_id')->nullable();
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
 
-            $table->morphs('sellable');
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2);
+            $table->unsignedBigInteger('card_id')->nullable();
+            $table->foreign('card_id')->references('id')->on('cards')->nullOnDelete();
+
             $table->decimal('discount', 10, 2)->nullable();
-            $table->decimal('total', 10, 2);
+            $table->decimal('total_amount', 10, 2)->nullable();
 
             $table->timestamps();
         });
@@ -36,6 +36,6 @@ class CreateSaleItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sale_items');
+        Schema::dropIfExists('credit_cards');
     }
 }

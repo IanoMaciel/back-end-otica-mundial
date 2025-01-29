@@ -29,14 +29,14 @@ class Frame extends Model {
 
     public function rules(bool $update=false): array {
         return [
-            'code' => $update ? 'required|numeric' : 'required|numeric|unique:frames',
+            'code' => $update ? 'required|string' : 'required|string|unique:frames',
             'size' => $update ? 'nullable|numeric' : 'required|numeric',
             'haste' => $update ? 'nullable|numeric' : 'required|numeric',
             'bridge' => $update ? 'nullable|numeric' : 'required|numeric',
             'color' => 'nullable|string|max:30',
             'amount' => $update ? 'nullable|numeric' : 'required|numeric',
             'purchase_value' => 'nullable|numeric',
-            'profit' => 'nullable|numeric|gt:0',
+            'profit' => 'nullable|numeric',
             'price' => $update ? 'nullable|numeric|gt:0' : 'required|numeric|gt:0',
             'description' => 'nullable|max:255',
             'supplier_id' => $update ? 'nullable|exists:suppliers,id' : 'required|exists:suppliers,id',
@@ -48,7 +48,7 @@ class Frame extends Model {
     public function messages(): array {
         return [
             'code.required' => 'O campo código é obrigatório.',
-            'code.numeric' => 'O campo código deve ser um valor numérico.',
+            'code.string' => 'O campo código deve ser um valor texto.',
             'code.unique' => 'O código já está cadastrado na base de dados.',
 
             'size.required' => 'O campo tamanho é obrigatório.',
@@ -69,7 +69,6 @@ class Frame extends Model {
             'purchase_value.numeric' => 'O campo valor de compra deve ser um valor numérico.',
 
             'profit.numeric' => 'O campo lucro deve ser um valor numérico.',
-            'profit.gt' => 'O campo lucro deve ser maior que zero.',
 
             'price.required' => 'O campo preço é obrigatório.',
             'price.numeric' => 'O campo preço deve ser um valor numérico.',

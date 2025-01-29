@@ -14,31 +14,35 @@ class Sale extends Model {
     use HasFactory;
 
     protected $fillable = [
+        'number_ata',
         'customer_id',
         'user_id',
         'payment_method_id',
         'status',
-        'discount',
         'total_amount',
     ];
 
     public function rules(): array {
         return [
+            'number_ata' => 'required|string',
             'customer_id' => 'required|exists:customers,id',
             'user_id' => 'required|exists:users,id',
             'payment_method_id' => 'required|exists:payment_methods,id',
             'status' => 'nullable|in:Pago,Pendente,Cancelado,Atrasado',
-            'discount' => 'nullable|numeric',
             'total_amount' => 'nullable|numeric',
             'items' => 'required|array',
-            'items.*.type' => 'required|in:frame,service',
+            'items.*.type' => 'required|in:frame,service,lens',
             'items.*.id' => 'required|integer',
-            'items.*.quantity' => 'required|integer|min:1'
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.discount' => 'nullable|numeric'
         ];
     }
 
     public function messages(): array {
         return [
+            'number_ata.required' => 'O campo ATA é obrigatório.',
+            'number_ata.string' => 'O campo ATA deve ser do tipo texto.',
+
             'customer_id.required' => 'O campo cliente é obrigatório.',
             'customer_id.exists' => 'O cliente informado não existe na base de dados.',
 
@@ -50,15 +54,13 @@ class Sale extends Model {
 
             'status.in' => 'O status deve ser um dos seguintes: Pago, Pendente, Cancelado ou Atrasado.',
 
-            'discount.numeric' => 'O campo desconto deve ser numérico.',
-
             'total_amount.numeric' => 'O campo valor total deve ser numérico.',
 
             'items.required' => 'É necessário informar ao menos um item.',
             'items.array' => 'O campo itens deve ser um array.',
 
             'items.*.type.required' => 'O campo tipo do item é obrigatório.',
-            'items.*.type.in' => 'O tipo do item deve ser "frame" ou "service".',
+            'items.*.type.in' => 'O tipo do item deve ser "frame", "service" ou "lens".',
 
             'items.*.id.required' => 'O campo "ID" do item é obrigatório.',
             'items.*.id.integer' => 'O campo "ID" do item deve ser um número inteiro.',
@@ -66,6 +68,8 @@ class Sale extends Model {
             'items.*.quantity.required' => 'O campo "quantidade" do item é obrigatório.',
             'items.*.quantity.integer' => 'O campo "quantidade" do item deve ser um número inteiro.',
             'items.*.quantity.min' => 'A quantidade do item deve ser pelo menos 1.',
+
+            'items.*.numeric' => 'O campo "desconto" deve ser do tipo númerico'
         ];
     }
 
@@ -87,6 +91,14 @@ class Sale extends Model {
         return $this->belongsTo(PaymentMethod::class);
     }
 
+    public function paymentCredits(): HasMany {
+        return $this->hasMany(PaymentCredit::class);
+    }
+
+    public function combinedPayment(): HasMany {
+        return $this->hasMany(CombinedPayment::class);
+    }
+
     public function frames(): BelongsToMany {
         return $this->BelongsToMany(
             Frame::class,
@@ -95,7 +107,19 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Frame::class)
-            ->withPivot('quantity', 'price')
+            ->withPivot('quantity', 'price', 'discount', 'total')
+            ->withTimestamps();
+    }
+
+    public function lenses(): BelongsToMany {
+        return $this->belongsToMany(
+            Lens::class,
+            'sale_items',
+            'sale_id',
+            'sellable_id'
+        )
+            ->where('sellable_type', Lens::class)
+            ->withPivot('quantity', 'price', 'discount', 'total')
             ->withTimestamps();
     }
 
@@ -107,7 +131,11 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Service::class)
-            ->withPivot('quantity', 'price')
+            ->withPivot('quantity', 'price', 'discount', 'total')
             ->withTimestamps();
+    }
+
+    public function creditCards(): HasMany {
+        return $this->hasMany(CreditCard::class, 'sale_id');
     }
 }

@@ -12,6 +12,7 @@ class Customer extends Model {
     use HasFactory;
     protected $fillable = [
         'full_name',
+        'birth_date',
         'cpf',
         'rg',
         'phone_primary',
@@ -23,6 +24,7 @@ class Customer extends Model {
     public function rules(bool $update=false): array {
         return [
             'full_name' => $update ? 'nullable|string|max:100' : 'required|string|max:100',
+            'birth_date' => 'nullable|date',
             'cpf' => $update ? 'nullable|cpf|formato_cpf' : 'nullable|cpf|formato_cpf|unique:customers',
             'rg' => 'nullable|string',
             'phone_primary' => 'nullable|celular_com_ddd',
@@ -37,6 +39,8 @@ class Customer extends Model {
             'full_name.required' => 'O campo Nome é obrigatório.',
             'full_name.string' => 'O campo Nome deve ser do tipo texto.',
             'full_name.max' => 'O campo Nome não pode exceder 100 caracteres.',
+
+            'birth_date.date' => 'O campo Data de Nascimento deve ser uma data válida.',
 
             'cpf.cpf' => 'O CPF informado não é válido.',
             'cpf.formato_cpf' => 'O campo CFP deve estar no seguinte formato: xxx.xxx.xxx-xx',

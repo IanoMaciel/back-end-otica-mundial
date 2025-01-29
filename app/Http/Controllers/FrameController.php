@@ -232,7 +232,7 @@ class FrameController extends Controller {
         return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
     }
 
-    private function generateUniqueBarCode($prefix): string {
+    private function generateUniqueBarCode(string $prefix): string {
         do {
             $baseCode = $prefix . str_pad(random_int(0, 999999999), 9, '0', STR_PAD_LEFT);
 

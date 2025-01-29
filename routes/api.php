@@ -23,6 +23,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('user', 'UserController');
 
+    // customer
+    Route::apiResource('agreement', 'AgreementController');
+    Route::apiResource('customer', 'CustomerController');
+    Route::delete('customer-delete-multiple', 'CustomerController@deleteMultiple');
+    Route::apiResource('address', 'AddressController');
+
+    // lenses
+    Route::apiResource('type-lens', 'TypeLensController');
+    Route::apiResource('treatment', 'TreatmentController');
+    Route::apiResource('sensitivity', 'SensitivityController');
+    Route::apiResource('laboratory', 'LaboratoryController');
+
+    Route::apiResource('lens', 'LensController');
+    Route::delete('lens-delete-multiple', 'LensController@deleteMultiple');
+    Route::get('lens-export-pdf', 'LensController@exportPdf');
+
     // frame
     Route::apiResource('material', 'MaterialController');
     Route::apiResource('brand', 'BrandController');
@@ -32,19 +48,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('frame-delete-multiple','FrameController@deleteMultiple');
     Route::get('frame-export-pdf', 'FrameController@exportPdf');
 
-    // customer
-    Route::apiResource('agreement', 'AgreementController');
-    Route::apiResource('customer', 'CustomerController');
-    Route::delete('customer-delete-multiple', 'CustomerController@deleteMultiple');
-    Route::apiResource('address', 'AddressController');
-
     // services
     Route::apiResource('service', 'ServiceController');
     Route::delete('service-delete-multiple', 'ServiceController@deleteMultiple');
 
     // financial
-    Route::apiResource('payment-method', 'PaymentMethodController');
+    Route::apiResource('payment-method', 'PaymentMethodController'); //Método de pagamento principal
+    Route::apiResource('form-payment', 'FormPaymentController'); //Forma de pagamento secundária
+    Route::apiResource('card', 'CardController'); //juros do cartão
+
     Route::apiResource('sale', 'SaleController');
+    Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
+    Route::get('sale-search-stock', 'SaleController@searchStock');
+
+    Route::apiResource('credit-card', 'CreditCardController'); // pagamento no crédito
+    Route::apiResource('combined-payment', 'CombinedPaymentController'); // pagamento combinado
+
+    Route::apiResource('payment-credit', 'PaymentCreditController'); // Payment on Credit
+    Route::apiResource('installment', 'InstallmentController'); // Manager Installments
+
+    // Expenses
+    Route::apiResource('category-expense', 'CategoryExpenseController');
+    Route::apiResource('expense', 'ExpenseController');
+
+    // cash flow
+    Route::get('cash-flow', 'CashFlowController@cashFlow');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

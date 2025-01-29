@@ -23,7 +23,7 @@
         }
 
         thead th {
-            background-color: #474747; /* Verde */
+            background-color: #ff0000;
             color: #ffffff;
             text-align: left;
             padding: 12px;
@@ -40,10 +40,19 @@
         tr {
             border-bottom: 1px solid #dadada;
         }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
-<h1>Registro de Armação</h1>
+    <div class="header">
+        <h2>Ótica Mundial | Estoque Armações</h2>
+        <strong>Registros: {{ count($frames) }}</strong>
+    </div>
 <table>
     <thead>
     <tr>
