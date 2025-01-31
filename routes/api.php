@@ -73,6 +73,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // cash flow
     Route::get('cash-flow', 'CashFlowController@cashFlow');
+
+
+    // API Communication
+    Route::get('api-stock-lens', 'StockLensController@getData');
+    Route::post('api-stock-lens', 'StockLensController@logout');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
