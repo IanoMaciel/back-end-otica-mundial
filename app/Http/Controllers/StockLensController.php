@@ -30,6 +30,29 @@ class StockLensController extends Controller {
         }
     }
 
+    public function showData(int $id): JsonResponse {
+        try {
+            $apiUrl = env('APP_URL_API') . '/lens/{$id}';
+            $token = $this->login()->getData()->token;
+
+            $response = Http::withToken($token)->get($apiUrl);
+
+            if ($response->failed()) {
+                return response()->json([
+                    'error' => 'Erro ao buscar dados',
+                    'message' => $response->json(),
+                ], $response->status());
+            }
+
+            return response()->json($response->json());
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
     private function login(): JsonResponse {
         try {
             $apiUrl = env('APP_URL_API') . '/login';
