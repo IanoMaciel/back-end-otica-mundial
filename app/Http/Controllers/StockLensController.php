@@ -32,7 +32,7 @@ class StockLensController extends Controller {
 
     public function showData(int $id): JsonResponse {
         try {
-            $apiUrl = env('APP_URL_API') . '/lens/{$id}';
+            $apiUrl = env('APP_URL_API') . "/lens/{$id}";
             $token = $this->login()->getData()->token;
 
             $response = Http::withToken($token)->get($apiUrl);
