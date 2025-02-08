@@ -39,6 +39,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('lens-delete-multiple', 'LensController@deleteMultiple');
     Route::get('lens-export-pdf', 'LensController@exportPdf');
 
+    // accessory
+    Route::apiResource('accessory', 'AccessoryController');
+
     // frame
     Route::apiResource('material', 'MaterialController');
     Route::apiResource('brand', 'BrandController');
@@ -77,7 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // API Communication
     Route::get('api-stock-lens', 'StockLensController@getData');
-    Route::post('api-stock-lens', 'StockLensController@logout');
+    Route::get('api-stock-lens/{id}', 'StockLensController@showData');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
