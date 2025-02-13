@@ -59,8 +59,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('payment-method', 'PaymentMethodController'); //Método de pagamento principal
     Route::apiResource('form-payment', 'FormPaymentController'); //Forma de pagamento secundária
     Route::apiResource('card', 'CardController'); //juros do cartão
+    Route::apiResource('discount', 'DiscountController'); // tipos de descontos
 
     Route::apiResource('sale', 'SaleController');
+    Route::post('save-sale', 'SaveSaleController@createSale'); // save sale
     Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
     Route::get('sale-search-stock', 'SaleController@searchStock');
 
