@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Agreement;
 use App\Models\Frame;
 use App\Models\Lens;
-use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\Service;
 use Illuminate\Http\JsonResponse;
@@ -24,8 +23,7 @@ class SaleController extends Controller {
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
-        $query = $this->sale
-            ->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'lenses', 'creditCards', 'paymentCredits', 'combinedPayment')
+        $query = $this->sale->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'lenses', 'creditCards', 'paymentCredits', 'combinedPayment')
             ->orderBy('created_at', 'desc');
 
         if ($status = $request->input('status')) {

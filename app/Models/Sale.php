@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Sale extends Model {
 
@@ -123,7 +122,6 @@ class Sale extends Model {
         )
             ->where('sellable_type', Lens::class)
             ->withPivot('quantity', 'price', 'discount', 'total', 'discount_id')
-            ->with('pivot.formPayment')
             ->withTimestamps();
     }
 

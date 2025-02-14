@@ -13,7 +13,7 @@ class DiscountController extends Controller {
     }
 
     public function index() {
-        return $this->discount->all();
+        return $this->discount->query()->orderBy('discount_type')->get();
     }
 
     public function store(Request $request): JsonResponse {
