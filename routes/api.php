@@ -83,6 +83,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // API Communication
     Route::get('api-stock-lens', 'StockLensController@getData');
     Route::get('api-stock-lens/{id}', 'StockLensController@showData');
+
+    // Service Order
+    Route::apiResource('service-order', 'ServiceOrderController');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

@@ -23,7 +23,9 @@ class SaveSaleController extends Controller {
             $this->sale->messages(),
         );
 
-        if ($this->validations($validatedData)) return $this->validations($validatedData);
+//        dd($validatedData);
+
+//        if ($this->validations($validatedData)) return $this->validations($validatedData);
         $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
 
         try {
@@ -31,6 +33,7 @@ class SaveSaleController extends Controller {
 
             $totalAmount = 0;
             foreach ($validatedData['items'] as $item) {
+
                 if ($item['type'] === 'frame')
                     $model = Frame::class;
                 else if ($item['type'] === 'lens')
@@ -45,15 +48,16 @@ class SaveSaleController extends Controller {
                     ], 404);
                 }
 
-                $itemTotal = ($sellable->price - ($sellable->price * ($item['discount']/100))) * $item['quantity'];
+                $discount = $item['discount'] ?? null;
+                $itemTotal = ($sellable->price - ($sellable->price * ($discount/100))) * $item['quantity'];
 
                 $sale->items()->create([
                     'sellable_type' => $model,
                     'sellable_id' => $sellable->id,
                     'quantity' => $item['quantity'],
                     'price' => $sellable->price,
-                    'discount' => $item['discount'],
-                    'discount_id' => $item['discount_id'],
+                    'discount' => $discount,
+                    'discount_id' => $item['discount_id'] ?: null,
                     'total' => $itemTotal
                 ]);
 
@@ -91,6 +95,8 @@ class SaveSaleController extends Controller {
 
     private function validations(array $validatedData) {
         foreach ($validatedData['items'] as $item) {
+            $discount = $item['discount'] ?? null;
+
             if ($item['type'] === 'frame') {
                 $frame = Frame::query()->find($item['id']);
 
@@ -98,7 +104,7 @@ class SaveSaleController extends Controller {
                     return response()->json(['error' => 'O produto informado não existe na base de dados.'], 404);
                 }
 
-                if ($item['discount'] > $frame->brands->discount) {
+                if ($discount && $discount > $frame->brands->discount) {
                     return response()->json([
                         'error' => 'O desconto aplicado na armação deve ser igual ou inferior a ' . $frame->brands->discount . '%',
                     ], 422);
@@ -118,7 +124,7 @@ class SaveSaleController extends Controller {
                     return response()->json(['error' => 'A lente informada não existe na base de dados.'], 404);
                 }
 
-                if ($item['discount'] > $lens->discount) {
+                if ($discount && $discount > $lens->discount) {
                     return response()->json([
                         'error' => 'O desconto aplicado na lente deve ser igual ou inferior a ' . $lens->discount . '%',
                     ], 422);
