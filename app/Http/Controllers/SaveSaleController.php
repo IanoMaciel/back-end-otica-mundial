@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discount;
 use App\Models\Frame;
 use App\Models\Lens;
 use App\Models\PaymentMethod;
@@ -23,9 +24,7 @@ class SaveSaleController extends Controller {
             $this->sale->messages(),
         );
 
-//        dd($validatedData);
-
-//        if ($this->validations($validatedData)) return $this->validations($validatedData);
+        if ($this->validations($validatedData)) return $this->validations($validatedData);
         $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
 
         try {
@@ -49,6 +48,8 @@ class SaveSaleController extends Controller {
                 }
 
                 $discount = $item['discount'] ?? null;
+                $discountID = $item['discount_id'] ?? null;
+
                 $itemTotal = ($sellable->price - ($sellable->price * ($discount/100))) * $item['quantity'];
 
                 $sale->items()->create([
@@ -57,7 +58,7 @@ class SaveSaleController extends Controller {
                     'quantity' => $item['quantity'],
                     'price' => $sellable->price,
                     'discount' => $discount,
-                    'discount_id' => $item['discount_id'] ?: null,
+                    'discount_id' => $discountID,
                     'total' => $itemTotal
                 ]);
 
@@ -95,6 +96,12 @@ class SaveSaleController extends Controller {
 
     private function validations(array $validatedData) {
         foreach ($validatedData['items'] as $item) {
+            /**
+             * 5 - Vendedor
+             * 6 - Gerente
+             * 7 - Administrador
+             */
+            $discountID = $item['discount_id'] ?? null;
             $discount = $item['discount'] ?? null;
 
             if ($item['type'] === 'frame') {
@@ -104,11 +111,23 @@ class SaveSaleController extends Controller {
                     return response()->json(['error' => 'O produto informado não existe na base de dados.'], 404);
                 }
 
-                if ($discount && $discount > $frame->brands->discount) {
-                    return response()->json([
-                        'error' => 'O desconto aplicado na armação deve ser igual ou inferior a ' . $frame->brands->discount . '%',
-                    ], 422);
-                }
+//                if ($discount && $discountID) {
+//                    $discount_type = Discount::query()->find($discountID)->getAttribute('discount_type');
+//
+//                    if ($discount_type === 'Vendedor' && $discount > $frame->brands->discount) {
+//
+//                    } else if ($discount_type === 'Gerente') {
+//
+//                    } else if ($discount_type === 'Administrador') {
+//
+//                    }
+//                }
+
+//                if ($discount && $discount > $frame->brands->discount) {
+//                    return response()->json([
+//                        'error' => 'O desconto aplicado na armação deve ser igual ou inferior a ' . $frame->brands->discount . '%',
+//                    ], 422);
+//                }
 
                 if ($frame->amount < $item['quantity']) {
                     return response()->json([
