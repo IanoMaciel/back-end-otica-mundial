@@ -13,6 +13,10 @@ class ServiceOrderController extends Controller {
         $this->serviceOrder = $serviceOrder;
     }
 
+    public function exportOS() {
+
+    }
+
 
     public function store(Request $request) {
         $validatedData = $request->validate(
