@@ -13,17 +13,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
         }
 
+
         .a4 {
-            /*width: 210mm; !* Largura padrão da folha A4 *!*/
-            /*height: 297mm; !* Altura padrão da folha A4 *!*/
-            margin: 10px auto; /* Centraliza na tela */
             background: white;
-            border: 1px solid #ccc;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 10px; /* Margens internas */
+            padding: 5px;
             font-size: 12px;
         }
 
@@ -33,9 +30,9 @@
 
         .header {
             display: flex;
-            /*justify-content: center;*/
             align-items: center;
         }
+
         .title {
             width: 100%;
             height: 53px;
@@ -52,16 +49,18 @@
         .initial-information {
             margin: 10px 0;
             display: flex;
-            justify-content: space-between;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 20px;
+            gap: 10px;
             padding: 10px;
             border: 1px solid #ccc;
+            background: #e3e3e3;
         }
 
         .observations {
             padding: 10px;
             border: 1px solid #ccc;
+            background: #e3e3e3;
         }
 
         .customer-information {
@@ -71,6 +70,7 @@
             gap: 10px;
             padding: 10px;
             border: 1px solid #ccc;
+            background: #e3e3e3;
         }
 
         .data {
@@ -92,7 +92,7 @@
 
         th, td {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 2px;
             text-align: left;
         }
     </style>
@@ -100,7 +100,7 @@
     <body class="a4">
         <article class="header">
             <img
-                src="https://github-production-user-asset-6210df.s3.amazonaws.com/71051791/414767188-9a5e1e23-860c-4dc9-a468-ba8ce9639b7e.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250219%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250219T144251Z&X-Amz-Expires=300&X-Amz-Signature=2a357d41c44b5b6764e6a58796e1a604f6e1c4a6494b93fc6434ea7747223d81&X-Amz-SignedHeaders=host"
+                src="{{ asset('images/logo.svg') }}"
                 alt="logo"
                 width="171px"
                 height="53px"
@@ -111,8 +111,10 @@
         </article>
 
         <article class="initial-information">
-            <div><strong>Nº da Venda:</strong> <span>19098802A</span></div>
-            <div><strong>Nº da OS:</strong> <span>3043</span></div>
+            <div><strong>Vendedor:</strong> <span>Iano</span></div>
+            <div><strong>Venda:</strong> <span>19098802A</span></div>
+            <div><strong>OS:</strong> <span>3043</span></div>
+            <div><strong>Data:</strong> <span>01/01/2025</span></div>
             <div><strong>Laboratório:</strong> <span>Laboratória Ótica Mundial</span></div>
         </article>
 
@@ -234,6 +236,47 @@
                     <th>Entrada</th>
                 </tr>
             </thead>
+        </table>
+
+        <h3>Crediário da Loja</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Total</th>
+                    <th>Entrada</th>
+                    <th>À Receber</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1390,00</td>
+                    <td>390,00</td>
+                    <td>1000,00 (200 x 5)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Parcela 1</th>
+                    <th>Parcela 2</th>
+                    <th>Parcela 3</th>
+                    <th>Parcela 4</th>
+                    <th>Parcela 5</th>
+                    <th>Parcela 6</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>01/01/2025</td>
+                    <td>01/02/2025</td>
+                    <td>01/03/2025</td>
+                    <td>01/04/2025</td>
+                    <td>01/05/2025</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
         </table>
     </body>
 </html>
