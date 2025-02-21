@@ -120,7 +120,9 @@
         <h3>Laboratório</h3>
 
         <article class="initial-information">
-            <div><strong>Laboratório:</strong> <span>Laboratória Ótica Mundial</span></div>
+            @foreach($serviceOrder->sale->lenses as $item)
+                <div><strong>Laboratório:</strong> <span></span>{{ $item->laboratory->laboratory }}</div>
+            @endforeach
             <div><strong>Data do Lab:</strong> <span>01/01/2025</span></div>
             <div><strong>Data da Entrega:</strong> <span>20/01/2025</span></div>
         </article>
@@ -133,14 +135,14 @@
         <h3>Informações do Paciente</h3>
         <article class="customer-information">
             <div class="data">
-                <div><strong>Nome: </strong> <span>Iano de Benedito Maciel</span></div>
-                <div><strong>CPF: </strong> <span>022.954.642-00</span></div>
-                <div><strong>RG: </strong> <span>2701672-2</span></div>
-                <div><strong>Nascimento: </strong> <span>07/04/2000</span></div>
-                <div><strong>Idade: </strong> <span>24 anos</span></div>
-                <div><strong>Convênio: </strong> <span>Unimed - 1234566 </span></div>
-                <div><strong>Email: </strong> <span>ianomaciel685@icloud.com</span></div>
-                <div><strong>Contato: </strong> <span>(92) 98633-8449</span></div>
+                <div><strong>Nome: </strong> <span>{{ $serviceOrder->sale->customer->full_name }}</span></div>
+                <div><strong>CPF: </strong> <span>{{ $serviceOrder->sale->customer->cpf }}</span></div>
+                <div><strong>RG: </strong> <span>{{ $serviceOrder->sale->customer->rg }}</span></div>
+                <div><strong>Nascimento: </strong> <span>{{ $serviceOrder->sale->customer->birth_date ?? '-' }}</span></div>
+                <div><strong>Idade: </strong> <span>{{ $serviceOrder->sale->customer->birth_date ?? '-' }}</span></div>
+                <div><strong>Convênio: </strong> <span>{{ $serviceOrder->sale->customer->agreements->agreement }}</span></div>
+                <div><strong>Email: </strong> <span>{{ $serviceOrder->sale->customer->email }}</span></div>
+                <div><strong>Contato: </strong> <span>{{ $serviceOrder->sale->customer->phone_primary }}</span></div>
             </div>
 
             <hr style="color: #dddddd;"/>

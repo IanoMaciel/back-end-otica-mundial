@@ -19,7 +19,11 @@ class ServiceOrderController extends Controller {
         return view('pdf.service_order', compact('serviceOrder'));
     }
 
-
+    public function index(Request $request): JsonResponse {
+        $serviceOrder = $this->serviceOrder->query()->with('sale');
+        $perPage = $request->get('per_page', 10);
+        return response()->json($serviceOrder->paginate($perPage));
+    }
 
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
