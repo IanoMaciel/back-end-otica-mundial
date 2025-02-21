@@ -16,7 +16,6 @@
             font-family: Arial, sans-serif;
         }
 
-
         .a4 {
             background: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -49,7 +48,7 @@
         .initial-information {
             margin: 10px 0;
             display: flex;
-            flex-wrap: wrap;
+            justify-content: space-between;
             align-items: center;
             gap: 10px;
             padding: 10px;
@@ -106,16 +105,24 @@
                 height="53px"
             />
             <div class="title">
-                <h4>Ordem de Serviço | 3043</h4>
+                <h4>Ordem de Serviço | {{ $serviceOrder->number_os }}</h4>
             </div>
         </article>
 
+        <h3>Informações da Venda</h3>
         <article class="initial-information">
-            <div><strong>Vendedor:</strong> <span>Iano</span></div>
-            <div><strong>Venda:</strong> <span>19098802A</span></div>
-            <div><strong>OS:</strong> <span>3043</span></div>
-            <div><strong>Data:</strong> <span>01/01/2025</span></div>
+            <div><strong>Vendedor:</strong> <span>{{ $serviceOrder->sale->user->first_name  }}</span></div>
+            <div><strong>Nº da Venda:</strong> <span>{{ $serviceOrder->sale->number_ata }}</span></div>
+            <div><strong>Nº da OS:</strong> <span>{{ $serviceOrder->number_os }}</span></div>
+            <div><strong>Data/Hora da venda:</strong> <span>{{ $serviceOrder->sale->created_at }}</span></div>
+        </article>
+
+        <h3>Laboratório</h3>
+
+        <article class="initial-information">
             <div><strong>Laboratório:</strong> <span>Laboratória Ótica Mundial</span></div>
+            <div><strong>Data do Lab:</strong> <span>01/01/2025</span></div>
+            <div><strong>Data da Entrega:</strong> <span>20/01/2025</span></div>
         </article>
 
         <article>
@@ -183,6 +190,37 @@
                     <th>-</th>
                     <th>-</th>
                 </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+            <tr>
+                <th rowspan="2">Ponte</th>
+                <th rowspan="2">Horizontal Maior</th>
+                <th rowspan="2">Horizontal Menor</th>
+                <th rowspan="2">Diagonal Maior</th>
+                <th colspan="2">DNP V</th>
+                <th colspan="2">ALT</th>
+            </tr>
+            <tr>
+                <th>OE</th>
+                <th>OD</th>
+                <th>OE</th>
+                <th>OD</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>156</td>
+                <td>12</td>
+                <td>15</td>
+                <td>2</td>
+                <td>1</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+            </tr>
             </tbody>
         </table>
 

@@ -75,9 +75,8 @@ class Sale extends Model {
         ];
     }
 
-    # Relationships
-    public function items(): HasMany
-    {
+    ### Relationships ###
+    public function items(): HasMany {
         return $this->hasMany(SaleItem::class);
     }
 
@@ -139,5 +138,9 @@ class Sale extends Model {
 
     public function creditCards(): HasMany {
         return $this->hasMany(CreditCard::class, 'sale_id');
+    }
+
+    public function serviceOrder(): HasMany {
+        return $this->hasMany(ServiceOrder::class);
     }
 }

@@ -19,6 +19,8 @@ class CreateServiceOrdersTable extends Migration
             $table->unsignedBigInteger('sale_id')->nullable();
             $table->foreign('sale_id')->references('id')->on('sales')->nullOnDelete();
 
+            $table->string('number_os')->nullable();
+
             $table->string('number_ata')->nullable();
             $table->date('delivery')->nullable();
             $table->string('spherical_left')->nullable();
