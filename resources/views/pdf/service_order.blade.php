@@ -24,6 +24,7 @@
         }
 
         h3 {
+            font-size: 20px;
             margin: 10px 0;
         }
 
@@ -231,14 +232,12 @@
         <h3>Descrição da venda</h3>
 
         @php
-
-        foreach ($serviceOrder->sale->frames as $frame) {
-            echo "<pre>";
-                printf($frame);
-            echo "<pre;>";
-        }
-
+            function formatReal(string $value): string {
+                $value = floatval($value);
+                return 'R$ ' . number_format($value, 2, ',', '.');
+            }
         @endphp
+
 
         <table>
             <thead>
@@ -252,27 +251,53 @@
                 </tr>
             </thead>
             <tbody>
+            @foreach($serviceOrder->sale->frames as $frame)
                 <tr>
-                    <td>{{ $frame->barcode }}</td>
-                    <td>1</td>
-                    <td>Informação da armação</td>
-                    <td>1200,00</td>
-                    <td>Pix-40%</td>
-                    <td>720,00</td>
+                    <td>Armação</td>
+                    <td>{{ $frame->pivot->quantity }}</td>
+                    <td> {{$frame->code . ' ' . $frame->color . ' ' . $frame->size . ' ' . $frame->haste . ' ' . $frame->bridge . ' ' . $frame->brands->brand}}</td>
+                    <td>{{ formatReal($frame->pivot->price) }}</td>
+                    <td>{{ $frame->pivot->discount . '%' }} ({{ formatReal($frame->pivot->price * ($frame->pivot->discount/100))}})</td>
+                    <td>{{ formatReal($frame->pivot->total) }}</td>
                 </tr>
+            @endforeach
+            @foreach($serviceOrder->sale->lenses as $lens)
+                <tr>
+                    <td>Lente</td>
+                    <td>{{ $lens->pivot->quantity }}</td>
+                    <td> {{$lens->name_lens}}</td>
+                    <td>{{ formatReal($lens->pivot->price) }}</td>
+                    <td>{{ $lens->pivot->discount . '%' }} ({{ formatReal($lens->pivot->price * ($lens->pivot->discount/100))}})</td>
+                    <td>{{ formatReal($lens->pivot->total) }}</td>
+                </tr>
+            @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5" style="text-align: right">Valor total da venda</th>
+                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>
+                </tr>
+            </tfoot>
         </table>
 
-        <h3>Pagamento</h3>
+        <h3>Informações do Pagamento</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Pagamento</th>
+                    <th>Forma de Pagamento</th>
                     <th>Valor</th>
-                    <th>Plano</th>
-                    <th>Entrada</th>
                 </tr>
             </thead>
+            <tbody>
+                <tr>
+                    <td>Pix</td>
+                    <td>Pix</td>
+                </tr>
+                <tr>
+                    <td>Dinheiro</td>
+                    <td>Pix</td>
+                </tr>
+            </tbody>
         </table>
 
         <h3>Crediário da Loja</h3>
