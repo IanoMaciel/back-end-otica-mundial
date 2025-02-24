@@ -20,9 +20,9 @@ class CreateServiceOrdersTable extends Migration
             $table->foreign('sale_id')->references('id')->on('sales')->nullOnDelete();
 
             $table->string('number_os')->nullable();
-
-            $table->string('number_ata')->nullable();
             $table->date('delivery')->nullable();
+            $table->text('observation')->nullable();
+
             $table->string('spherical_left')->nullable();
             $table->string('spherical_right')->nullable();
             $table->string('cylindrical_left')->nullable();
@@ -35,9 +35,12 @@ class CreateServiceOrdersTable extends Migration
             $table->string('height_right')->nullable();
             $table->string('addition_left')->nullable();
             $table->string('addition_right')->nullable();
+
             $table->string('bridge')->nullable();
-            $table->string('major_horizontal')->nullable();
-            $table->string('minor_horizontal')->nullable();
+            $table->string('larger_horizontal')->nullable();
+            $table->string('larger_vertical')->nullable();
+            $table->string('larger_diagonal')->nullable();
+
             $table->string('dnp_v_left')->nullable();
             $table->string('dnp_v_right')->nullable();
             $table->string('alt_left')->nullable();

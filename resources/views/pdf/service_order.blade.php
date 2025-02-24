@@ -124,38 +124,40 @@
                 <div><strong>Laboratório:</strong> <span></span>{{ $item->laboratory->laboratory }}</div>
             @endforeach
             <div><strong>Data do Lab:</strong> <span>01/01/2025</span></div>
-            <div><strong>Data da Entrega:</strong> <span>20/01/2025</span></div>
+            <div><strong>Data da Entrega:</strong> <span>{{ $serviceOrder->delivery }}</span></div>
         </article>
 
         <article>
             <h3>Observações</h3>
-            <p class="observations">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            <p class="observations">
+                {{ $serviceOrder->observation ?? '-'}}
+            </p>
         </article>
 
         <h3>Informações do Paciente</h3>
         <article class="customer-information">
             <div class="data">
-                <div><strong>Nome: </strong> <span>{{ $serviceOrder->sale->customer->full_name }}</span></div>
-                <div><strong>CPF: </strong> <span>{{ $serviceOrder->sale->customer->cpf }}</span></div>
-                <div><strong>RG: </strong> <span>{{ $serviceOrder->sale->customer->rg }}</span></div>
+                <div><strong>Nome: </strong> <span>{{ $serviceOrder->sale->customer->full_name ?? '-'}}</span></div>
+                <div><strong>CPF: </strong> <span>{{ $serviceOrder->sale->customer->cpf ?? '-'}}</span></div>
+                <div><strong>RG: </strong> <span>{{ $serviceOrder->sale->customer->rg ?? '-'}}</span></div>
                 <div><strong>Nascimento: </strong> <span>{{ $serviceOrder->sale->customer->birth_date ?? '-' }}</span></div>
                 <div><strong>Idade: </strong> <span>{{ $serviceOrder->sale->customer->birth_date ?? '-' }}</span></div>
-                <div><strong>Convênio: </strong> <span>{{ $serviceOrder->sale->customer->agreements->agreement }}</span></div>
-                <div><strong>Email: </strong> <span>{{ $serviceOrder->sale->customer->email }}</span></div>
-                <div><strong>Contato: </strong> <span>{{ $serviceOrder->sale->customer->phone_primary }}</span></div>
+                <div><strong>Convênio: </strong> <span>{{ $serviceOrder->sale->customer->agreements->agreement ?? '-'}}</span></div>
+                <div><strong>Email: </strong> <span>{{ $serviceOrder->sale->customer->email ?? '-'}}</span></div>
+                <div><strong>Contato: </strong> <span>{{ $serviceOrder->sale->customer->phone_primary ?? '-'}}</span></div>
             </div>
 
             <hr style="color: #dddddd;"/>
 
             <div class="data">
-                <div><strong>CEP: </strong> <span>69.104-208</span></div>
-                <div><strong>Cidade: </strong> <span>Itacoatiara</span></div>
-                <div><strong>UF: </strong> <span>AM</span></div>
-                <div><strong>Rua: </strong> <span>Rua Adamastor de Figueiredo</span></div>
-                <div><strong>Número: </strong> <span>3147</span></div>
-                <div><strong>Bairro: </strong> <span>Jauary I</span></div>
-                <div><strong>Referência: </strong> <span>Próximo a LP Campos</span></div>
-                <div><strong>Complemento: </strong> <span>Casa</span></div>
+                <div><strong>CEP: </strong> <span>{{ $serviceOrder->sale->customer->address->cep }}</span></div>
+                <div><strong>Cidade: </strong> <span>{{ $serviceOrder->sale->customer->address->city }}</span></div>
+                <div><strong>UF: </strong> <span>{{ $serviceOrder->sale->customer->address->uf }}</span></div>
+                <div><strong>Rua: </strong> <span>{{ $serviceOrder->sale->customer->address->street }}</span></div>
+                <div><strong>Número: </strong> <span>{{ $serviceOrder->sale->customer->address->number }}</span></div>
+                <div><strong>Bairro: </strong> <span>{{ $serviceOrder->sale->customer->address->neighborhood }}</span></div>
+                <div><strong>Referência: </strong> <span>{{ $serviceOrder->sale->customer->address->reference ?? '-' }}</span></div>
+                <div><strong>Complemento: </strong> <span>{{ $serviceOrder->sale->customer->address->complement ?? '-' }}</span></div>
             </div>
 
         </article>
@@ -164,7 +166,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Longe</th>
+                    <th></th>
                     <th>Esférico</th>
                     <th>Cilindro</th>
                     <th>Eixo</th>
@@ -176,21 +178,21 @@
             <tbody>
                 <tr>
                     <th>OE</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
+                    <td>{{ $serviceOrder->spherical_left ?? '-' }}</td>
+                    <td>{{ $serviceOrder->cylindrical_left ?? '-' }}</td>
+                    <td>{{ $serviceOrder->axis_left ?? '-' }}</td>
+                    <td>{{ $serviceOrder->dnp_left ?? '-' }}</td>
+                    <td>{{ $serviceOrder->height_left ?? '-' }}</td>
+                    <td>{{ $serviceOrder->addition_left ?? '-' }}</td>
                 </tr>
                 <tr>
                     <th>OD</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
-                    <th>-</th>
+                    <td>{{ $serviceOrder->spherical_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->cylindrical_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->axis_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->dnp_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->height_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->addition_right ?? '-' }}</td>
                 </tr>
             </tbody>
         </table>
@@ -200,33 +202,44 @@
             <tr>
                 <th rowspan="2">Ponte</th>
                 <th rowspan="2">Horizontal Maior</th>
-                <th rowspan="2">Horizontal Menor</th>
+                <th rowspan="2">Vertical Maior</th>
                 <th rowspan="2">Diagonal Maior</th>
-                <th colspan="2">DNP V</th>
-                <th colspan="2">ALT</th>
+                <th colspan="2" style="text-align: center">DNP V</th>
+                <th colspan="2" style="text-align: center">ALT</th>
             </tr>
             <tr>
-                <th>OE</th>
-                <th>OD</th>
-                <th>OE</th>
-                <th>OD</th>
+                <th style="text-align: center">OE</th>
+                <th style="text-align: center">OD</th>
+                <th style="text-align: center">OE</th>
+                <th style="text-align: center">OD</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>156</td>
-                <td>12</td>
-                <td>15</td>
-                <td>2</td>
-                <td>1</td>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
+                <td>{{ $serviceOrder->bridge ?? '-'}}</td>
+                <td>{{ $serviceOrder->larger_horizontal ?? '-'}}</td>
+                <td>{{ $serviceOrder->larger_vertical ?? '-'}}</td>
+                <td>{{ $serviceOrder->larger_diagonal ?? '-'}}</td>
+                <td>{{ $serviceOrder->dnp_v_left ?? '-'}}</td>
+                <td>{{ $serviceOrder->dnp_v_right ?? '-'}}</td>
+                <td>{{ $serviceOrder->alt_left ?? '-' }}</td>
+                <td>{{ $serviceOrder->alt_right ?? '-' }}</td>
             </tr>
             </tbody>
         </table>
 
-        <h3>Dados da Compra</h3>
+        <h3>Descrição da venda</h3>
+
+        @php
+
+        foreach ($serviceOrder->sale->frames as $frame) {
+            echo "<pre>";
+                printf($frame);
+            echo "<pre;>";
+        }
+
+        @endphp
+
         <table>
             <thead>
                 <tr>
@@ -240,28 +253,12 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Armação</td>
+                    <td>{{ $frame->barcode }}</td>
                     <td>1</td>
                     <td>Informação da armação</td>
                     <td>1200,00</td>
                     <td>Pix-40%</td>
                     <td>720,00</td>
-                </tr>
-                <tr>
-                    <td>Lente</td>
-                    <td>2</td>
-                    <td>Informação da lente</td>
-                    <td>800,00</td>
-                    <td>Crédito-20%</td>
-                    <td>640,00</td>
-                </tr>
-                <tr>
-                    <td>Acessório</td>
-                    <td>1</td>
-                    <td>Informação do acessório</td>
-                    <td>30,00</td>
-                    <td>-</td>
-                    <td>30,00</td>
                 </tr>
             </tbody>
         </table>

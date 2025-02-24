@@ -32,6 +32,12 @@ class SaleController extends Controller {
             });
         }
 
+        if ($ata = $request->input('number_ata')) {
+            $query->where(function ($q) use ($ata) {
+               $q->where('number_ata', 'LIKE', "%$ata");
+            });
+        }
+
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('frames', function ($query) use ($search) {
