@@ -106,7 +106,7 @@
                 height="53px"
             />
             <div class="title">
-                <h4>Ordem de Serviço | {{ $serviceOrder->number_os }}</h4>
+                <h4>Ordem de Serviço - {{ $serviceOrder->number_os }}</h4>
             </div>
         </article>
 
@@ -269,7 +269,13 @@
                     <td style="text-align: center">{{ $frame->pivot->quantity }}</td>
                     <td> {{$frame->code . ' ' . $frame->color . ' ' . $frame->size . ' ' . $frame->haste . ' ' . $frame->bridge . ' ' . $frame->brands->brand}}</td>
                     <td>{{ formatReal($frame->pivot->price) }}</td>
-                    <td>{{ $discountType->discount_type }} - {{ $frame->pivot->discount . '%' }} ({{ formatReal($frame->pivot->price * ($frame->pivot->discount/100))}})</td>
+                    @if(isset($discountType))
+                        <td>
+                            {{ $discountType->discount_type }} -
+                            {{ isset($frame->pivot->discount) ? $frame->pivot->discount . '%' : '0%' }}
+                            ({{ formatReal(($frame->pivot->price ?? 0) * (($frame->pivot->discount ?? 0) / 100)) }})
+                        </td>
+                    @else <td>-</td> @endif
                     <td>{{ formatReal($frame->pivot->total) }}</td>
                 </tr>
             @endforeach
@@ -282,7 +288,13 @@
                     <td style="text-align: center">{{ $lens->pivot->quantity }}</td>
                     <td>{{$lens->name_lens}}</td>
                     <td>{{ formatReal($lens->pivot->price) }}</td>
-                    <td>{{ $discountType->discount_type }} - {{ $lens->pivot->discount . '%' }} ({{ formatReal($lens->pivot->price * ($lens->pivot->discount/100))}})</td>
+                    @if(isset($discountType))
+                        <td>
+                            {{ $discountType->discount_type }} -
+                            {{ isset($lens->pivot->discount) ? $lens->pivot->discount . '%' : '0%' }}
+                            ({{ formatReal(($lens->pivot->price ?? 0) * (($lens->pivot->discount ?? 0) / 100)) }})
+                        </td>
+                    @else <td>-</td> @endif
                     <td>{{ formatReal($lens->pivot->total) }}</td>
                 </tr>
             @endforeach
@@ -334,45 +346,52 @@
                 </tr>
                 </tbody>
             </table>
-        @else
+        @elseif ($paymentMethod === 'Crediário da Loja')
+            @php
+                $query = $serviceOrder->sale->paymentCredits->first();
+                $formPayment = \App\Models\FormPayment::query()->find($query->form_payment_id);
+                $downPayment = $query->down_payment;
+
+                foreach ($query->installments as $installment) {
+                }
+
+            @endphp
             <table>
                 <thead>
                 <tr>
-                    <th>Total</th>
+                    <th>Forma de Pagamento</th>
                     <th>Entrada</th>
                     <th>À Receber</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td>1390,00</td>
-                    <td>390,00</td>
-                    <td>1000,00 (200 x 5)</td>
+                    <td>{{ $formPayment->form_payment }}</td>
+                    <td>{{ formatReal($downPayment) }}</td>
+                    <td>{{ formatReal($query->total_amount - $downPayment) }} ({{$query->installments->count()}} X
+                        {{ formatReal($query->installments->first()->amount) }})</td>
                 </tr>
                 </tbody>
             </table>
 
             <table>
-                <thead>
-                <tr>
-                    <th>Parcela 1</th>
-                    <th>Parcela 2</th>
-                    <th>Parcela 3</th>
-                    <th>Parcela 4</th>
-                    <th>Parcela 5</th>
-                    <th>Parcela 6</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>01/01/2025</td>
-                    <td>01/02/2025</td>
-                    <td>01/03/2025</td>
-                    <td>01/04/2025</td>
-                    <td>01/05/2025</td>
-                    <td>-</td>
-                </tr>
-                </tbody>
+                    <thead>
+                        <tr>
+                            @foreach($query->installments as $item)
+                                <th>Pacerla {{ $item->installment }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @foreach($query->installments as $item)
+                                <td>
+                                    <strong>Valor:</strong>  {{ formatReal($item->amount) }} <br>
+                                    <strong>Vencimento:</strong>{{ $item->due_date }}
+                                </td>
+                            @endforeach
+                        </tr>
+                    </tbody>
             </table>
         @endif
     </body>
