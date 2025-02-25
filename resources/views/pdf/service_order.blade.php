@@ -284,28 +284,31 @@
 
         @php
             $paymentMethod = $serviceOrder->sale->paymentMethod->payment_method ?? null;
-            printf($serviceOrder->sale->id);
-//            $combinedPayment = CombinedPayment::query()->find($serviceOrder->sale->id);
+            $creditCard = $serviceOrder->sale->creditCards->first();
         @endphp
 
         <article>
             <div><strong>Método de Pagamento: </strong><span>{{ $serviceOrder->sale->paymentMethod->payment_method }}</span></div>
         </article>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Forma de Pagamento</th>
-                <th>Valor</th>
-            </tr>
-            </thead>
-            <tbody>
+        @if($paymentMethod === 'Cartão de Crédito')
+            <table>
+                <thead>
                 <tr>
-                    <td>aaaaaa</td>
-                    <td>aaaa</td>
+                    <th>Forma de Pagamento</th>
+                    <th>Valor da Venda</th>
+                    <th>Valor no Crédito</th>
                 </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ $serviceOrder->sale->paymentMethod->payment_method }}</td>
+                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>
+                    <td>{{ formatReal($creditCard?->total_amount) .' ('. $creditCard->card_id . ' X ' . formatReal($creditCard?->total_amount/$creditCard->card_id) .')' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        @endif
 
         <h3>Crediário da Loja</h3>
         <table>

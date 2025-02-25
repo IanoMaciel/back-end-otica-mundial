@@ -39,7 +39,7 @@ class ServiceOrder extends Model {
 
     public function rules(): array {
         return [
-            'sale_id' => 'sometimes|exists:sales,id',
+            'sale_id' => 'required|exists:sales,id',
             'number_os' => 'required|string',
             'delivery' => 'sometimes|date',
             'observation' => 'sometimes|string|max:255',
@@ -70,6 +70,7 @@ class ServiceOrder extends Model {
 
     public function messages(): array {
         return [
+            'sale_id.required' => 'A número da venda é um campo obrigatório.',
             'sale_id.exists' => 'O ID da venda informado não existe na base de dados.',
             'number_os.required' => 'O número da ordem de serviço é obrigatório.',
             'delivery.date' => 'A data de entrega deve ser uma data válida.',
