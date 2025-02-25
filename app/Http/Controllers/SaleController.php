@@ -34,7 +34,7 @@ class SaleController extends Controller {
 
         if ($ata = $request->input('number_ata')) {
             $query->where(function ($q) use ($ata) {
-               $q->where('number_ata', 'LIKE', "%$ata");
+               $q->where('number_ata', 'LIKE', "%$ata%");
             });
         }
 

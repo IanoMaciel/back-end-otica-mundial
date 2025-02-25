@@ -284,35 +284,28 @@
 
         @php
             $paymentMethod = $serviceOrder->sale->paymentMethod->payment_method ?? null;
-            $combinedPayment = $serviceOrder->sale->combinedPayment;
-            dd($serviceOrder->sale->combinedPayment);
+            printf($serviceOrder->sale->id);
+//            $combinedPayment = CombinedPayment::query()->find($serviceOrder->sale->id);
         @endphp
 
         <article>
             <div><strong>Método de Pagamento: </strong><span>{{ $serviceOrder->sale->paymentMethod->payment_method }}</span></div>
         </article>
 
-        @if($paymentMethod === 'Pag. Combinado')
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Forma de Pagamento</th>
-                        <th>Valor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td>Pix</td>
-                    </tr>
-                    <tr>
-                        <td>Dinheiro</td>
-                        <td>Pix</td>
-                    </tr>
-                </tbody>
-            </table>
-        @endif
+        <table>
+            <thead>
+            <tr>
+                <th>Forma de Pagamento</th>
+                <th>Valor</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>aaaaaa</td>
+                    <td>aaaa</td>
+                </tr>
+            </tbody>
+        </table>
 
         <h3>Crediário da Loja</h3>
         <table>
