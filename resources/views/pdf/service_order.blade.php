@@ -92,7 +92,7 @@
 
         th, td {
             border: 1px solid #ccc;
-            padding: 2px;
+            padding: 5px;
             text-align: left;
         }
     </style>
@@ -124,7 +124,6 @@
             @foreach($serviceOrder->sale->lenses as $item)
                 <div><strong>Laboratório:</strong> <span></span>{{ $item->laboratory->laboratory }}</div>
             @endforeach
-            <div><strong>Data do Lab:</strong> <span>01/01/2025</span></div>
             <div><strong>Data da Entrega:</strong> <span>{{ $serviceOrder->delivery }}</span></div>
         </article>
 
@@ -135,13 +134,23 @@
 
         <h3>Informações do Paciente</h3>
 
+        @php
+            function formatDate(string $date, string $format): string {
+                return \Carbon\Carbon::parse($date)->format($format);
+            }
+
+            function calculateAge(string $birthDate): int {
+                return \Carbon\Carbon::parse($birthDate)->age;
+            }
+        @endphp
+
         <article class="customer-information">
             <div class="data">
                 <div><strong>Nome: </strong> <span>{{ $serviceOrder->sale->customer->full_name ?? '-'}}</span></div>
                 <div><strong>CPF: </strong> <span>{{ $serviceOrder->sale->customer->cpf ?? '-'}}</span></div>
                 <div><strong>RG: </strong> <span>{{ $serviceOrder->sale->customer->rg ?? '-'}}</span></div>
-                <div><strong>Nascimento: </strong> <span>{{ $serviceOrder->sale->customer->birth_date ?? '-' }}</span></div>
-                <div><strong>Idade: </strong> <span>{{ $serviceOrder->sale->customer->birth_date ?? '-' }}</span></div>
+                <div><strong>Nascimento: </strong> <span>{{ formatDate($serviceOrder->sale->customer->birth_date, 'd/m/Y') ?? '-' }}</span></div>
+                <div><strong>Idade: </strong> <span>{{ calculateAge($serviceOrder->sale->customer->birth_date) ?? '-' }}</span></div>
                 <div><strong>Convênio: </strong> <span>{{ $serviceOrder->sale->customer->agreements->agreement ?? '-'}}</span></div>
                 <div><strong>Email: </strong> <span>{{ $serviceOrder->sale->customer->email ?? '-'}}</span></div>
                 <div><strong>Contato: </strong> <span>{{ $serviceOrder->sale->customer->phone_primary ?? '-'}}</span></div>
@@ -243,7 +252,7 @@
             <thead>
                 <tr>
                     <th>Produto</th>
-                    <th>QTD</th>
+                    <th style="text-align: center">QTD</th>
                     <th>Descrição da Mercadoria</th>
                     <th>Valor Unit.</th>
                     <th>Desconto</th>
@@ -252,22 +261,28 @@
             </thead>
             <tbody>
             @foreach($serviceOrder->sale->frames as $frame)
+                @php
+                    $discountType = \App\Models\Discount::query()->find($frame->pivot->discount_id);
+                @endphp
                 <tr>
                     <td>Armação</td>
-                    <td>{{ $frame->pivot->quantity }}</td>
+                    <td style="text-align: center">{{ $frame->pivot->quantity }}</td>
                     <td> {{$frame->code . ' ' . $frame->color . ' ' . $frame->size . ' ' . $frame->haste . ' ' . $frame->bridge . ' ' . $frame->brands->brand}}</td>
                     <td>{{ formatReal($frame->pivot->price) }}</td>
-                    <td>{{ $frame->pivot->discount . '%' }} ({{ formatReal($frame->pivot->price * ($frame->pivot->discount/100))}})</td>
+                    <td>{{ $discountType->discount_type }} - {{ $frame->pivot->discount . '%' }} ({{ formatReal($frame->pivot->price * ($frame->pivot->discount/100))}})</td>
                     <td>{{ formatReal($frame->pivot->total) }}</td>
                 </tr>
             @endforeach
             @foreach($serviceOrder->sale->lenses as $lens)
+                @php
+                    $discountType = \App\Models\Discount::query()->find($lens->pivot->discount_id);
+                @endphp
                 <tr>
                     <td>Lente</td>
-                    <td>{{ $lens->pivot->quantity }}</td>
-                    <td> {{$lens->name_lens}}</td>
+                    <td style="text-align: center">{{ $lens->pivot->quantity }}</td>
+                    <td>{{$lens->name_lens}}</td>
                     <td>{{ formatReal($lens->pivot->price) }}</td>
-                    <td>{{ $lens->pivot->discount . '%' }} ({{ formatReal($lens->pivot->price * ($lens->pivot->discount/100))}})</td>
+                    <td>{{ $discountType->discount_type }} - {{ $lens->pivot->discount . '%' }} ({{ formatReal($lens->pivot->price * ($lens->pivot->discount/100))}})</td>
                     <td>{{ formatReal($lens->pivot->total) }}</td>
                 </tr>
             @endforeach
@@ -287,11 +302,7 @@
             $creditCard = $serviceOrder->sale->creditCards->first();
         @endphp
 
-        <article>
-            <div><strong>Método de Pagamento: </strong><span>{{ $serviceOrder->sale->paymentMethod->payment_method }}</span></div>
-        </article>
-
-        @if($paymentMethod === 'Cartão de Crédito')
+        @if ($paymentMethod === 'Cartão de Crédito')
             <table>
                 <thead>
                 <tr>
@@ -304,32 +315,45 @@
                 <tr>
                     <td>{{ $serviceOrder->sale->paymentMethod->payment_method }}</td>
                     <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>
-                    <td>{{ formatReal($creditCard?->total_amount) .' ('. $creditCard->card_id . ' X ' . formatReal($creditCard?->total_amount/$creditCard->card_id) .')' }}</td>
+                    <td>{{ formatReal($creditCard->total_amount) .' ('. $creditCard->card_id . ' X ' . formatReal($creditCard->total_amount/$creditCard->card_id) .')' }}</td>
                 </tr>
                 </tbody>
             </table>
-        @endif
-
-        <h3>Crediário da Loja</h3>
-        <table>
-            <thead>
+        @elseif ($paymentMethod === 'Pix' || $paymentMethod === 'Dinheiro' || $paymentMethod === 'Cartão de Débito')
+            <table>
+                <thead>
+                <tr>
+                    <th>Forma de Pagamento</th>
+                    <th>Valor da Venda</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ $serviceOrder->sale->paymentMethod->payment_method }}</td>
+                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>
+                </tr>
+                </tbody>
+            </table>
+        @else
+            <table>
+                <thead>
                 <tr>
                     <th>Total</th>
                     <th>Entrada</th>
                     <th>À Receber</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
                     <td>1390,00</td>
                     <td>390,00</td>
                     <td>1000,00 (200 x 5)</td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <table>
-            <thead>
+            <table>
+                <thead>
                 <tr>
                     <th>Parcela 1</th>
                     <th>Parcela 2</th>
@@ -338,8 +362,8 @@
                     <th>Parcela 5</th>
                     <th>Parcela 6</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
                     <td>01/01/2025</td>
                     <td>01/02/2025</td>
@@ -348,7 +372,8 @@
                     <td>01/05/2025</td>
                     <td>-</td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        @endif
     </body>
 </html>

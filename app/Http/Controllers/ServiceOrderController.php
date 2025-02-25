@@ -43,7 +43,12 @@ class ServiceOrderController extends Controller {
     }
 
     public function show(int $id): JsonResponse {
-        $serviceOrder = $this->serviceOrder->query()->with('sale.combinedPayment.portions.formPayment')->find($id);
+        $serviceOrder = $this->serviceOrder->query()->with(
+            'sale.combinedPayment.portions.formPayment',
+            'sale.customer',
+            'sale.paymentMethod',
+            'sale.user'
+        )->find($id);
 
         if (!$serviceOrder) {
             return response()->json([
