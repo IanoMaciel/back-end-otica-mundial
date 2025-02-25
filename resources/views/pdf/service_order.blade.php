@@ -128,14 +128,13 @@
             <div><strong>Data da Entrega:</strong> <span>{{ $serviceOrder->delivery }}</span></div>
         </article>
 
-        <article>
-            <h3>Observações</h3>
-            <p class="observations">
-                {{ $serviceOrder->observation ?? '-'}}
-            </p>
-        </article>
+        <h3>Observações</h3>
+        <p class="observations">
+            {{ $serviceOrder->observation ?? '-'}}
+        </p>
 
         <h3>Informações do Paciente</h3>
+
         <article class="customer-information">
             <div class="data">
                 <div><strong>Nome: </strong> <span>{{ $serviceOrder->sale->customer->full_name ?? '-'}}</span></div>
@@ -151,12 +150,12 @@
             <hr style="color: #dddddd;"/>
 
             <div class="data">
-                <div><strong>CEP: </strong> <span>{{ $serviceOrder->sale->customer->address->cep }}</span></div>
-                <div><strong>Cidade: </strong> <span>{{ $serviceOrder->sale->customer->address->city }}</span></div>
-                <div><strong>UF: </strong> <span>{{ $serviceOrder->sale->customer->address->uf }}</span></div>
-                <div><strong>Rua: </strong> <span>{{ $serviceOrder->sale->customer->address->street }}</span></div>
-                <div><strong>Número: </strong> <span>{{ $serviceOrder->sale->customer->address->number }}</span></div>
-                <div><strong>Bairro: </strong> <span>{{ $serviceOrder->sale->customer->address->neighborhood }}</span></div>
+                <div><strong>CEP: </strong> <span>{{ $serviceOrder->sale->customer->address->cep ?? '-'}}</span></div>
+                <div><strong>Cidade: </strong> <span>{{ $serviceOrder->sale->customer->address->city ?? '-' }}</span></div>
+                <div><strong>UF: </strong> <span>{{ $serviceOrder->sale->customer->address->uf ?? '-' }}</span></div>
+                <div><strong>Rua: </strong> <span>{{ $serviceOrder->sale->customer->address->street ?? '-' }}</span></div>
+                <div><strong>Número: </strong> <span>{{ $serviceOrder->sale->customer->address->number ?? '-' }}</span></div>
+                <div><strong>Bairro: </strong> <span>{{ $serviceOrder->sale->customer->address->neighborhood ?? '-' }}</span></div>
                 <div><strong>Referência: </strong> <span>{{ $serviceOrder->sale->customer->address->reference ?? '-' }}</span></div>
                 <div><strong>Complemento: </strong> <span>{{ $serviceOrder->sale->customer->address->complement ?? '-' }}</span></div>
             </div>
@@ -164,6 +163,7 @@
         </article>
 
         <h3>Informações do Grau</h3>
+
         <table>
             <thead>
                 <tr>
@@ -281,24 +281,38 @@
         </table>
 
         <h3>Informações do Pagamento</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Forma de Pagamento</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Pix</td>
-                    <td>Pix</td>
-                </tr>
-                <tr>
-                    <td>Dinheiro</td>
-                    <td>Pix</td>
-                </tr>
-            </tbody>
-        </table>
+
+        @php
+            $paymentMethod = $serviceOrder->sale->paymentMethod->payment_method ?? null;
+            $combinedPayment = $serviceOrder->sale->combinedPayment;
+            dd($serviceOrder->sale->combinedPayment);
+        @endphp
+
+        <article>
+            <div><strong>Método de Pagamento: </strong><span>{{ $serviceOrder->sale->paymentMethod->payment_method }}</span></div>
+        </article>
+
+        @if($paymentMethod === 'Pag. Combinado')
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Forma de Pagamento</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>Pix</td>
+                    </tr>
+                    <tr>
+                        <td>Dinheiro</td>
+                        <td>Pix</td>
+                    </tr>
+                </tbody>
+            </table>
+        @endif
 
         <h3>Crediário da Loja</h3>
         <table>
