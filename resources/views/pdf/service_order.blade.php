@@ -17,6 +17,8 @@
         }
 
         .a4 {
+            width: 210mm;
+            height: 297mm;
             background: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 5px;

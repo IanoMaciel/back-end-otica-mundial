@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sale;
 use App\Models\ServiceOrder;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,8 +14,17 @@ class ServiceOrderController extends Controller {
         $this->serviceOrder = $serviceOrder;
     }
 
-    public function exportServiceOrder(int $id) {
+    public function exportPdf(int $id) {
         $serviceOrder = $this->serviceOrder->query()->with('sale')->find($id);
+
+//        if (!$serviceOrder) {
+//            return response()->json([
+//                'error' => 'a ordem de serviço informada não existe na base de dados.',
+//            ], 404);
+//        }
+
+//        $pdf = Pdf::loadView('pdf.service_order', compact('serviceOrder'));
+//        return $pdf->download('service_order.pdf');
         return view('pdf.service_order', compact('serviceOrder'));
     }
 
