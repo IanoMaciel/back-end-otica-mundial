@@ -111,11 +111,17 @@
         </article>
 
         <h3>Informações da Venda</h3>
+        @php
+            $seller = $serviceOrder->sale->user->first_name;
+            $numberSale = $serviceOrder->sale->number_ata;
+            $numberOs = $serviceOrder->number_os;
+            $createdAt = $serviceOrder->sale->created_at;
+        @endphp
         <article class="initial-information">
-            <div><strong>Vendedor:</strong> <span>{{ $serviceOrder->sale->user->first_name  }}</span></div>
-            <div><strong>Nº da Venda:</strong> <span>{{ $serviceOrder->sale->number_ata }}</span></div>
-            <div><strong>Nº da OS:</strong> <span>{{ $serviceOrder->number_os }}</span></div>
-            <div><strong>Data/Hora da venda:</strong> <span>{{ $serviceOrder->sale->created_at }}</span></div>
+            <div><strong>Vendedor:</strong> <span>{{ $seller  }}</span></div>
+            <div><strong>Nº da Venda:</strong> <span>{{ $numberSale }}</span></div>
+            <div><strong>Nº da OS:</strong> <span>{{ $numberOs }}</span></div>
+            <div><strong>Data/Hora da venda:</strong> <span>{{ $createdAt }}</span></div>
         </article>
 
         <h3>Laboratório</h3>
@@ -132,7 +138,7 @@
             {{ $serviceOrder->observation ?? '-'}}
         </p>
 
-        <h3>Informações do Paciente</h3>
+        <h3>Paciente</h3>
 
         @php
             function formatDate(string $date, string $format): string {
