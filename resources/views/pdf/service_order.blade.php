@@ -22,7 +22,7 @@
             background: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 5px;
-            font-size: 12px;
+            font-size: 13px;
         }
 
         h3 {
@@ -32,11 +32,19 @@
 
         .header {
             display: flex;
+            width: 100%;
             align-items: center;
         }
 
+        .img-area {
+            background: #e3e3e3;
+            text-align: center;
+            padding: 0 10px;
+            clip-path: polygon(0% 0%, 100% 0%, 92% 100%, 0% 100%);
+        }
+
         .title {
-            width: 100%;
+            width: 80%;
             height: 53px;
             background-color: red;
             color: white;
@@ -44,8 +52,8 @@
             font-weight: bold;
             text-align: center;
             line-height: 53px;
-            /*text-transform: uppercase;*/
-            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+            clip-path: polygon(2.7% 0, 100% 0, 100% 100%, 0% 100%);
+            text-transform: uppercase;
         }
 
         .initial-information {
@@ -55,12 +63,14 @@
             align-items: center;
             gap: 10px;
             padding: 10px;
+            border-radius: 2px;
             border: 1px solid #ccc;
             background: #e3e3e3;
         }
 
         .observations {
             padding: 10px;
+            border-radius: 2px;
             border: 1px solid #ccc;
             background: #e3e3e3;
         }
@@ -71,13 +81,14 @@
             justify-content: space-between;
             gap: 10px;
             padding: 10px;
+            border-radius: 2px;
             border: 1px solid #ccc;
             background: #e3e3e3;
         }
 
         .data {
             display: flex;
-            flex-wrap: wrap;
+            justify-content: space-between;
             gap: 10px;
         }
 
@@ -100,27 +111,35 @@
     </style>
 
     <body class="a4">
+
+        @php
+            function formatDate(string $date, string $format='d-m-Y'): string {
+                return \Carbon\Carbon::parse($date)->format($format);
+            }
+
+            function calculateAge(string $birthDate): int {
+                return \Carbon\Carbon::parse($birthDate)->age;
+            }
+
+            function formatReal(string $value): string {
+                $value = floatval($value);
+                return 'R$ ' . number_format($value, 2, ',', '.');
+            }
+        @endphp
+
         <article class="header">
-            <img
-                src="{{ asset('images/logo.svg') }}"
-                alt="logo"
-                width="171px"
-                height="53px"
-            />
+            <div class="img-area">
+                <img src="{{ asset('images/logo.svg') }}" alt="logo" width="171px" height="53px"/>
+            </div>
             <div class="title">
-                <h4>Ordem de Serviço - {{ $serviceOrder->number_os }}</h4>
+                <h4>Ordem de Serviço - {{ $numberOs }}</h4>
             </div>
         </article>
 
-        <h3>Informações da Venda</h3>
-        @php
-            $seller = $serviceOrder->sale->user->first_name;
-            $numberSale = $serviceOrder->sale->number_ata;
-            $numberOs = $serviceOrder->number_os;
-            $createdAt = $serviceOrder->sale->created_at;
-        @endphp
+        <h3>Dados da Venda</h3>
+
         <article class="initial-information">
-            <div><strong>Vendedor:</strong> <span>{{ $seller  }}</span></div>
+            <div><strong>Vendedor:</strong> <span>{{ $seller }}</span></div>
             <div><strong>Nº da Venda:</strong> <span>{{ $numberSale }}</span></div>
             <div><strong>Nº da OS:</strong> <span>{{ $numberOs }}</span></div>
             <div><strong>Data/Hora da venda:</strong> <span>{{ $createdAt }}</span></div>
@@ -129,54 +148,55 @@
         <h3>Laboratório</h3>
 
         <article class="initial-information">
-            @foreach($serviceOrder->sale->lenses as $item)
-                <div><strong>Laboratório:</strong> <span></span>{{ $item->laboratory->laboratory }}</div>
-            @endforeach
-            <div><strong>Data da Entrega:</strong> <span>{{ $serviceOrder->delivery }}</span></div>
+            <div><strong>Laboratório:</strong> <span>{{ $laboratory }}</span></div>
+            <div><strong>Data do Laboratório:</strong> <span>{{ formatDate($delivery) }}</span></div>
+            <div><strong>Data da Entrega:</strong> <span>{{ formatDate($delivery) }}</span></div>
         </article>
 
         <h3>Observações</h3>
-        <p class="observations">
-            {{ $serviceOrder->observation ?? '-'}}
-        </p>
+        <p class="observations">{{ $observation }}</p>
 
-        <h3>Paciente</h3>
-
-        @php
-            function formatDate(string $date, string $format): string {
-                return \Carbon\Carbon::parse($date)->format($format);
-            }
-
-            function calculateAge(string $birthDate): int {
-                return \Carbon\Carbon::parse($birthDate)->age;
-            }
-        @endphp
+        <h3>Informações do Paciente</h3>
 
         <article class="customer-information">
             <div class="data">
-                <div><strong>Nome: </strong> <span>{{ $serviceOrder->sale->customer->full_name ?? '-'}}</span></div>
-                <div><strong>CPF: </strong> <span>{{ $serviceOrder->sale->customer->cpf ?? '-'}}</span></div>
-                <div><strong>RG: </strong> <span>{{ $serviceOrder->sale->customer->rg ?? '-'}}</span></div>
-                <div><strong>Nascimento: </strong> <span>{{ formatDate($serviceOrder->sale->customer->birth_date, 'd/m/Y') ?? '-' }}</span></div>
-                <div><strong>Idade: </strong> <span>{{ calculateAge($serviceOrder->sale->customer->birth_date) ?? '-' }}</span></div>
-                <div><strong>Convênio: </strong> <span>{{ $serviceOrder->sale->customer->agreements->agreement ?? '-'}}</span></div>
-                <div><strong>Email: </strong> <span>{{ $serviceOrder->sale->customer->email ?? '-'}}</span></div>
-                <div><strong>Contato: </strong> <span>{{ $serviceOrder->sale->customer->phone_primary ?? '-'}}</span></div>
+                <div style="display: flex; flex-direction: column">
+                    <div><strong>Nome: </strong> <span>{{ $customer->full_name }}</span></div>
+                    <div><strong>CPF: </strong> <span>{{ $customer->cpf ?? '-' }}</span></div>
+                    <div><strong>RG: </strong> <span>{{ $customer->rg ?? '-' }}</span></div>
+                    <div><strong>Nascimento: </strong> <span>{{ formatDate($customer->birth_date) ?? '-' }}</span></div>
+                </div>
+
+                <div style="display: flex; flex-direction: column">
+                    <div><strong>Idade: </strong> <span>{{ calculateAge($customer->birth_date) ?? '-' }}</span></div>
+                    <div><strong>Email: </strong> <span>{{ $customer->email ?? '-' }}</span></div>
+                    <div><strong>Contato: </strong> <span>{{ $customer->phone_primary ?? '-' }}</span></div>
+                </div>
+
+                <div style="display: flex; flex-direction: column">
+                    <div><strong>Convênio: </strong> <span>{{ $customer->agreements->agreement ?? '-' }}</span></div>
+                    <div><strong>Nº do Convênio: </strong> <span>{{ $customer->number_agreement ?? '-' }}</span></div>
+                </div>
             </div>
 
             <hr style="color: #dddddd;"/>
 
             <div class="data">
-                <div><strong>CEP: </strong> <span>{{ $serviceOrder->sale->customer->address->cep ?? '-'}}</span></div>
-                <div><strong>Cidade: </strong> <span>{{ $serviceOrder->sale->customer->address->city ?? '-' }}</span></div>
-                <div><strong>UF: </strong> <span>{{ $serviceOrder->sale->customer->address->uf ?? '-' }}</span></div>
-                <div><strong>Rua: </strong> <span>{{ $serviceOrder->sale->customer->address->street ?? '-' }}</span></div>
-                <div><strong>Número: </strong> <span>{{ $serviceOrder->sale->customer->address->number ?? '-' }}</span></div>
-                <div><strong>Bairro: </strong> <span>{{ $serviceOrder->sale->customer->address->neighborhood ?? '-' }}</span></div>
-                <div><strong>Referência: </strong> <span>{{ $serviceOrder->sale->customer->address->reference ?? '-' }}</span></div>
-                <div><strong>Complemento: </strong> <span>{{ $serviceOrder->sale->customer->address->complement ?? '-' }}</span></div>
+                <div style="display: flex; flex-direction: column">
+                    <div><strong>CEP: </strong> <span>{{ $address->cep ?? '-'}}</span></div>
+                    <div><strong>Cidade: </strong> <span>{{ $address->city ?? '-' }}</span></div>
+                    <div><strong>UF: </strong> <span>{{ $address->uf ?? '-' }}</span></div>
+                </div>
+                <div style="display: flex; flex-direction: column">
+                    <div><strong>Rua: </strong> <span>{{ $address->street ?? '-' }}</span></div>
+                    <div><strong>Número: </strong> <span>{{ $address->number ?? '-' }}</span></div>
+                    <div><strong>Bairro: </strong> <span>{{ $address->neighborhood ?? '-' }}</span></div>
+                </div>
+                <div style="display: flex; flex-direction: column">
+                    <div><strong>Referência: </strong> <span>{{ $address->reference ?? '-' }}</span></div>
+                    <div><strong>Complemento: </strong> <span>{{ $address->complement ?? '-' }}</span></div>
+                </div>
             </div>
-
         </article>
 
         <h3>Informações do Grau</h3>
@@ -248,14 +268,6 @@
 
         <h3>Descrição da venda</h3>
 
-        @php
-            function formatReal(string $value): string {
-                $value = floatval($value);
-                return 'R$ ' . number_format($value, 2, ',', '.');
-            }
-        @endphp
-
-
         <table>
             <thead>
                 <tr>
@@ -268,139 +280,140 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach($serviceOrder->sale->frames as $frame)
-                @php
-                    $discountType = \App\Models\Discount::query()->find($frame->pivot->discount_id);
-                @endphp
-                <tr>
-                    <td>Armação</td>
-                    <td style="text-align: center">{{ $frame->pivot->quantity }}</td>
-                    <td> {{$frame->code . ' ' . $frame->color . ' ' . $frame->size . ' ' . $frame->haste . ' ' . $frame->bridge . ' ' . $frame->brands->brand}}</td>
-                    <td>{{ formatReal($frame->pivot->price) }}</td>
-                    @if(isset($discountType))
-                        <td>
-                            {{ $discountType->discount_type }} -
-                            {{ isset($frame->pivot->discount) ? $frame->pivot->discount . '%' : '0%' }}
-                            ({{ formatReal(($frame->pivot->price ?? 0) * (($frame->pivot->discount ?? 0) / 100)) }})
-                        </td>
-                    @else <td>-</td> @endif
-                    <td>{{ formatReal($frame->pivot->total) }}</td>
-                </tr>
-            @endforeach
-            @foreach($serviceOrder->sale->lenses as $lens)
-                @php
-                    $discountType = \App\Models\Discount::query()->find($lens->pivot->discount_id);
-                @endphp
-                <tr>
-                    <td>Lente</td>
-                    <td style="text-align: center">{{ $lens->pivot->quantity }}</td>
-                    <td>{{$lens->name_lens}}</td>
-                    <td>{{ formatReal($lens->pivot->price) }}</td>
-                    @if(isset($discountType))
-                        <td>
-                            {{ $discountType->discount_type }} -
-                            {{ isset($lens->pivot->discount) ? $lens->pivot->discount . '%' : '0%' }}
-                            ({{ formatReal(($lens->pivot->price ?? 0) * (($lens->pivot->discount ?? 0) / 100)) }})
-                        </td>
-                    @else <td>-</td> @endif
-                    <td>{{ formatReal($lens->pivot->total) }}</td>
-                </tr>
-            @endforeach
+                @if(isset($frames))
+                    @foreach($frames as $frame)
+                        <tr>
+                            <td>Armação</td>
+                            <td style="text-align: center">{{ $frame->pivot->quantity }}</td>
+                            <td>
+                                <strong>Código:</strong>{{ $frame->code ?? '-' }}
+                                <strong>Haste:</strong>{{ $frame->haste ?? '-' }}
+                                <strong>Cor:</strong>{{ $frame->color ?? '-' }}
+                                <strong>Tamanho:</strong>{{ $frame->size ?? '-' }}
+                                <strong>Ponte:</strong>{{ $frame->bridge ?? '-' }}
+                            </td>
+                            <td>{{ formatReal($frame->price) }}</td>
+                            <td>Add mais tarde</td>
+                            <td>Add mais tarde</td>
+                        </tr>
+                    @endforeach
+                @endif
+
+                @if(isset($lenses))
+                    @foreach($lenses as $lens)
+                        <tr>
+                            <td>Lente</td>
+                            <td style="text-align: center">{{ $lens->pivot->quantity }}</td>
+                            <td>
+                                <strong>Tipo:</strong>{{ $lens->typeLens->type_lens }}
+                                <strong>Índice:</strong>{{ $lens->index }}
+                                <strong>Tratamento:</strong>{{ $lens->treatment->treatment }}
+                            </td>
+                            <td>{{ formatReal($lens->price) }}</td>
+                            <td>Add mais tarde</td>
+                            <td>Add mais tarde</td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
             <tfoot>
                 <tr>
                     <th colspan="5" style="text-align: right">Valor total da venda</th>
-                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>
+                    <td>-</td>
                 </tr>
             </tfoot>
         </table>
 
-        <h3>Informações do Pagamento</h3>
-
         @php
-            $paymentMethod = $serviceOrder->sale->paymentMethod->payment_method ?? null;
-            $creditCard = $serviceOrder->sale->creditCards->first();
+            dd('parou aqui');
         @endphp
 
-        @if ($paymentMethod === 'Cartão de Crédito')
-            <table>
-                <thead>
-                <tr>
-                    <th>Forma de Pagamento</th>
-                    <th>Valor da Venda</th>
-                    <th>Valor no Crédito</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{ $serviceOrder->sale->paymentMethod->payment_method }}</td>
-                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>
-                    <td>{{ formatReal($creditCard->total_amount) .' ('. $creditCard->card_id . ' X ' . formatReal($creditCard->total_amount/$creditCard->card_id) .')' }}</td>
-                </tr>
-                </tbody>
-            </table>
-        @elseif ($paymentMethod === 'Pix' || $paymentMethod === 'Dinheiro' || $paymentMethod === 'Cartão de Débito')
-            <table>
-                <thead>
-                <tr>
-                    <th>Forma de Pagamento</th>
-                    <th>Valor da Venda</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{ $serviceOrder->sale->paymentMethod->payment_method }}</td>
-                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>
-                </tr>
-                </tbody>
-            </table>
-        @elseif ($paymentMethod === 'Crediário da Loja')
-            @php
-                $query = $serviceOrder->sale->paymentCredits->first();
-                $formPayment = \App\Models\FormPayment::query()->find($query->form_payment_id);
-                $downPayment = $query->down_payment;
+        <h3>Informações do Pagamento</h3>
 
-                foreach ($query->installments as $installment) {
-                }
+{{--        @php--}}
+{{--            $paymentMethod = $serviceOrder->sale->paymentMethod->payment_method ?? null;--}}
+{{--            $creditCard = $serviceOrder->sale->creditCards->first();--}}
+{{--        @endphp--}}
 
-            @endphp
-            <table>
-                <thead>
-                <tr>
-                    <th>Forma de Pagamento</th>
-                    <th>Entrada</th>
-                    <th>À Receber</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{ $formPayment->form_payment }}</td>
-                    <td>{{ formatReal($downPayment) }}</td>
-                    <td>{{ formatReal($query->total_amount - $downPayment) }} ({{$query->installments->count()}} X
-                        {{ formatReal($query->installments->first()->amount) }})</td>
-                </tr>
-                </tbody>
-            </table>
+{{--        @if ($paymentMethod === 'Cartão de Crédito')--}}
+{{--            <table>--}}
+{{--                <thead>--}}
+{{--                <tr>--}}
+{{--                    <th>Forma de Pagamento</th>--}}
+{{--                    <th>Valor da Venda</th>--}}
+{{--                    <th>Valor no Crédito</th>--}}
+{{--                </tr>--}}
+{{--                </thead>--}}
+{{--                <tbody>--}}
+{{--                <tr>--}}
+{{--                    <td>{{ $serviceOrder->sale->paymentMethod->payment_method }}</td>--}}
+{{--                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>--}}
+{{--                    <td>{{ formatReal($creditCard->total_amount) .' ('. $creditCard->card_id . ' X ' . formatReal($creditCard->total_amount/$creditCard->card_id) .')' }}</td>--}}
+{{--                </tr>--}}
+{{--                </tbody>--}}
+{{--            </table>--}}
+{{--        @elseif ($paymentMethod === 'Pix' || $paymentMethod === 'Dinheiro' || $paymentMethod === 'Cartão de Débito')--}}
+{{--            <table>--}}
+{{--                <thead>--}}
+{{--                <tr>--}}
+{{--                    <th>Forma de Pagamento</th>--}}
+{{--                    <th>Valor da Venda</th>--}}
+{{--                </tr>--}}
+{{--                </thead>--}}
+{{--                <tbody>--}}
+{{--                <tr>--}}
+{{--                    <td>{{ $serviceOrder->sale->paymentMethod->payment_method }}</td>--}}
+{{--                    <td>{{ formatReal($serviceOrder->sale->total_amount) }}</td>--}}
+{{--                </tr>--}}
+{{--                </tbody>--}}
+{{--            </table>--}}
+{{--        @elseif ($paymentMethod === 'Crediário da Loja')--}}
+{{--            @php--}}
+{{--                $query = $serviceOrder->sale->paymentCredits->first();--}}
+{{--                $formPayment = \App\Models\FormPayment::query()->find($query->form_payment_id);--}}
+{{--                $downPayment = $query->down_payment;--}}
 
-            <table>
-                    <thead>
-                        <tr>
-                            @foreach($query->installments as $item)
-                                <th>Pacerla {{ $item->installment }}</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            @foreach($query->installments as $item)
-                                <td>
-                                    <strong>Valor:</strong>  {{ formatReal($item->amount) }} <br>
-                                    <strong>Vencimento:</strong>{{ $item->due_date }}
-                                </td>
-                            @endforeach
-                        </tr>
-                    </tbody>
-            </table>
-        @endif
+{{--                foreach ($query->installments as $installment) {--}}
+{{--                }--}}
+
+{{--            @endphp--}}
+{{--            <table>--}}
+{{--                <thead>--}}
+{{--                <tr>--}}
+{{--                    <th>Forma de Pagamento</th>--}}
+{{--                    <th>Entrada</th>--}}
+{{--                    <th>À Receber</th>--}}
+{{--                </tr>--}}
+{{--                </thead>--}}
+{{--                <tbody>--}}
+{{--                <tr>--}}
+{{--                    <td>{{ $formPayment->form_payment }}</td>--}}
+{{--                    <td>{{ formatReal($downPayment) }}</td>--}}
+{{--                    <td>{{ formatReal($query->total_amount - $downPayment) }} ({{$query->installments->count()}} X--}}
+{{--                        {{ formatReal($query->installments->first()->amount) }})</td>--}}
+{{--                </tr>--}}
+{{--                </tbody>--}}
+{{--            </table>--}}
+
+{{--            <table>--}}
+{{--                    <thead>--}}
+{{--                        <tr>--}}
+{{--                            @foreach($query->installments as $item)--}}
+{{--                                <th>Pacerla {{ $item->installment }}</th>--}}
+{{--                            @endforeach--}}
+{{--                        </tr>--}}
+{{--                    </thead>--}}
+{{--                    <tbody>--}}
+{{--                        <tr>--}}
+{{--                            @foreach($query->installments as $item)--}}
+{{--                                <td>--}}
+{{--                                    <strong>Valor:</strong>  {{ formatReal($item->amount) }} <br>--}}
+{{--                                    <strong>Vencimento:</strong>{{ $item->due_date }}--}}
+{{--                                </td>--}}
+{{--                            @endforeach--}}
+{{--                        </tr>--}}
+{{--                    </tbody>--}}
+{{--            </table>--}}
+{{--        @endif--}}
     </body>
 </html>

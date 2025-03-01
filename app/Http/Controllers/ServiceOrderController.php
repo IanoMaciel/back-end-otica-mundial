@@ -15,17 +15,57 @@ class ServiceOrderController extends Controller {
     }
 
     public function exportPdf(int $id) {
-        $serviceOrder = $this->serviceOrder->query()->with('sale')->find($id);
+        $serviceOrder = $this->serviceOrder->query()
+            ->with([
+                'sale.user',
+                'sale.customer.address',
+            ])
+            ->find($id);
 
-//        if (!$serviceOrder) {
-//            return response()->json([
-//                'error' => 'a ordem de serviço informada não existe na base de dados.',
-//            ], 404);
-//        }
+        if (!$serviceOrder) {
+            return response()->json([
+                'error' => 'A ordem de serviço informada não existe na base de dados.',
+            ], 404);
+        }
 
-//        $pdf = Pdf::loadView('pdf.service_order', compact('serviceOrder'));
-//        return $pdf->download('service_order.pdf');
-        return view('pdf.service_order', compact('serviceOrder'));
+        $seller = optional($serviceOrder->sale->user)->first_name ?? '-';
+        $numberSale = optional($serviceOrder->sale)->number_ata ?? '-';
+        $numberOs = $serviceOrder->number_os ?? '-';
+        $createdAt = optional($serviceOrder->sale)->created_at ?? '-';
+
+        $laboratory = $serviceOrder->sale->lenses->first()->laboratory->laboratory ?? '-';
+        $delivery = $serviceOrder->delivery ?? '-';
+
+        $observation = $serviceOrder->observation ?? '-';
+
+        $customer = optional($serviceOrder->sale->customer);
+        $address = optional($customer->address);
+
+        $frames = $serviceOrder->sale->frames;
+        $lenses = $serviceOrder->sale->lenses;
+        $services = $serviceOrder->sale->services;
+
+
+        return view('pdf.service_order', [
+            'seller' => $seller,
+            'numberSale' => $numberSale,
+            'numberOs' => $numberOs,
+            'createdAt' => $createdAt,
+
+            'delivery' => $delivery,
+            'laboratory' => $laboratory,
+
+            'observation' => $observation,
+
+            'customer' => $customer,
+            'address' => $address,
+
+            'serviceOrder' => $serviceOrder,
+
+            'lenses' => $lenses,
+            'frames' => $frames,
+            'services' => $services,
+        ]);
     }
 
     public function index(Request $request): JsonResponse {
