@@ -87,6 +87,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Service Order
     Route::apiResource('service-order', 'ServiceOrderController');
     Route::get('export-service-order/{id}', 'ServiceOrderController@exportPdf');
+
+    Route::apiResource('promotion', 'PromotionController');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
