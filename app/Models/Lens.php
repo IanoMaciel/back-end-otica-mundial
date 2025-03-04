@@ -17,6 +17,7 @@ class Lens extends Model {
         'sensitivity_id',
         'name_lens',
         'spherical',
+        'addition',
         'cylindrical',
         'laboratory_id',
         'minimum_value',
@@ -35,8 +36,9 @@ class Lens extends Model {
             'filter' => 'required|boolean',
             'sensitivity_id' => 'required|exists:sensitivities,id',
             'name_lens' => 'required|string',
-            'spherical' => 'required|numeric',
-            'cylindrical' => 'required|numeric',
+            'spherical' => 'nullable|numeric',
+            'cylindrical' => 'nullable|numeric',
+            'addition' => 'nullable|numeric',
             'laboratory_id' => 'required|exists:laboratories,id',
             'minimum_value' => 'nullable|numeric',
             'discount' => 'nullable|numeric',
@@ -68,11 +70,9 @@ class Lens extends Model {
             'name_lens.required' => 'O nome da lente é obrigatório.',
             'name_lens.string' => 'O nome da lente deve ser texto.',
 
-            'spherical.required' => 'O grau esférico é obrigatório.',
             'spherical.numeric' => 'O grau esférico deve ser um número.',
-
-            'cylindrical.required' => 'O grau cilíndrico é obrigatório.',
             'cylindrical.numeric' => 'O grau cilíndrico deve ser um número.',
+            'addition.numeric' => 'O grau adição deve ser um número.',
 
             'laboratory_id.required' => 'O laboratório é obrigatório.',
             'laboratory_id.exists' => 'O laboratório informado não existe.',

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Agreement;
 use App\Models\Frame;
 use App\Models\Lens;
-use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\Service;
 use Illuminate\Http\JsonResponse;
@@ -24,13 +23,18 @@ class SaleController extends Controller {
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
-        $query = $this->sale
-            ->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'lenses', 'creditCards', 'paymentCredits', 'combinedPayment')
+        $query = $this->sale->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'lenses', 'creditCards', 'paymentCredits', 'combinedPayment')
             ->orderBy('created_at', 'desc');
 
         if ($status = $request->input('status')) {
             $query->where(function ($q) use ($status) {
                 $q->where('status', 'LIKE', "%$status%");
+            });
+        }
+
+        if ($ata = $request->input('number_ata')) {
+            $query->where(function ($q) use ($ata) {
+                $q->where('number_ata', 'like', '%' . $ata . '%');
             });
         }
 
@@ -54,121 +58,6 @@ class SaleController extends Controller {
         $perPage = $request->get('per_page', 10);
         $sales = $query->paginate($perPage);
         return response()->json($sales);
-    }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function store(Request $request): JsonResponse {
-        $validatedData = $request->validate(
-            $this->sale->rules(),
-            $this->sale->messages(),
-        );
-
-        # Validation in frame
-        foreach ($validatedData['items'] as $item) {
-            if ($item['type'] === 'frame') {
-                $frame = Frame::query()->find($item['id']);
-
-                if ($item['discount'] > $frame->brands->discount) {
-                    return response()->json([
-                        'error' => 'O desconto aplicado na armação deve ser igual ou inferior a ' . $frame->brands->discount . '%',
-                    ], 422);
-                }
-
-                if (!$frame) {
-                    return response()->json([
-                        'error' => 'O produto informado não existe na base de dados.',
-                    ], 404);
-                }
-
-                if ($frame->amount < $item['quantity']) {
-                    return response()->json([
-                        'error' => 'O armção (Código da armação: ' . $frame->code . ') não possui estoque suficiente para realizar a venda.',
-                    ], 422);
-                }
-            }
-            if ($item['type'] === 'lens') {
-                $lens = Lens::query()->find($item['id']);
-
-                if (!$lens) {
-                    return response()->json([
-                        'error' => 'A lente informada não existe na base de dados.'
-                    ], 404);
-                }
-
-                if ($item['discount'] > $lens->discount) {
-                    return response()->json([
-                        'error' => 'O desconto aplicado na lente deve ser igual ou inferior a ' . $lens->discount . '%',
-                    ], 422);
-                }
-            }
-        }
-
-        $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
-
-        try {
-
-            $sale = $this->sale->query()->create($validatedData);
-            $totalAmount = 0;
-            foreach ($validatedData['items'] as $item) {
-
-                if ($item['type'] === 'frame')
-                    $model = Frame::class;
-                else if ($item['type'] === 'lens')
-                    $model = Lens::class;
-                else $model = Service::class;
-
-                $sellable = $model::query()->find($item['id']);
-
-                if (!$sellable) {
-                    return response()->json([
-                        'error' => 'O item informado não existe na base de dados.',
-                    ], 404);
-                }
-
-                $itemTotal = ($sellable->price - ($sellable->price * ($item['discount']/100))) * $item['quantity'];
-
-                $sale->items()->create([
-                    'sellable_type' => $model,
-                    'sellable_id' => $sellable->id,
-                    'quantity' => $item['quantity'],
-                    'price' => $sellable->price,
-                    'discount' => $item['discount'],
-                    'total' => $itemTotal
-                ]);
-
-                if ($item['type'] === 'frame') {
-                    $sellable->amount -= $item['quantity'];
-                    $sellable->save();
-                }
-
-                $totalAmount += $itemTotal;
-            }
-            $sale->total_amount = $totalAmount;
-
-            if ($paymentMethod->payment_method === 'Crediário da Loja') {
-                $sale->status = 'Pendente';
-            } else {
-                $sale->status = 'Pago';
-            }
-
-            $sale->save();
-
-            return response()->json($sale->load([
-                'customer',
-                'user',
-                'paymentMethod',
-                'frames', 'services', 'lenses'
-            ]), 201);
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                'error' => 'Erro ao processar a solicitação',
-                'message' => $th->getMessage(),
-            ]);
-        }
     }
 
     /**

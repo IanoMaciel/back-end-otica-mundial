@@ -20,7 +20,7 @@ class PaymentPortion extends Model {
         return $this->belongsTo(CombinedPayment::class);
     }
 
-    public function formPaymentId(): BelongsTo {
+    public function formPayment(): BelongsTo {
         return $this->belongsTo(FormPayment::class);
     }
 

@@ -59,8 +59,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('payment-method', 'PaymentMethodController'); //Método de pagamento principal
     Route::apiResource('form-payment', 'FormPaymentController'); //Forma de pagamento secundária
     Route::apiResource('card', 'CardController'); //juros do cartão
+    Route::apiResource('discount', 'DiscountController'); // tipos de descontos
 
     Route::apiResource('sale', 'SaleController');
+    Route::post('save-sale', 'SaveSaleController@createSale'); // save sale
     Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
     Route::get('sale-search-stock', 'SaleController@searchStock');
 
@@ -81,6 +83,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // API Communication
     Route::get('api-stock-lens', 'StockLensController@getData');
     Route::get('api-stock-lens/{id}', 'StockLensController@showData');
+
+    // Service Order
+    Route::apiResource('service-order', 'ServiceOrderController');
+    Route::get('export-service-order/{id}', 'ServiceOrderController@exportPdf');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

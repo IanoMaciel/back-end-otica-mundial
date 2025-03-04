@@ -21,7 +21,7 @@ class BrandFactory extends Factory {
 
         return [
             'brand' => $currentBrand,
-            'discount' => $this->faker->randomElement([1, 10]),
+            'discount' => $this->faker->randomElement([10, 40]),
         ];
     }
 

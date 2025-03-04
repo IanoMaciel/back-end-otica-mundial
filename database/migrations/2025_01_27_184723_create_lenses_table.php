@@ -28,6 +28,7 @@ class CreateLensesTable extends Migration {
 
             $table->decimal('spherical', 10, 2)->nullable();
             $table->decimal('cylindrical', 10, 2)->nullable();
+            $table->decimal('addition', 10, 2)->nullable();
 
             $table->unsignedBigInteger('laboratory_id')->nullable();
             $table->foreign('laboratory_id')->references('id')->on('laboratories')->nullOnDelete();
