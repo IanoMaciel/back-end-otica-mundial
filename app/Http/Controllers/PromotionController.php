@@ -17,6 +17,11 @@ class PromotionController extends Controller {
         $this->promotion = $promotion;
     }
 
+    public function index(): JsonResponse {
+        $promotions = $this->promotion->query()->with(['creditPromotions', 'cashPromotions', 'promotionItems'])->get();
+        return response()->json($promotions);
+    }
+
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
             $this->promotion->rules(),
@@ -24,7 +29,6 @@ class PromotionController extends Controller {
         );
 
         try {
-
             $promotion = $this->promotion->query()->create($validatedData);
 
             foreach ($validatedData['creditPromotions'] as $creditPromotion) {
@@ -51,7 +55,14 @@ class PromotionController extends Controller {
                 ]);
             }
 
-            return response()->json($promotion->load('creditPromotions', 'cashPromotions', 'cashPromotions.formPayment', 'promotionItems' ), 201);
+            return response()->json(
+                $promotion->load(
+                    'creditPromotions',
+                    'cashPromotions',
+                    'cashPromotions.formPayment',
+                    'promotionItems',
+                ), 201
+            );
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
