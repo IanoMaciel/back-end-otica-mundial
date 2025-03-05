@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Frame extends Model {
 
@@ -100,5 +101,9 @@ class Frame extends Model {
 
     public function suppliers(): BelongsTo {
         return $this->belongsTo(Supplier::class, 'supplier_id');
+    }
+
+    public function promotionItems(): MorphMany {
+        return $this->morphMany(PromotionItem::class, 'promotionable');
     }
 }

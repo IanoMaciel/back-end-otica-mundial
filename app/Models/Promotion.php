@@ -35,6 +35,11 @@ class Promotion extends Model {
             'cashPromotions.*.promotion_id' => 'nullable|exists:promotions,id',
             'cashPromotions.*.form_payment_id' => 'nullable|exists:form_payments,id',
             'cashPromotions.*.discount' => 'nullable|numeric',
+
+            'promotionItems' => 'required|array',
+            'promotionItems.*.promotion_id' => 'nullable|exists:promotion,id',
+            'promotionItems.*.type' => 'nullable|in:lens,frame',
+            'promotionItems.*.id' => 'nullable|integer',
         ];
     }
 
@@ -67,6 +72,10 @@ class Promotion extends Model {
             'cashPromotions.*.promotion_id.exists' => 'A promoção à vista informada não existe.',
             'cashPromotions.*.form_payment_id.exists' => 'A forma de pagamento da promoção à vista informada não existe.',
             'cashPromotions.*.discount.numeric' => 'O desconto da promoção à vista deve ser um número.',
+
+            'promotionItems.required' => 'Os itens da promoção são obrigatórios.',
+            'promotionItems.*.promotion_id.exists' => 'O item da promoção informado não existe.',
+            'promotionItems.*.type.in' => 'O tipo do item da promoção deve ser um dos valores: lens, frame.',
         ];
     }
 
@@ -77,5 +86,9 @@ class Promotion extends Model {
 
     public function cashPromotions(): HasMany {
         return $this->hasMany(CashPromotion::class);
+    }
+
+    public function promotionItems(): HasMany {
+        return $this->hasMany(PromotionItem::class);
     }
 }
