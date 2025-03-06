@@ -25,6 +25,26 @@ class PromotionController extends Controller {
             'cashPromotions.formPayment',
             'promotionItems',
         ]);
+
+        # filters
+        if ($title = $request->input('title')) {
+            $promotions->where(function ($query) use ($title) {
+                $query->where('title', 'LIKE', "%$title");
+            });
+        }
+
+        if ($status = $request->input('status')) {
+            $promotions->where(function ($query) use ($status) {
+               $query->where('status', 'LIKE', "%$status");
+            });
+        }
+
+        if ($auth = $request->input('auth')) {
+            $promotions->where(function ($query) use ($auth) {
+                $query->where('auth', 'LIKE', "%$auth");
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
         return response()->json($promotions->paginate($perPage));
     }
