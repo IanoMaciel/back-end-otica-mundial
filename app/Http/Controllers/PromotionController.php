@@ -107,4 +107,46 @@ class PromotionController extends Controller {
             ]);
         }
     }
+
+    public function show(int $id): JsonResponse {
+        $promotion = $this->promotion->query()->with([
+            'creditPromotions',
+            'cashPromotions',
+            'cashPromotions.formPayment',
+            'promotionItems',
+        ])->find($id);
+
+        if (!$promotion) {
+            return response()->json([
+                'error' => 'A promoção informada não existe na base de dados.'
+            ], 404);
+        }
+
+        return response()->json($promotion);
+    }
+
+    public function destroy(int $id): JsonResponse {
+        $promotion = $this->promotion->query()->with([
+            'creditPromotions',
+            'cashPromotions',
+            'cashPromotions.formPayment',
+            'promotionItems',
+        ])->find($id);
+
+        if (!$promotion) {
+            return response()->json([
+                'error' => 'A promoção informada não existe na base de dados.'
+            ], 404);
+        }
+
+        try {
+            $promotion->delete();
+            return response()->json(null, 204);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
