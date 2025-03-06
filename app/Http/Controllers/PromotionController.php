@@ -35,15 +35,15 @@ class PromotionController extends Controller {
             $this->promotion->messages(),
         );
 
-//        $dateStart = Carbon::parse($validatedData['start']);
-//        $dateCurrent = Carbon::now();
+        $dateStart = Carbon::parse($validatedData['start']);
+        $dateCurrent = Carbon::now();
 
-//        # Verifica se a data de início é menor ou igual a data atual
-//        if ($dateStart->lte($dateCurrent)) {
-//            $validatedData = array_merge($validatedData, [
-//                'start' => 'Ativa'
-//            ]);
-//        }
+        # verifica se $dateStart é maior ou igual a $dateCurrent
+        if ($dateStart->lte($dateCurrent)) {
+            $validatedData = array_merge($validatedData, [
+                'status' => 'Ativa'
+            ]);
+        }
 
         try {
             $promotion = $this->promotion->query()->create($validatedData);
