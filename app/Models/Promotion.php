@@ -22,7 +22,7 @@ class Promotion extends Model {
             'title' => $update ? 'nullable|string|max:30' : 'required|string|max:50',
             'start' => $update ? 'nullable|date' : 'required|date',
             'end' => $update ? 'nullable|date|after:start' : 'required|date|after:start',
-            'status' => 'nullable|in:Ativo,Inativo,Agendado',
+            'status' => 'nullable|in:Ativa,Inativa,Agendada',
             'auth' => $update ? 'nullable|in:Administrador,Gerente,Loja' : 'required|in:Administrador,Gerente,Loja',
             'store_credit_discount' => 'nullable|numeric',
 
@@ -56,7 +56,7 @@ class Promotion extends Model {
             'end.date' => 'O campo Data de Término deve ser do tipo Date.',
             'end.after' => 'O campo Data de Término deve ser posterior à Data de Início.',
 
-            'status.in' => 'O campo Status deve ser um dos valores: Ativo, Inativo',
+            'status.in' => 'O campo Status deve ser um dos valores: Ativa, Inativa, Agendada',
 
             'auth.required' => 'O campo Nível de Autorização é obrigatório.',
             'auth.in' => 'O campo Nível de Autorização deve ser um dos valores: Administrador, Gerente, Loja',

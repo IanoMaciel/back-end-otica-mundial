@@ -7,6 +7,7 @@ use App\Models\CashPromotion;
 use App\Models\CreditPromotion;
 use App\Models\Promotion;
 use App\Models\PromotionItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -17,9 +18,15 @@ class PromotionController extends Controller {
         $this->promotion = $promotion;
     }
 
-    public function index(): JsonResponse {
-        $promotions = $this->promotion->query()->with(['creditPromotions', 'cashPromotions', 'promotionItems'])->get();
-        return response()->json($promotions);
+    public function index(Request $request): JsonResponse {
+        $promotions = $this->promotion->query()->with([
+            'creditPromotions',
+            'cashPromotions',
+            'cashPromotions.formPayment',
+            'promotionItems',
+        ]);
+        $perPage = $request->get('per_page', 10);
+        return response()->json($promotions->paginate($perPage));
     }
 
     public function store(Request $request): JsonResponse {
@@ -27,6 +34,16 @@ class PromotionController extends Controller {
             $this->promotion->rules(),
             $this->promotion->messages(),
         );
+
+//        $dateStart = Carbon::parse($validatedData['start']);
+//        $dateCurrent = Carbon::now();
+
+//        # Verifica se a data de início é menor ou igual a data atual
+//        if ($dateStart->lte($dateCurrent)) {
+//            $validatedData = array_merge($validatedData, [
+//                'start' => 'Ativa'
+//            ]);
+//        }
 
         try {
             $promotion = $this->promotion->query()->create($validatedData);

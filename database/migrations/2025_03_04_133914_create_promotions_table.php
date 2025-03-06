@@ -12,8 +12,8 @@ class CreatePromotionsTable extends Migration {
             $table->string('title')->nullable();
             $table->date('start')->nullable();
             $table->date('end')->nullable();
-            $table->enum('status', ['Ativo', 'Inativo', 'Agendado'])->nullable();
-            $table->enum('auth', ['Administrador', 'Gerente', 'Loja'])->nullable();
+            $table->enum('status', ['Ativa', 'Inativa', 'Agendada'])->default('Agendada')->nullable();
+            $table->enum('auth', ['Administrador', 'Gerente', 'Loja'])->default('Loja')->nullable();
             $table->decimal('store_credit_discount', 10, 2)->nullable();
 
             $table->timestamps();
