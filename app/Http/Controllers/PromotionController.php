@@ -138,12 +138,93 @@ class PromotionController extends Controller {
     }
 
     public function update(Request $request, int $id): JsonResponse {
-        try {
+        $promotion = $this->promotion->query()->find($id);
 
+        if (!$promotion) {
+            return response()->json([
+                'error' => 'A promoção informada não existe na base de dados.'
+            ], 404);
+        }
+
+        $validatedData = $request->validate(
+            $this->promotion->rules(),
+            $this->promotion->messages(),
+        );
+
+        $dateStart = Carbon::parse($validatedData['start']);
+        $dateCurrent = Carbon::now();
+
+        # verifica se $dateStart é maior ou igual a $dateCurrent
+        if ($dateStart->lte($dateCurrent)) {
+            $validatedData = array_merge($validatedData, [
+                'status' => 'Ativa'
+            ]);
+        }
+
+        try {
+            $promotion->update($validatedData);
+
+            # Atualiza as promoções de crédito
+            if (isset($validatedData['creditPromotions'])) {
+                $promotion->creditPromotions()->delete();
+                foreach ($validatedData['creditPromotions'] as $creditPromotion) {
+                    CreditPromotion::query()->create([
+                        'promotion_id' => $promotion->id,
+                        'installment' => $creditPromotion['installment'],
+                        'discount' => $creditPromotion['discount'],
+                    ]);
+                }
+            }
+
+            # Atualiza as promoções à vista
+            if (isset($validatedData['cashPromotions'])) {
+                $promotion->cashPromotions()->delete();
+                foreach ($validatedData['cashPromotions'] as $cashPromotion) {
+                    CashPromotion::query()->create([
+                        'promotion_id' => $promotion->id,
+                        'form_payment_id' => $cashPromotion['form_payment_id'],
+                        'discount' => $cashPromotion['discount'],
+                    ]);
+                }
+            }
+
+            # Atualiza os itens da promoção
+            if (isset($validatedData['promotionItems'])) {
+                $promotion->promotionItems()->delete();
+                foreach ($validatedData['promotionItems'] as $promotionItem) {
+                    PromotionItem::query()->create([
+                        'promotion_id' => $promotion->id,
+                        'promotionable_type' => $promotionItem['type'],
+                        'promotionable_id' => $promotionItem['id']
+                    ]);
+                }
+            }
+
+            # Atualiza os filtros
+            if (isset($validatedData['filters'])) {
+                $promotion->filters()->delete();
+                foreach ($validatedData['filters'] as $filter) {
+                    Filter::query()->create([
+                        'promotion_id' => $promotion->id,
+                        'type' => $filter['type'],
+                        'name' => $filter['name']
+                    ]);
+                }
+            }
+
+            return response()->json(
+                $promotion->load(
+                    'creditPromotions',
+                    'cashPromotions',
+                    'cashPromotions.formPayment',
+                    'promotionItems',
+                    'filters'
+                ), 200
+            );
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
-               'message' => $th->getMessage()
+                'message' => $th->getMessage()
             ], 500);
         }
     }
