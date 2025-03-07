@@ -93,12 +93,14 @@ class PromotionController extends Controller {
                 ]);
             }
 
-            foreach ($validatedData['filters'] as $filter) {
-                Filter::query()->create([
-                    'promotion_id' => $promotion->id,
-                    'type' => $filter['type'],
-                    'name' => $filter['name']
-                ]);
+            if(isset($validatedData['filters'])) {
+                foreach ($validatedData['filters'] as $filter) {
+                    Filter::query()->create([
+                        'promotion_id' => $promotion->id,
+                        'type' => $filter['type'],
+                        'name' => $filter['name']
+                    ]);
+                }
             }
 
             return response()->json(
