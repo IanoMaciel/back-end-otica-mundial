@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CashPromotion;
 use App\Models\CreditPromotion;
+use App\Models\Filter;
 use App\Models\Promotion;
 use App\Models\PromotionItem;
 use Carbon\Carbon;
@@ -92,12 +93,21 @@ class PromotionController extends Controller {
                 ]);
             }
 
+            foreach ($validatedData['filters'] as $filter) {
+                Filter::query()->create([
+                    'promotion_id' => $promotion->id,
+                    'type' => $filter['type'],
+                    'name' => $filter['name']
+                ]);
+            }
+
             return response()->json(
                 $promotion->load(
                     'creditPromotions',
                     'cashPromotions',
                     'cashPromotions.formPayment',
                     'promotionItems',
+                    'filters'
                 ), 201
             );
         } catch (\Throwable $th) {
@@ -125,6 +135,17 @@ class PromotionController extends Controller {
         return response()->json($promotion);
     }
 
+    public function update(Request $request, int $id): JsonResponse {
+        try {
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação.',
+               'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroy(int $id): JsonResponse {
         $promotion = $this->promotion->query()->with([
             'creditPromotions',
@@ -145,6 +166,23 @@ class PromotionController extends Controller {
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteAll(Request $request): JsonResponse {
+        $validatedData = $request->validate(
+            ['id' => 'required|array', 'id.*' => 'integer|exists:promotions,id',],
+            ['id.required' => 'O campo id é obrigatório.', 'id.*.integer' => 'O valor do campo id deve ser um número inteiro.', 'id.*.exists' => 'A promoção informada não existe na base de dados.',]
+        );
+
+        try {
+            $this->promotion->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Error ao processar a soliciatação.',
                 'message' => $th->getMessage()
             ], 500);
         }

@@ -40,6 +40,11 @@ class Promotion extends Model {
             'promotionItems.*.promotion_id' => 'nullable|exists:promotion,id',
             'promotionItems.*.type' => 'nullable|in:lens,frame',
             'promotionItems.*.id' => 'nullable|integer',
+
+            'filters' => 'nullable|array',
+            'filters.*.promotion_id' => 'nullable|exists:promotion,id',
+            'filters.*.type' => 'nullable|string',
+            'filters.*.name' => 'nullable|string',
         ];
     }
 
@@ -64,18 +69,26 @@ class Promotion extends Model {
             'store_credit_discount.numeric' => 'O campo Desconto no Crédito da Loja deve ser um número.',
 
             'creditPromotions.required' => 'As promoções de crédito são obrigatórias.',
+            'creditPromotions.array' => 'As promoções de crédito devem ser um array.',
             'creditPromotions.*.promotion_id.exists' => 'A promoção de crédito informada não existe.',
             'creditPromotions.*.installment.numeric' => 'O número de parcelas para a promoção de crédito deve ser um número.',
             'creditPromotions.*.discount.numeric' => 'O desconto da promoção no crédito deve ser um número.',
 
             'cashPromotions.required' => 'As promoções à vista são obrigatórias.',
+            'cashPromotions.array' => 'As promoções à vista devem ser um array.',
             'cashPromotions.*.promotion_id.exists' => 'A promoção à vista informada não existe.',
             'cashPromotions.*.form_payment_id.exists' => 'A forma de pagamento da promoção à vista informada não existe.',
             'cashPromotions.*.discount.numeric' => 'O desconto da promoção à vista deve ser um número.',
 
             'promotionItems.required' => 'Os itens da promoção são obrigatórios.',
+            'promotionItems.array' => 'Os itens da promoção devem ser um array.',
             'promotionItems.*.promotion_id.exists' => 'O item da promoção informado não existe.',
             'promotionItems.*.type.in' => 'O tipo do item da promoção deve ser um dos valores: lens, frame.',
+
+            'filters.array' => 'Os filtros devem ser um array',
+            'filters.*.promotion_id.exists' => 'A promoção à vista informada não existe.',
+            'filters.*.type.string' => 'O tipo deve ser do tipo texto',
+            'filters.*.name.string' => 'O nome deve ser do tipo texto',
         ];
     }
 
@@ -90,5 +103,9 @@ class Promotion extends Model {
 
     public function promotionItems(): HasMany {
         return $this->hasMany(PromotionItem::class);
+    }
+
+    public function filters(): HasMany {
+        return $this->hasMany(Filter::class);
     }
 }
