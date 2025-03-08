@@ -25,7 +25,8 @@ class PromotionController extends Controller {
             'cashPromotions',
             'cashPromotions.formPayment',
             'promotionItems',
-        ]);
+            'filters'
+        ])->orderBy('created_at', 'desc');
 
         # filters
         if ($title = $request->input('title')) {
@@ -126,6 +127,7 @@ class PromotionController extends Controller {
             'cashPromotions',
             'cashPromotions.formPayment',
             'promotionItems',
+            'filters'
         ])->find($id);
 
         if (!$promotion) {
