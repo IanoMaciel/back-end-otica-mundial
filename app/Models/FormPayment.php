@@ -28,4 +28,8 @@ class FormPayment extends Model {
     public function combinedPayment(): HasMany {
         return $this->hasMany(HasMany::class);
     }
+
+    public function cashPromotion(): HasMany {
+        return $this->hasMany(CashPromotion::class);
+    }
 }

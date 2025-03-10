@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Lens extends Model {
     use HasFactory;
@@ -104,5 +105,9 @@ class Lens extends Model {
 
     public function laboratory(): BelongsTo {
         return $this->belongsTo(Laboratory::class);
+    }
+
+    public function promotionItems(): MorphMany {
+        return $this->morphMany(PromotionItem::class, 'promotionable');
     }
 }
