@@ -46,9 +46,9 @@ class FrameController extends Controller {
         }
 
         // filter by size
-        if ($size = $request->input('size')) {
-            $query->where(function ($q) use ($size) {
-                $q->where('size', 'like', '%' . $size . '%');
+        if ($tamanho = $request->input('tamanho')) {
+            $query->where(function ($q) use ($tamanho) {
+                $q->where('size', 'like', '%' . $tamanho . '%');
             });
         }
 
@@ -60,21 +60,21 @@ class FrameController extends Controller {
         }
 
         // filter by bridge
-        if ($bridge = $request->input('bridge')) {
+        if ($bridge = $request->input('ponte')) {
             $query->where(function ($q) use ($bridge) {
                 $q->where('bridge', 'like', '%' . $bridge . '%');
             });
         }
 
         // filter by color
-        if ($color = $request->input('color')) {
+        if ($color = $request->input('cor')) {
             $query->where(function ($q) use ($color) {
                 $q->where('color', 'like', '%' . $color . '%');
             });
         }
 
         // filter by brand
-        if ($brand = $request->input('brand')) {
+        if ($brand = $request->input('grife')) {
             $query->whereHas('brands', function ($q) use ($brand) {
                 $q->where('brand', 'like', '%' . $brand . '%');
             });
