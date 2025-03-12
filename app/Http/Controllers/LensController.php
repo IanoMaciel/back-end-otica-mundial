@@ -23,6 +23,12 @@ class LensController extends Controller {
             ->orderBy('name_lens');
 
         # filters
+        if ($nameLens = $request->input('search')) {
+            $lenses->where(function ($query) use ($nameLens) {
+                $query->where('name_lens', 'LIKE', "%$nameLens");
+            });
+        }
+
         if ($index = $request->input('indice')) {
             $lenses->where(function ($query) use ($index) {
                $query->where('index', 'LIKE', "%$index");
