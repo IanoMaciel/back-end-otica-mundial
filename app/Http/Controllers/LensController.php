@@ -21,7 +21,34 @@ class LensController extends Controller {
         $lenses = $this->lens->query()
             ->with('typeLens', 'treatment', 'sensitivity', 'laboratory')
             ->orderBy('name_lens');
+
+        # filters
+        if ($index = $request->input('indice')) {
+            $lenses->where(function ($query) use ($index) {
+               $query->where('index', 'LIKE', "%$index");
+            });
+        }
+
+        if ($typeLens = $request->input('tipo')) {
+            $lenses->whereHas('typeLens', function ($query) use ($typeLens) {
+                $query->where('type_lens', 'LIKE', "%$typeLens");
+            });
+        }
+
+        if ($treatment = $request->input('tratamento')) {
+            $lenses->whereHas('treatment', function ($query) use ($treatment) {
+                $query->where('treatment', 'LIKE', "%$treatment");
+            });
+        }
+
+        if ($sensitivity = $request->input('fotossensibilidade')) {
+            $lenses->whereHas('sensitivity', function ($query) use ($sensitivity) {
+                $query->where('sensitivity', 'LIKE', "%$sensitivity");
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
+
         return response()->json($lenses->paginate($perPage));
     }
 
