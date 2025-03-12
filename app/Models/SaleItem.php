@@ -16,9 +16,7 @@ class SaleItem extends Model {
         'sellable_id',
         'quantity',
         'price',
-        'discount',
         'total',
-        'discount_id'
     ];
 
     public function sellable(): MorphTo {
@@ -27,9 +25,5 @@ class SaleItem extends Model {
 
     public function sale(): BelongsTo {
         return$this->belongsTo(Sale::class, 'sale_id');
-    }
-
-    public function discount(): BelongsTo {
-        return $this->belongsTo(Discount::class, 'discount_id');
     }
 }

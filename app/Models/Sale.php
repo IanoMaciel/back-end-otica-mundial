@@ -33,8 +33,6 @@ class Sale extends Model {
             'items.*.type' => 'required|in:frame,service,lens',
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
-            'items.*.discount' => 'sometimes|numeric',
-            'items.*.discount_id' => 'sometimes|exists:discounts,id'
         ];
     }
 
@@ -109,7 +107,7 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Frame::class)
-            ->withPivot('quantity', 'price', 'discount', 'total', 'discount_id')
+            ->withPivot('quantity', 'price', 'total')
             ->withTimestamps();
     }
 
@@ -121,7 +119,7 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Lens::class)
-            ->withPivot('quantity', 'price', 'discount', 'total', 'discount_id')
+            ->withPivot('quantity', 'price', 'total')
             ->withTimestamps();
     }
 
@@ -133,7 +131,7 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Service::class)
-            ->withPivot('quantity', 'price', 'discount', 'total', 'discount_id')
+            ->withPivot('quantity', 'price', 'total')
             ->withTimestamps();
     }
 
