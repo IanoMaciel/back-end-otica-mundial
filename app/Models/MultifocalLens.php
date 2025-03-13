@@ -62,6 +62,6 @@ class MultifocalLens extends Model {
     }
 
     public function lens():BelongsTo {
-        return $this->belongsTo(AboutLens::class);
+        return $this->belongsTo(Lens::class);
     }
 }

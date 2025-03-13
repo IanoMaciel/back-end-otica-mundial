@@ -39,6 +39,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('lens-delete-multiple', 'LensController@deleteMultiple');
     Route::get('lens-export-pdf', 'LensController@exportPdf');
 
+    Route::apiResource('single-vision', 'SingleVisionController');
+    Route::apiResource('multifocal-lens', 'MultifocalLensController');
+
     // accessory
     Route::apiResource('accessory', 'AccessoryController');
 
