@@ -29,10 +29,15 @@ class Sale extends Model {
             'payment_method_id' => 'required|exists:payment_methods,id',
             'status' => 'sometimes|in:Pago,Pendente,Cancelado,Atrasado',
             'total_amount' => 'sometimes|numeric',
+
             'items' => 'required|array',
             'items.*.type' => 'required|in:frame,service,lens',
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
+
+            'items.*.promotion' => 'nullable|array',
+            'items.*.promotion.*.id' => '',
+            'items.*.promotion.*.type' => 'required|integer|exists:promotions,id'
         ];
     }
 
