@@ -34,15 +34,15 @@ class Sale extends Model {
             'items.*.type' => 'required|in:frame,service,lens',
             'items.*.id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
+            'items.*.total' => 'nullable|numeric',
 
             'items.*.promotions' => 'nullable|array',
             'items.*.promotions.*.promotion_id' => 'nullable|exists:promotions,id',
-            'items.*.promotions.*.form_paymentable_type' => 'nullable|in:cash,credit',
-            'items.*.promotions.*.form_paymentable_id' => 'nullable|integer',
+            'items.*.promotions.*.paymentable_type' => 'nullable|in:cash,credit',
+            'items.*.promotions.*.paymentable_id' => 'nullable|integer',
             'items.*.promotions.*.store_credit' => 'nullable|numeric',
             'items.*.promotions.*.discount_value' => 'nullable|numeric',
             'items.*.promotions.*.discount_percentage' => 'nullable|numeric',
-            'items.*.promotions.*.final_price' => 'nullable|numeric',
         ];
     }
 
@@ -80,12 +80,11 @@ class Sale extends Model {
 
             'items.*.promotions.array' => 'O campo "promoções" deve ser um array.',
             'items.*.promotions.*.promotion_id.exists' => 'A promoção informada não existe na base de dados.',
-            'items.*.promotions.*.form_paymentable_type.in' => 'O tipo de pagamento deve ser "cash" ou "credit".',
-            'items.*.promotions.*.form_paymentable_id.integer' => 'O campo "ID" do método de pagamento deve ser um número inteiro.',
+            'items.*.promotions.*.paymentable_type.in' => 'O tipo de pagamento deve ser "cash" ou "credit".',
+            'items.*.promotions.*.paymentable_id.integer' => 'O campo "ID" do método de pagamento deve ser um número inteiro.',
             'items.*.promotions.*.store_credit.numeric' => 'O crédito em loja deve ser um número.',
             'items.*.promotions.*.discount_value.numeric' => 'O valor do desconto deve ser um número.',
             'items.*.promotions.*.discount_percentage.numeric' => 'O percentual de desconto deve ser um número.',
-            'items.*.promotions.*.final_price.numeric' => 'O preço final deve ser um número.',
         ];
     }
 
@@ -122,7 +121,7 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Frame::class)
-            ->withPivot('quantity', 'price', 'total')
+            ->withPivot('quantity', 'price', 'total' )
             ->withTimestamps();
     }
 
@@ -147,6 +146,30 @@ class Sale extends Model {
         )
             ->where('sellable_type', Service::class)
             ->withPivot('quantity', 'price', 'total')
+            ->withTimestamps();
+    }
+
+    public function cashPromotions(): BelongsToMany {
+        return $this->belongsToMany(
+            CashPromotion::class,
+            'sale_items',
+            'sale_id',
+            'paymentable_id'
+        )
+            ->where('paymentable_type', CashPromotion::class)
+            ->withPivot('store_credit', 'discount_value', 'discount_percentage')
+            ->withTimestamps();
+    }
+
+    public function creditPromotions(): BelongsToMany {
+        return $this->belongsToMany(
+            CreditPromotion::class,
+            'sale_items',
+            'sale_id',
+            'paymentable_id'
+        )
+            ->where('paymentable_type', CreditPromotion::class)
+            ->withPivot('store_credit', 'discount_value', 'discount_percentage')
             ->withTimestamps();
     }
 

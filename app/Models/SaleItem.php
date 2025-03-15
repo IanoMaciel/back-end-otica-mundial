@@ -16,14 +16,14 @@ class SaleItem extends Model {
         'sellable_id',
         'quantity',
         'price',
+        'total',
 
         'promotion_id',
-        'form_paymentable_type',
-        'form_paymentable_id',
+        'paymentable_type',
+        'paymentable_id',
         'store_credit',
         'discount_value',
         'discount_percentage',
-        'final_price'
     ];
 
     public function sellable(): MorphTo {
@@ -36,5 +36,9 @@ class SaleItem extends Model {
 
     public function sale(): BelongsTo {
         return$this->belongsTo(Sale::class, 'sale_id');
+    }
+
+    public function promotion(): BelongsTo {
+        return $this->belongsTo(Promotion::class, 'promotion_id');
     }
 }

@@ -24,9 +24,11 @@ class SaveSaleController extends Controller {
             $this->sale->messages(),
         );
 
-        dd($validatedData);
+        if ($this->validations($validatedData)) {
+            return $this->validations($validatedData);
+        }
 
-        if ($this->validations($validatedData)) return $this->validations($validatedData);
+
         $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
 
         try {
@@ -50,16 +52,26 @@ class SaveSaleController extends Controller {
                 }
 
                 $discount = $item['discount'] ?? null;
-                $discountID = $item['discount_id'] ?? null;
 
                 $itemTotal = ($sellable->price - ($sellable->price * ($discount/100))) * $item['quantity'];
+
+                $promotionData = $item['promotions'][0] ?? [];
+
+                $mapTypes = [
+                    'cash' => 'App\Models\CashPromotion',
+                    'credit' => 'App\Models\CreditPromotion',
+                ];
 
                 $sale->items()->create([
                     'sellable_type' => $model,
                     'sellable_id' => $sellable->id,
                     'quantity' => $item['quantity'],
                     'price' => $sellable->price,
-                    'total' => $itemTotal
+                    'total' => $itemTotal,
+                    'promotion_id' => $promotionData['promotion_id'],
+                    'paymentable_type' => $mapTypes[$promotionData['paymentable_type']] ?? null,
+                    'paymentable_id' => $promotionData['paymentable_id'] ?? null,
+                    'store_credit' => $promotionData['store_credit'] ?? null,
                 ]);
 
                 if ($item['type'] === 'frame') {
@@ -83,7 +95,9 @@ class SaveSaleController extends Controller {
                 'customer',
                 'user',
                 'paymentMethod',
-                'frames', 'services', 'lenses'
+                'frames', 'services', 'lenses',
+                'cashPromotions',
+                'creditPromotions'
             ]), 201);
 
         } catch (\Throwable $th) {
