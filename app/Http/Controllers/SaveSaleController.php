@@ -24,6 +24,8 @@ class SaveSaleController extends Controller {
             $this->sale->messages(),
         );
 
+        dd($validatedData);
+
         if ($this->validations($validatedData)) return $this->validations($validatedData);
         $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
 
@@ -57,8 +59,6 @@ class SaveSaleController extends Controller {
                     'sellable_id' => $sellable->id,
                     'quantity' => $item['quantity'],
                     'price' => $sellable->price,
-                    'discount' => $discount,
-                    'discount_id' => $discountID,
                     'total' => $itemTotal
                 ]);
 

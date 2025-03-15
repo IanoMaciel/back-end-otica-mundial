@@ -16,10 +16,21 @@ class SaleItem extends Model {
         'sellable_id',
         'quantity',
         'price',
-        'total',
+
+        'promotion_id',
+        'form_paymentable_type',
+        'form_paymentable_id',
+        'store_credit',
+        'discount_value',
+        'discount_percentage',
+        'final_price'
     ];
 
     public function sellable(): MorphTo {
+        return $this->morphTo();
+    }
+
+    public function paymentable(): MorphTo {
         return $this->morphTo();
     }
 
