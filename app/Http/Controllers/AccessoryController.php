@@ -15,9 +15,17 @@ class AccessoryController extends Controller {
     }
 
     public function index(Request $request): JsonResponse {
-        $query = $this->accessory->query();
+        $accessories = $this->accessory->query()->orderBy('created_at', 'desc');
+
+        if ($search = $request->input('search')) {
+            $accessories->where(function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%")
+                    ->orWhere('barcode', 'LIKE', "%$search%");
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
-        return response()->json($query->paginate($perPage));
+        return response()->json($accessories->paginate($perPage));
     }
 
     public function store(Request $request): JsonResponse {
