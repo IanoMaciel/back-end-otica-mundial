@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // accessory
     Route::apiResource('accessory', 'AccessoryController');
+    Route::delete('accessory-delete-multiple', 'AccessoryController@deleteAll');
 
     // frame
     Route::apiResource('material', 'MaterialController');

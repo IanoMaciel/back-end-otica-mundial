@@ -177,6 +177,6 @@ class SaleController extends Controller {
      */
     private function isAuthorization(): bool {
         $user = Auth::user();
-        return $user->getAttribute('is_admin') ?: false;
+        return $user->is_admin ?: false;
     }
 }
