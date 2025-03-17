@@ -60,13 +60,22 @@ class SaleController extends Controller {
         return response()->json($sales);
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
+
     public function show(int $id): JsonResponse {
         $sale = $this->sale->query()
-            ->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'lenses', 'creditCards', 'paymentCredits', 'combinedPayment')
+            ->with(
+                'customer',
+                'user',
+                'paymentMethod',
+                'frames',
+                'services',
+                'lenses',
+                'creditCards',
+                'paymentCredits',
+                'combinedPayment',
+                'cashPromotions',
+                'creditPromotions'
+            )
             ->find($id);
 
         $agreementID = $sale->customer->agreement_id ?? null;

@@ -121,7 +121,12 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Frame::class)
-            ->withPivot('quantity', 'price', 'total' )
+            ->withPivot(
+                'id',
+                'quantity',
+                'price',
+                'total',
+            )
             ->withTimestamps();
     }
 
@@ -130,10 +135,16 @@ class Sale extends Model {
             Lens::class,
             'sale_items',
             'sale_id',
-            'sellable_id'
+            'sellable_id',
+            'paymentable_id',
         )
             ->where('sellable_type', Lens::class)
-            ->withPivot('quantity', 'price', 'total')
+            ->withPivot(
+                'id',
+                'quantity',
+                'price',
+                'total'
+            )
             ->withTimestamps();
     }
 
