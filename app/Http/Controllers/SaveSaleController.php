@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashPromotion;
+use App\Models\CreditPromotion;
 use App\Models\Discount;
 use App\Models\Frame;
 use App\Models\Lens;
@@ -13,6 +15,17 @@ use Illuminate\Http\Request;
 
 class SaveSaleController extends Controller {
     protected $sale;
+
+    protected const MODEL_TYPES = [
+        'frame' => Frame::class,
+        'lens' => Lens::class,
+        'service' => Service::class,
+    ];
+
+    protected const PAYMENT_TYPES = [
+        'chash' => CashPromotion::class,
+        'credit' => CreditPromotion::class,
+    ];
 
     public function __construct(Sale $sale) {
         $this->sale = $sale;
@@ -27,7 +40,6 @@ class SaveSaleController extends Controller {
         if ($this->validations($validatedData)) {
             return $this->validations($validatedData);
         }
-
 
         $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
 
