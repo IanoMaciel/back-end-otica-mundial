@@ -24,6 +24,7 @@ class SaleItem extends Model {
         'store_credit',
         'discount_value',
         'discount_percentage',
+        'user_id'
     ];
 
     public function sellable(): MorphTo {

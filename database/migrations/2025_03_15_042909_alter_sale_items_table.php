@@ -15,6 +15,9 @@ class AlterSaleItemsTable extends Migration {
             $table->decimal('discount_value', 10, 2)->nullable();
             $table->decimal('discount_percentage', 10, 2)->nullable();
             $table->decimal('total', 10, 2)->nullable();
+
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
         });
     }
 
@@ -27,7 +30,8 @@ class AlterSaleItemsTable extends Migration {
                 'store_credit',
                 'discount_value',
                 'discount_percentage',
-                'total'
+                'total',
+                'user_id'
             ]);
 
             $table->dropMorphs('paymentable');
