@@ -68,9 +68,9 @@ class SaveSaleController extends Controller {
                     'quantity' => $item['quantity'],
                     'price' => $sellable->price,
                     'total' => $itemTotal,
-                    'promotion_id' => $promotionData['promotion_id'],
-                    'paymentable_type' => $mapTypes[$promotionData['paymentable_type']] ?? null,
-                    'paymentable_id' => $promotionData['paymentable_id'] ?? null,
+                    'promotion_id' => $promotionData['promotion_id'] ?? null,
+                    'paymentable_type' => isset($promotionData['paymentable_type']) ? ($mapTypes[$promotionData['paymentable_type']] ?? '') : '',
+                    'paymentable_id' => $promotionData['paymentable_id'] ?? 0,
                     'store_credit' => $promotionData['store_credit'] ?? null,
                     'user_id' => $item['user_id'] ?? null
                 ]);
@@ -96,7 +96,9 @@ class SaveSaleController extends Controller {
                 'customer',
                 'user',
                 'paymentMethod',
-                'frames', 'services', 'lenses',
+                'frames',
+                'services',
+                'lenses',
                 'cashPromotions',
                 'creditPromotions'
             ]), 201);

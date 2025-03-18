@@ -137,7 +137,6 @@ class Sale extends Model {
             'sale_items',
             'sale_id',
             'sellable_id',
-            'paymentable_id',
         )
             ->where('sellable_type', Lens::class)
             ->withPivot(
