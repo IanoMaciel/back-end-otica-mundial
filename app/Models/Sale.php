@@ -126,6 +126,7 @@ class Sale extends Model {
                 'quantity',
                 'price',
                 'total',
+                'user_id'
             )
             ->withTimestamps();
     }
@@ -143,7 +144,8 @@ class Sale extends Model {
                 'id',
                 'quantity',
                 'price',
-                'total'
+                'total',
+                'user_id'
             )
             ->withTimestamps();
     }
@@ -156,7 +158,13 @@ class Sale extends Model {
             'sellable_id'
         )
             ->where('sellable_type', Service::class)
-            ->withPivot('quantity', 'price', 'total')
+            ->withPivot(
+                'id',
+                'quantity',
+                'price',
+                'total',
+                'user_id'
+            )
             ->withTimestamps();
     }
 

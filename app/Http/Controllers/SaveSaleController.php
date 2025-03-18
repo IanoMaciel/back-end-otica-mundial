@@ -72,6 +72,7 @@ class SaveSaleController extends Controller {
                     'paymentable_type' => $mapTypes[$promotionData['paymentable_type']] ?? null,
                     'paymentable_id' => $promotionData['paymentable_id'] ?? null,
                     'store_credit' => $promotionData['store_credit'] ?? null,
+                    'user_id' => $item['user_id'] ?? null
                 ]);
 
                 if ($item['type'] === 'frame') {
