@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Lens extends Model {
@@ -17,14 +18,17 @@ class Lens extends Model {
         'filter',
         'sensitivity_id',
         'name_lens',
-        'spherical',
-        'addition',
-        'cylindrical',
         'laboratory_id',
         'minimum_value',
         'discount',
         'price',
         'delivery',
+        'spherical_start',
+        'spherical_end',
+        'cylindrical_start',
+        'cylindrical_end',
+        'addition_start',
+        'addition_end'
     ];
 
     # Validations
@@ -37,14 +41,17 @@ class Lens extends Model {
             'filter' => 'required|boolean',
             'sensitivity_id' => 'required|exists:sensitivities,id',
             'name_lens' => 'required|string',
-            'spherical' => 'nullable|numeric',
-            'cylindrical' => 'nullable|numeric',
-            'addition' => 'nullable|numeric',
             'laboratory_id' => 'required|exists:laboratories,id',
             'minimum_value' => 'nullable|numeric',
             'discount' => 'nullable|numeric',
             'price' => 'required|numeric',
             'delivery' => 'required|integer',
+            'spherical_start' => 'required|numeric',
+            'spherical_end' => 'required|numeric',
+            'cylindrical_start' => 'nullable|numeric',
+            'cylindrical_end' => 'nullable|numeric',
+            'addition_start' => 'nullable|numeric',
+            'addition_end' => 'nullable|numeric'
         ];
     }
 
@@ -71,9 +78,16 @@ class Lens extends Model {
             'name_lens.required' => 'O nome da lente é obrigatório.',
             'name_lens.string' => 'O nome da lente deve ser texto.',
 
-            'spherical.numeric' => 'O grau esférico deve ser um número.',
-            'cylindrical.numeric' => 'O grau cilíndrico deve ser um número.',
-            'addition.numeric' => 'O grau adição deve ser um número.',
+            'spherical_start.required' => 'O grau esférico inicial é obrigatório.',
+            'spherical_start.numeric' => 'O grau esférico inicial deve ser um número.',
+            'spherical_end.required' => 'O grau esférico final é obrigatório.',
+            'spherical_end.numeric' => 'O grau esférico final deve ser um número.',
+
+            'cylindrical_start.numeric' => 'O grau cilíndrico inicial deve ser um número.',
+            'cylindrical_end.numeric' => 'O grau cilíndrico final deve ser um número.',
+
+            'addition_start.numeric' => 'A adição inicial deve ser um número',
+            'addition_end.numeric' => 'A adição final deve ser um número.',
 
             'laboratory_id.required' => 'O laboratório é obrigatório.',
             'laboratory_id.exists' => 'O laboratório informado não existe.',
@@ -109,5 +123,13 @@ class Lens extends Model {
 
     public function promotionItems(): MorphMany {
         return $this->morphMany(PromotionItem::class, 'promotionable');
+    }
+
+    public function singleVision(): HasMany {
+        return $this->hasMany(SingleVision::class);
+    }
+
+    public function multifocalLens(): HasMany {
+        return $this->hasMany(MultifocalLens::class);
     }
 }

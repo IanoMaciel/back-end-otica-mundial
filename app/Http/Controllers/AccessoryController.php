@@ -6,6 +6,7 @@ use App\Models\Accessory;
 use App\ProductPrefix;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccessoryController extends Controller {
     protected $accessory;
@@ -14,9 +15,17 @@ class AccessoryController extends Controller {
     }
 
     public function index(Request $request): JsonResponse {
-        $query = $this->accessory->query();
+        $accessories = $this->accessory->query()->orderBy('created_at', 'desc');
+
+        if ($search = $request->input('search')) {
+            $accessories->where(function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%")
+                    ->orWhere('barcode', 'LIKE', "%$search%");
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
-        return response()->json($query->paginate($perPage));
+        return response()->json($accessories->paginate($perPage));
     }
 
     public function store(Request $request): JsonResponse {
@@ -123,5 +132,32 @@ class AccessoryController extends Controller {
 
         } while ($this->accessory->query()->where('barcode', $barcode)->exists());
         return $barcode;
+    }
+
+    public function deleteAll(Request $request): JsonResponse {
+        if (!$this->auth()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar esta operação.'
+            ], 403);
+        }
+
+        $validatedData = $request->validate(
+            ['id' => 'required|array', 'id.*' => 'integer|exists:accessories,id'],
+            ['id.required' => 'O campo id é obrigatório.', 'id.array' => 'O campo id é do tipo array.', 'id.*.integer' => 'O id deve ser um número inteiro.',  'id.*.exists' => 'Um ou mais registros selecionados não existe na base de dados.']
+        );
+
+        try {
+            $this->accessory->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Error ao processar a soliciatação.',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    private function auth(): bool {
+        return (bool) Auth::user()->is_admin;
     }
 }

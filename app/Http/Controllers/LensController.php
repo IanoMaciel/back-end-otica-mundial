@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lens;
+use App\Models\MultifocalLens;
+use App\Models\SingleVision;
+use App\Models\TypeLens;
 use App\ProductPrefix;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class LensController extends Controller {
 
@@ -19,9 +20,42 @@ class LensController extends Controller {
 
     public function index(Request $request): JsonResponse {
         $lenses = $this->lens->query()
-            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory')
+            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory', 'singleVision', 'multifocalLens')
             ->orderBy('name_lens');
+
+        # filters
+        if ($nameLens = $request->input('search')) {
+            $lenses->where(function ($query) use ($nameLens) {
+                $query->where('name_lens', 'LIKE', "%$nameLens");
+            });
+        }
+
+        if ($index = $request->input('indice')) {
+            $lenses->where(function ($query) use ($index) {
+               $query->where('index', 'LIKE', "%$index");
+            });
+        }
+
+        if ($typeLens = $request->input('tipo')) {
+            $lenses->whereHas('typeLens', function ($query) use ($typeLens) {
+                $query->where('type_lens', 'LIKE', "%$typeLens");
+            });
+        }
+
+        if ($treatment = $request->input('tratamento')) {
+            $lenses->whereHas('treatment', function ($query) use ($treatment) {
+                $query->where('treatment', 'LIKE', "%$treatment");
+            });
+        }
+
+        if ($sensitivity = $request->input('fotossensibilidade')) {
+            $lenses->whereHas('sensitivity', function ($query) use ($sensitivity) {
+                $query->where('sensitivity', 'LIKE', "%$sensitivity");
+            });
+        }
+
         $perPage = $request->get('per_page', 10);
+
         return response()->json($lenses->paginate($perPage));
     }
 
@@ -35,14 +69,37 @@ class LensController extends Controller {
             'barcode' => $this->generateUniqueBarCode()
         ]);
 
-        DB::beginTransaction();
-
         try {
             $lens = $this->lens->query()->create($validatedData);
-            DB::commit();
-            return response()->json($lens, 201);
+            $step = 0.25;
+
+            $typeLens = TypeLens::query()->find($lens->type_lens_id);
+
+            if ($typeLens->type_lens === 'Multifocal') {
+                for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
+                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                        MultifocalLens::query()->create([
+                            'barcode' => $this->generateUniqueBarCode(),
+                            'lens_id' => $lens->id,
+                            'addition' => $i,
+                            'spherical' => $j,
+                        ]);
+                    }
+                }
+            } else {
+                for ($i = $lens->cylindrical_start; $i <= $lens->cylindrical_end; $i += $step) {
+                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                        SingleVision::query()->create([
+                            'barcode' => $this->generateUniqueBarCode(),
+                            'lens_id' => $lens->id,
+                            'cylindrical' => $i,
+                            'spherical' => $j,
+                        ]);
+                    }
+                }
+            }
+            return response()->json($lens->load('singleVision', 'multifocalLens'), 201);
         } catch (\Throwable $th) {
-            DB::rollBack();
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
@@ -52,7 +109,7 @@ class LensController extends Controller {
 
     public function show(int $id): JsonResponse {
         $lens = $this->lens->query()
-            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory')
+            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory', 'singleVision', 'multifocalLens')
             ->find($id);
 
         if (!$lens) {
@@ -99,7 +156,34 @@ class LensController extends Controller {
 
         try {
             $lens->update($validatedData);
-            return response()->json($lens);
+
+            $step = 0.25;
+            $typeLens = TypeLens::query()->find($lens->type_lens_id);
+
+            if ($typeLens->type_lens === 'Multifocal') {
+                for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
+                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                        MultifocalLens::query()->create([
+                            'barcode' => $this->generateUniqueBarCode(),
+                            'lens_id' => $lens->id,
+                            'addition' => $i,
+                            'spherical' => $j,
+                        ]);
+                    }
+                }
+            } else {
+                for ($i = $lens->cylindrical_start; $i <= $lens->cylindrical_end; $i += $step) {
+                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                        SingleVision::query()->create([
+                            'barcode' => $this->generateUniqueBarCode(),
+                            'lens_id' => $lens->id,
+                            'cylindrical' => $i,
+                            'spherical' => $j,
+                        ]);
+                    }
+                }
+            }
+            return response()->json($lens->load('stockLens'));
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
@@ -197,5 +281,4 @@ class LensController extends Controller {
         } while ($this->lens->query()->where('barcode', $barcode)->exists());
         return $barcode;
     }
-
 }

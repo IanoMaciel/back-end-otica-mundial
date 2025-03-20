@@ -86,10 +86,15 @@ class PromotionController extends Controller {
                 ]);
             }
 
+            $mapTypes = [
+                'frame' => 'App\Models\Frame',
+                'lens' => 'App\Models\Lens',
+            ];
+
             foreach ($validatedData['promotionItems'] as $promotionItem) {
                 PromotionItem::query()->create([
                     'promotion_id' => $promotion->id,
-                    'promotionable_type' => $promotionItem['type'],
+                    'promotionable_type' => $mapTypes[$promotionItem['type']] ?? null,
                     'promotionable_id' => $promotionItem['id']
                 ]);
             }

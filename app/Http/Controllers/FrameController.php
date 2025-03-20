@@ -19,7 +19,7 @@ class FrameController extends Controller {
 
     public function exportPdf() {
         $frames = $this->frame->query()
-            ->with('suppliers', 'brands', 'materials')
+            ->with('suppliers', 'brands', 'materials', 'promotionItems')
             ->join('brands', 'frames.brand_id', '=', 'brands.id')
             ->orderBy('brands.brand')
             ->select('frames.*')
@@ -35,7 +35,17 @@ class FrameController extends Controller {
      */
     public function index(Request $request): JsonResponse {
         $query = $this->frame->query()
-            ->with('suppliers', 'brands', 'materials')
+            ->with(
+                'suppliers',
+                'brands',
+                'materials',
+                'promotionItems',
+                'promotionItems.promotion',
+                'promotionItems.promotion.creditPromotions',
+                'promotionItems.promotion.cashPromotions',
+                'promotionItems.promotion.cashPromotions.formPayment',
+                'promotionItems.promotion.filters',
+            )
             ->orderBy('created_at', 'desc');
 
         // filter by search
@@ -131,7 +141,19 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function show(int $id): JsonResponse {
-        $frame = $this->frame->query()->with('suppliers', 'brands', 'materials')->find($id);
+        $frame = $this->frame->query()
+            ->with(
+                'suppliers',
+                'brands',
+                'materials',
+                'promotionItems',
+                'promotionItems.promotion',
+                'promotionItems.promotion.creditPromotions',
+                'promotionItems.promotion.cashPromotions',
+                'promotionItems.promotion.cashPromotions.formPayment',
+                'promotionItems.promotion.filters',
+            )
+            ->find($id);
         if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
         return response()->json($frame);
     }

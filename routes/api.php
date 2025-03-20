@@ -16,6 +16,7 @@ use \App\Http\Controllers\PasswordResetController;
 */
 
 Route::post('login', 'AuthController@login');
+Route::post('auth', 'AuthController@auth');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', 'AuthController@me');
@@ -39,8 +40,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('lens-delete-multiple', 'LensController@deleteMultiple');
     Route::get('lens-export-pdf', 'LensController@exportPdf');
 
+    Route::apiResource('single-vision', 'SingleVisionController');
+    Route::apiResource('multifocal-lens', 'MultifocalLensController');
+
     // accessory
     Route::apiResource('accessory', 'AccessoryController');
+    Route::delete('accessory-delete-multiple', 'AccessoryController@deleteAll');
 
     // frame
     Route::apiResource('material', 'MaterialController');

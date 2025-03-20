@@ -16,12 +16,22 @@ class SaleItem extends Model {
         'sellable_id',
         'quantity',
         'price',
-        'discount',
         'total',
-        'discount_id'
+
+        'promotion_id',
+        'paymentable_type',
+        'paymentable_id',
+        'store_credit',
+        'discount_value',
+        'discount_percentage',
+        'user_id'
     ];
 
     public function sellable(): MorphTo {
+        return $this->morphTo();
+    }
+
+    public function paymentable(): MorphTo {
         return $this->morphTo();
     }
 
@@ -29,7 +39,7 @@ class SaleItem extends Model {
         return$this->belongsTo(Sale::class, 'sale_id');
     }
 
-    public function discount(): BelongsTo {
-        return $this->belongsTo(Discount::class, 'discount_id');
+    public function promotion(): BelongsTo {
+        return $this->belongsTo(Promotion::class, 'promotion_id');
     }
 }

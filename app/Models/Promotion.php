@@ -108,4 +108,8 @@ class Promotion extends Model {
     public function filters(): HasMany {
         return $this->hasMany(Filter::class);
     }
+
+    public function saleItems(): HasMany {
+        return $this->hasMany(SaleItem::class);
+    }
 }
