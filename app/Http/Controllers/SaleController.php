@@ -25,7 +25,7 @@ class SaleController extends Controller {
     public function index(Request $request): JsonResponse {
         $query = $this->sale
             ->query()
-            ->with(
+            ->with([
                 'customer',
                 'user',
                 'paymentMethod',
@@ -35,9 +35,10 @@ class SaleController extends Controller {
                 'creditCards',
                 'paymentCredits',
                 'combinedPayment',
-                'cashPromotions',
-                'creditPromotions'
-            )
+                'cashPromotions.formPayment',
+                'cashPromotions.promotion',
+                'creditPromotions.promotion'
+            ])
             ->orderBy('created_at', 'desc');
 
         if ($status = $request->input('status')) {
@@ -78,7 +79,7 @@ class SaleController extends Controller {
     public function show(int $id): JsonResponse {
         $sale = $this->sale
             ->query()
-            ->with(
+            ->with([
                 'customer',
                 'user',
                 'paymentMethod',
@@ -88,9 +89,10 @@ class SaleController extends Controller {
                 'creditCards',
                 'paymentCredits',
                 'combinedPayment',
-                'cashPromotions',
-                'creditPromotions'
-            )
+                'cashPromotions.formPayment',
+                'cashPromotions.promotion',
+                'creditPromotions.promotion'
+            ])
             ->find($id);
 
         $agreementID = $sale->customer->agreement_id ?? null;
