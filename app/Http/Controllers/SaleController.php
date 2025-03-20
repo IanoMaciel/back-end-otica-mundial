@@ -23,7 +23,21 @@ class SaleController extends Controller {
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse {
-        $query = $this->sale->with('customer', 'user', 'paymentMethod', 'frames', 'services', 'lenses', 'creditCards', 'paymentCredits', 'combinedPayment')
+        $query = $this->sale
+            ->query()
+            ->with(
+                'customer',
+                'user',
+                'paymentMethod',
+                'frames',
+                'services',
+                'lenses',
+                'creditCards',
+                'paymentCredits',
+                'combinedPayment',
+                'cashPromotions',
+                'creditPromotions'
+            )
             ->orderBy('created_at', 'desc');
 
         if ($status = $request->input('status')) {
@@ -62,7 +76,8 @@ class SaleController extends Controller {
 
 
     public function show(int $id): JsonResponse {
-        $sale = $this->sale->query()
+        $sale = $this->sale
+            ->query()
             ->with(
                 'customer',
                 'user',
