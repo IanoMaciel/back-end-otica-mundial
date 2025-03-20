@@ -126,7 +126,12 @@ class Sale extends Model {
                 'quantity',
                 'price',
                 'total',
-                'user_id'
+                'user_id',
+                'paymentable_type',
+                'paymentable_id',
+                'store_credit',
+                'discount_value',
+                'discount_percentage'
             )
             ->withTimestamps();
     }
@@ -144,7 +149,12 @@ class Sale extends Model {
                 'quantity',
                 'price',
                 'total',
-                'user_id'
+                'user_id',
+                'paymentable_type',
+                'paymentable_id',
+                'store_credit',
+                'discount_value',
+                'discount_percentage'
             )
             ->withTimestamps();
     }
