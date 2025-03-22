@@ -19,8 +19,22 @@ class LensController extends Controller {
     }
 
     public function index(Request $request): JsonResponse {
-        $lenses = $this->lens->query()
-            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory', 'singleVision', 'multifocalLens')
+        $lenses = $this->lens
+            ->query()
+            ->with(
+                'typeLens',
+                'treatment',
+                'sensitivity',
+                'laboratory',
+                'singleVision',
+                'multifocalLens',
+                'promotionItems',
+                'promotionItems.promotion',
+                'promotionItems.promotion.creditPromotions',
+                'promotionItems.promotion.cashPromotions',
+                'promotionItems.promotion.cashPromotions.formPayment',
+                'promotionItems.promotion.filters',
+            )
             ->orderBy('name_lens');
 
         # filters
@@ -108,8 +122,22 @@ class LensController extends Controller {
     }
 
     public function show(int $id): JsonResponse {
-        $lens = $this->lens->query()
-            ->with('typeLens', 'treatment', 'sensitivity', 'laboratory', 'singleVision', 'multifocalLens')
+        $lens = $this->lens
+            ->query()
+            ->with(
+                'typeLens',
+                'treatment',
+                'sensitivity',
+                'laboratory',
+                'singleVision',
+                'multifocalLens',
+                'promotionItems',
+                'promotionItems.promotion',
+                'promotionItems.promotion.creditPromotions',
+                'promotionItems.promotion.cashPromotions',
+                'promotionItems.promotion.cashPromotions.formPayment',
+                'promotionItems.promotion.filters',
+            )
             ->find($id);
 
         if (!$lens) {
