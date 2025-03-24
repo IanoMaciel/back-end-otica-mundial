@@ -333,8 +333,18 @@
             </tfoot>
         </table>
 
-       @dd($serviceOrder->sale->total_amount);
-
         <h3>Informações do Pagamento</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pagamento</th>
+                    <th>Valor</th>
+                    <th>Pagamento</th>
+                    <th>Pagamento</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </body>
 </html>
