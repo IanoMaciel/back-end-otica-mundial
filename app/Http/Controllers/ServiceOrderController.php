@@ -45,7 +45,6 @@ class ServiceOrderController extends Controller {
         $lenses = $serviceOrder->sale->lenses;
         $services = $serviceOrder->sale->services;
 
-
         return view('pdf.service_order', [
             'seller' => $seller,
             'numberSale' => $numberSale,

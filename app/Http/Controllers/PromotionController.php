@@ -195,13 +195,18 @@ class PromotionController extends Controller {
                 }
             }
 
+            $mapTypes = [
+                'frame' => 'App\Models\Frame',
+                'lens' => 'App\Models\Lens',
+            ];
+
             # Atualiza os itens da promoção
             if (isset($validatedData['promotionItems'])) {
                 $promotion->promotionItems()->delete();
                 foreach ($validatedData['promotionItems'] as $promotionItem) {
                     PromotionItem::query()->create([
                         'promotion_id' => $promotion->id,
-                        'promotionable_type' => $promotionItem['type'],
+                        'promotionable_type' => $mapTypes[$promotionItem['type']] ?? null,
                         'promotionable_id' => $promotionItem['id']
                     ]);
                 }
