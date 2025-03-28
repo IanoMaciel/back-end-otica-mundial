@@ -37,7 +37,7 @@
         }
 
         .img-area {
-            background: #e3e3e3;
+            /*background: #f1f1f1;*/
             text-align: center;
             padding: 0 10px;
             clip-path: polygon(0% 0%, 100% 0%, 92% 100%, 0% 100%);
@@ -63,16 +63,16 @@
             align-items: center;
             gap: 10px;
             padding: 10px;
-            border-radius: 2px;
+            border-radius: 1px;
             border: 1px solid #ccc;
-            background: #e3e3e3;
+            background: #f1f1f1;
         }
 
         .observations {
             padding: 10px;
-            border-radius: 2px;
+            border-radius: 1px;
             border: 1px solid #ccc;
-            background: #e3e3e3;
+            background: #f1f1f1;
         }
 
         .customer-information {
@@ -81,9 +81,9 @@
             justify-content: space-between;
             gap: 10px;
             padding: 10px;
-            border-radius: 2px;
+            border-radius: 1px;
             border: 1px solid #ccc;
-            background: #e3e3e3;
+            background: #f1f1f1;
         }
 
         .data {
@@ -100,7 +100,7 @@
         }
 
         thead {
-            background-color: #e3e3e3;
+            background: #f1f1f1;
         }
 
         th, td {
@@ -338,13 +338,51 @@
         <table>
             <thead>
                 <tr>
-                    <th>Pagamento</th>
-                    <th>Valor</th>
-                    <th>Pagamento</th>
-                    <th>Pagamento</th>
+                    <th>Pagamento Combinado</th>
+                    <th>Valor R$</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <tr>
+                    <td>Cartão de Crédito</td>
+                    <td>R$ 1020 (2x 510,00)</td>
+                </tr>
+                <tr>
+                    <td>Pix</td>
+                    <td>R$ 99</td>
+                </tr>
+            </tbody>
+        </table>
+
+        @php
+
+            dd($payment->paymentMethod);
+
+        @endphp
+
+        @dd('parou aqui');
+        {{-- Pagamento no Crediário da Loja --}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Parcela 1</th>
+                    <th>Parcela 2</th>
+                    <th>Parcela 3</th>
+                    <th>Parcela 4</th>
+                    <th>Parcela 5</th>
+                    <th>Parcela 6</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                </tr>
+            </tbody>
         </table>
     </body>
 </html>

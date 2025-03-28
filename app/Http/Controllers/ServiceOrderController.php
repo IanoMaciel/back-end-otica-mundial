@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Card;
+use App\Models\CombinedPayment;
+use App\Models\FormPayment;
+use App\Models\PaymentMethod;
 use App\Models\ServiceOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
@@ -44,6 +48,38 @@ class ServiceOrderController extends Controller {
         $frames = $serviceOrder->sale->frames;
         $lenses = $serviceOrder->sale->lenses;
         $services = $serviceOrder->sale->services;
+        // pagamento
+        $paymentMethod = PaymentMethod::query()->find($serviceOrder->sale->payment_method_id);
+
+        $payment = [];
+
+        if ($paymentMethod->payment_method === 'Pag. Combinado') {
+            $combinedPayment = CombinedPayment::query()->with('portions')->find($serviceOrder->sale->id);
+
+            $response = $combinedPayment->toArray();
+
+            $response['portions'] = $combinedPayment->portions->map(function ($portion) {
+                $formPayment = FormPayment::query()->find($portion->form_payment_id) ?? null;
+                $card = Card::query()->find($portion->card_id) ?? null;
+
+                return [
+                    'id' => $portion->id,
+                    'form_payment_id' =>  $formPayment->form_payment ?? null,
+                    'card_id' => $card ? [
+                        'number_installment' => $card->number_installment,
+                        'interest_rate' => $card->interest_rate,
+                    ] : null,
+                    'amount' => $portion->amount,
+                    'created_at' => $portion->created_at,
+                    'updated_at' => $portion->updated_at,
+                ];
+            });
+
+            $payment = [
+                'paymentMethod' => $paymentMethod->payment_method,
+                'portions' => $response
+            ];
+        }
 
         return view('pdf.service_order', [
             'seller' => $seller,
@@ -64,6 +100,8 @@ class ServiceOrderController extends Controller {
             'lenses' => $lenses,
             'frames' => $frames,
             'services' => $services,
+
+            'payment' => $payment
         ]);
     }
 
