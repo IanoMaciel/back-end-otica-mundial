@@ -15,7 +15,9 @@ class ExpenseController extends Controller {
     }
 
     public function index(Request $request): JsonResponse {
-        $query = $this->expense->query()->with('categoryExpenses', 'proofs')->orderBy('date_proof', 'desc');
+        $query = $this->expense->query()
+            ->with(['categoryExpenses', 'proofs'])
+            ->orderBy('date_proof', 'desc');
         $perPage = $request->get('per_page', 10);
         return response()->json($query->paginate($perPage));
     }
@@ -50,7 +52,9 @@ class ExpenseController extends Controller {
     }
 
     public function show(int $id): JsonResponse {
-        $expense = $this->expense->query()->with('categoryExpenses', 'proofs')->find($id);
+        $expense = $this->expense->query()
+            ->with(['categoryExpenses', 'proofs'])
+            ->find($id);
 
         if(!$expense) {
             return response()->json([
