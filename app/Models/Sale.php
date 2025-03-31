@@ -19,6 +19,7 @@ class Sale extends Model {
         'payment_method_id',
         'status',
         'total_amount',
+        'date_sale',
     ];
 
     public function rules(): array {
@@ -29,6 +30,7 @@ class Sale extends Model {
             'payment_method_id' => 'required|exists:payment_methods,id',
             'status' => 'nullable|in:Pago,Pendente,Cancelado,Atrasado',
             'total_amount' => 'nullable|numeric',
+            'date_sale' => 'nullable|date',
 
             'items' => 'required|array',
             'items.*.type' => 'required|in:frame,service,lens',
@@ -64,6 +66,7 @@ class Sale extends Model {
             'status.in' => 'O status deve ser um dos seguintes valores: Pago, Pendente, Cancelado ou Atrasado.',
 
             'total_amount.numeric' => 'O campo valor total deve ser um número.',
+            'date_sale.date' => 'O campo data da venda não é uma data válida',
 
             'items.required' => 'É necessário informar ao menos um item.',
             'items.array' => 'O campo itens deve ser um array.',
