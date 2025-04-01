@@ -54,7 +54,7 @@ class Expense extends Model {
     }
 
     public function categoryExpenses(): BelongsTo {
-        return $this->belongsTo(CategoryExpense::class);
+        return $this->belongsTo(CategoryExpense::class, 'category_expense_id');
     }
 
     public function proofs(): HasMany {
