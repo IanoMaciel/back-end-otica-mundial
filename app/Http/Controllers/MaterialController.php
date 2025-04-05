@@ -13,20 +13,10 @@ class MaterialController extends Controller {
         $this->material = $material;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function index(Request $request): JsonResponse {
-        $query = $this->material->query()->orderBy('material');
-        $perPage = $request->get('per_page', 10);
-        return response()->json($query->paginate($perPage));
+        return response()->json($this->material->query()->orderBy('material')->get());
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate($this->material->rules(), $this->material->messages());
 
@@ -41,10 +31,6 @@ class MaterialController extends Controller {
         }
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
     public function show(int $id): JsonResponse {
         $material = $this->material->query()->find($id);
 
@@ -57,11 +43,6 @@ class MaterialController extends Controller {
         return response()->json($material);
     }
 
-    /**
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
     public function update(Request $request, int $id): JsonResponse {
         $material = $this->material->query()->find($id);
 
@@ -98,10 +79,6 @@ class MaterialController extends Controller {
         }
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
     public function destroy(int $id): JsonResponse {
         $material = $this->material->query()->find($id);
 
