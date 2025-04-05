@@ -12,7 +12,6 @@ class DashboardController extends Controller {
     protected $sale;
     protected $expense;
 
-
     public function __construct(
         Sale $sale, Expense $expense) {
         $this->sale = $sale;

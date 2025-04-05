@@ -31,18 +31,18 @@ class Frame extends Model {
     public function rules(bool $update=false): array {
         return [
             'code' => $update ? 'required|string' : 'required|string|unique:frames',
-            'size' => $update ? 'nullable|numeric' : 'required|numeric',
-            'haste' => $update ? 'nullable|numeric' : 'required|numeric',
-            'bridge' => $update ? 'nullable|numeric' : 'required|numeric',
+            'size' => 'nullable|numeric',
+            'haste' => 'nullable|numeric',
+            'bridge' => 'nullable|numeric',
             'color' => 'nullable|string|max:30',
             'amount' => $update ? 'nullable|numeric' : 'required|numeric',
             'purchase_value' => 'nullable|numeric',
             'profit' => 'nullable|numeric',
             'price' => $update ? 'nullable|numeric|gt:0' : 'required|numeric|gt:0',
             'description' => 'nullable|max:255',
-            'supplier_id' => $update ? 'nullable|exists:suppliers,id' : 'required|exists:suppliers,id',
-            'brand_id' => $update ? 'nullable|exists:brands,id' : 'required|exists:brands,id',
-            'material_id' => $update ? 'nullable|exists:materials,id' : 'required|exists:materials,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'brand_id' => 'nullable|exists:brands,id',
+            'material_id' => 'nullable|exists:materials,id',
         ];
     }
 
@@ -52,13 +52,10 @@ class Frame extends Model {
             'code.string' => 'O campo código deve ser um valor texto.',
             'code.unique' => 'O código já está cadastrado na base de dados.',
 
-            'size.required' => 'O campo tamanho é obrigatório.',
             'size.numeric' => 'O campo tamanho deve ser um valor numérico.',
 
-            'haste.required' => 'O campo haste é obrigatório.',
             'haste.numeric' => 'O campo haste deve ser um valor numérico.',
 
-            'bridge.required' => 'O campo ponte é obrigatório.',
             'bridge.numeric' => 'O campo ponte deve ser um valor numérico.',
 
             'color.string' => 'O campo cor deve ser uma string.',
@@ -78,13 +75,10 @@ class Frame extends Model {
             'description.string' => 'O campo descrição deve ser uma string.',
             'description.max' => 'O campo descrição não pode exceder 255 caracteres.',
 
-            'supplier_id.required' => 'O campo fornecedor é obrigatório.',
             'supplier_id.exists' => 'O fornecedor selecionado não existe.',
 
-            'brand_id.required' => 'O campo marca é obrigatório.',
             'brand_id.exists' => 'A marca selecionada não existe.',
 
-            'material_id.required' => 'O campo material é obrigatório.',
             'material_id.exists' => 'O material selecionado não existe.',
         ];
     }
