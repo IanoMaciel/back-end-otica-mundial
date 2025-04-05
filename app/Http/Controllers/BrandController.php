@@ -13,20 +13,10 @@ class BrandController extends Controller {
         $this->brand = $brand;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function index(Request $request): JsonResponse {
-        $query = $this->brand->query()->orderBy('brand');
-        $perPage = $request->get('per_page', 10);
-        return response()->json($query->paginate($perPage));
+    public function index(): JsonResponse {
+        return response()->json($this->brand->query()->orderBy('brand')->get());
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
             $this->brand->rules(),
@@ -44,10 +34,6 @@ class BrandController extends Controller {
         }
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
     public function show(int $id): JsonResponse {
         $brand = $this->brand->query()->find($id);
 
@@ -60,11 +46,6 @@ class BrandController extends Controller {
         return response()->json($brand);
     }
 
-    /**
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
     public function update(Request $request, int $id): JsonResponse {
         $brand = $this->brand->query()->find($id);
 
@@ -120,5 +101,4 @@ class BrandController extends Controller {
             ], 500);
         }
     }
-
 }

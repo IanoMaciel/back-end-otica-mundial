@@ -14,10 +14,11 @@ class SupplierController extends Controller {
         $this->supplier = $supplier;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
+    public function getAll(): JsonResponse {
+        return response()->json($this->supplier->query()->orderBy('name')->get());
+    }
+
+
     public function index(Request $request): JsonResponse {
         $query = $this->supplier->query()->orderBy('name');
 
