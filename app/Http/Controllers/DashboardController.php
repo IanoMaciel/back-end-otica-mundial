@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Accessory;
+use App\Models\Customer;
 use App\Models\Expense;
+use App\Models\Frame;
+use App\Models\Lens;
 use App\Models\Sale;
+use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller {
 
@@ -62,13 +68,40 @@ class DashboardController extends Controller {
             ->groupBy('payment_methods.payment_method')
             ->get();
 
+        $services = Service::query()->count();
+        $frames = Frame::query()->count();
+        $lenses = Lens::query()->count();
+        $accessories = Accessory::query()->count();
+        $customers = Customer::query()->count();
+        $sales = Sale::query()->count();
+
+        $monthlySales = $this->sale->query()
+            ->selectRaw('MONTH(date_sale) as month, SUM(total_amount) as total')
+            ->where('status', 'Pago')
+            ->whereYear('date_sale', $year)
+            ->groupBy(DB::raw('MONTH(date_sale)'))
+            ->orderBy('month')
+            ->get()
+            ->pluck('total', 'month');
+
         return response()->json([
-            'gains' => $gains,
-            'gainsPending' => $gainsStatusPending,
-            'expense_with_category' => $expenseWithCategory,
-            'expense' => $expenses,
-            'balance' => $gains - $expenses - $expenseWithCategory,
+            'cash_flow' => [
+                'gains' => $gains,
+                'gainsPending' => $gainsStatusPending,
+                'expense_with_category' => $expenseWithCategory,
+                'expense' => $expenses,
+                'balance' => $gains - $expenses - $expenseWithCategory,
+            ],
             'payment_methods'=> $paymentMethods,
+            'monthly_sales' => $monthlySales,
+            'amount_items' => [
+                'service' => $services,
+                'frames' => $frames,
+                'lenses' => $lenses,
+                'accessories' => $accessories,
+                'customers' => $customers,
+                'sales' => $sales
+            ]
         ]);
     }
 }
