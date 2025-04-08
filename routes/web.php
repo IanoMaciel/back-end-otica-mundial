@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/qrcode', function () {
+    return view('pdf.qrcode');
+});
+
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetForm'])
     ->name('password.reset');
 
