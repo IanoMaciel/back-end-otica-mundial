@@ -84,6 +84,34 @@ class DashboardController extends Controller {
             ->get()
             ->pluck('total', 'month');
 
+        $monthlyBalance = collect(range(1,12))->mapWithKeys(function ($month) use ($year) {
+            $gains = $this->sale->query()
+                ->where('status', 'Pago')
+                ->whereYear('date_sale', $year)
+                ->whereMonth('date_sale', $month)
+                ->sum('total_amount');
+
+            $expense = $this->expense->query()
+                ->join('category_expenses', 'expenses.category_expense_id', '=', 'category_expenses.id')
+                ->where('category_expenses.category_expense', '!=', 'Retirada')
+                ->whereYear('expenses.date_proof', $year)
+                ->whereMonth('expenses.date_proof', $month)
+                ->sum('expenses.total_amount');
+
+            $expenseWithCategory = $this->expense->query()
+                ->join('category_expenses', 'expenses.category_expense_id', '=', 'category_expenses.id')
+                ->where('category_expenses.category_expense', 'Retirada')
+                ->whereYear('expenses.date_proof', $year)
+                ->whereMonth('expenses.date_proof', $month)
+                ->sum('expenses.total_amount');
+
+            $balance = $gains - $expense - $expenseWithCategory;
+
+            return [$month => round($balance, 2)];
+        })->filter(function ($balance) {
+            return $balance != 0;
+        });
+
         return response()->json([
             'cash_flow' => [
                 'gains' => $gains,
@@ -92,8 +120,6 @@ class DashboardController extends Controller {
                 'expense' => $expenses,
                 'balance' => $gains - $expenses - $expenseWithCategory,
             ],
-            'payment_methods'=> $paymentMethods,
-            'monthly_sales' => $monthlySales,
             'amount_items' => [
                 'service' => $services,
                 'frames' => $frames,
@@ -101,7 +127,10 @@ class DashboardController extends Controller {
                 'accessories' => $accessories,
                 'customers' => $customers,
                 'sales' => $sales
-            ]
+            ],
+            'payment_methods'=> $paymentMethods,
+            'monthly_sales' => $monthlySales,
+            '$monthly_balance' => $monthlyBalance,
         ]);
     }
 }
