@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Frame;
 use Barryvdh\DomPDF\Facade\Pdf;
-use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\ProductPrefix;

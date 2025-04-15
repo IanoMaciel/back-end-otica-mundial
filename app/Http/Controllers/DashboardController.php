@@ -130,7 +130,7 @@ class DashboardController extends Controller {
             ],
             'payment_methods'=> $paymentMethods,
             'monthly_sales' => $monthlySales,
-            '$monthly_balance' => $monthlyBalance,
+            'monthly_balance' => $monthlyBalance,
         ]);
     }
 }
