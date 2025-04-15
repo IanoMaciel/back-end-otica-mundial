@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Frame;
 use Barryvdh\DomPDF\Facade\Pdf;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\ProductPrefix;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class FrameController extends Controller {
 
@@ -269,5 +271,43 @@ class FrameController extends Controller {
 
         } while ($this->frame->query()->where('barcode', $barcode)->exists());
         return $barcode;
+    }
+
+    public function generateQrCode() {
+        $data = $this->frame->query()
+            ->with('brands')
+            ->find(1);
+
+        $brand = $data->brands->brand;
+        $code = $data->code;
+        $price = $data->price;
+
+        $qrcode = QrCode::format('svg')->size(100)->generate('test');
+
+        return view('pdf.qrcode', [
+            'brand' => $brand,
+            'code' => $code,
+            'price' => $price,
+            'qrcode' => $qrcode
+        ]);
+    }
+
+    public function downloadQrCode() {
+        $data = $this->frame->query()
+            ->with('brands')
+            ->find(1);
+
+        $brand = $data->brands->brand;
+        $code = $data->code;
+        $price = $data->price;
+
+        $content = "Marca: $brand\nCódigo: $code\nPreço: R$ $price";
+
+        $svg = QrCode::format('svg')->size(200)->generate($content);
+
+        return \Illuminate\Support\Facades\Response::make($svg, 200, [
+            'Content-Type' => 'image/svg+xml',
+            'Content-Disposition' => 'attachment; filename="qrcode.svg"',
+        ]);
     }
 }
