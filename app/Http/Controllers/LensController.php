@@ -279,13 +279,12 @@ class LensController extends Controller {
 
     public function exportPdf() {
         $lenses = $this->lens->query()
-            ->with('typeLens', 'treatment', 'sensitivity')
+            ->with(
+                'typeLens',
+                'treatment',
+                'sensitivity'
+            )
             ->get();
-
-//        $pdf = Pdf::loadView('pdf.lenses', compact('lenses'))
-//            ->setPaper('a4', 'landscape');
-//
-//        return $pdf->download('lenses.pdf');
 
         return view('pdf.lenses', compact('lenses'));
     }

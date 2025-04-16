@@ -1,99 +1,218 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Estoque de Lentes</title>
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            margin: 20px;
-            color: #333;
+    <head>
+        <title>Estoque de Lentes</title>
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
+        />
+
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
+        />
+
+        <style>
+            body {
+                font-family: 'Nunito', sans-serif;
+                margin: 20px;
+                color: #333;
+            }
+
+            .header {
+                display: flex;
+                width: 100%;
+                align-items: center;
+            }
+
+            .img-area {
+                text-align: center;
+                padding: 0 10px;
+                clip-path: polygon(0% 0%, 100% 0%, 92% 100%, 0% 100%);
+            }
+
+            .title {
+                width: 100%;
+                height: 53px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background-color: red;
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                text-align: center;
+                line-height: 53px;
+                clip-path: polygon(2.7% 0, 100% 0, 100% 100%, 0% 100%);
+                text-transform: uppercase;
+            }
+
+            h1 {
+                font-weight: 700;
+                color: #1c1c1c;
+                text-align: left;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            thead th {
+                background-color: red;
+                color: #ffffff;
+                text-align: left;
+                padding: 10px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            tbody td {
+                text-align: left;
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            tr { border-bottom: 1px solid #dadada; }
+
+            .action {
+                display: flex;
+                justify-content: end;
+                align-content: center;
+                margin-bottom: 20px;
+
+                button {
+                    display: flex;
+                    align-content: center;
+                    justify-content: center;
+
+                    gap: 5px;
+
+                    background: red;
+                    color: white;
+                    padding: 5px 10px;
+                    border: none;
+                    border-radius: 2px;
+
+                    cursor: pointer;
+                    font-weight: 600;
+                }
+            }
+
+            @media print {
+                .action {
+                    display: none;
+                }
+
+                body {
+                    margin: 0;
+                    padding: 15px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="action">
+            <button type="button">
+                <i class="ph-fill ph-export"></i>
+                <span>IMPRIMIR</span>
+            </button>
+        </div>
+        <article class="header">
+            <div class="img-area">
+                <img src="{{ asset('images/logo.svg') }}" alt="logo" width="171px" height="53px"/>
+            </div>
+            <div class="title">
+                <h4>ESTOQUE DE LENTES</h4>
+            </div>
+        </article>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Código</th>
+                <th>Tipo</th>
+                <th>Indíce</th>
+                <th>Antirreflexo</th>
+                <th>Filtro</th>
+                <th>Foco Sen.</th>
+                <th>Nome</th>
+                <th>Esférico</th>
+                <th>Cilindro</th>
+                <th>Adição</th>
+                <th>QTD</th>
+                <th>Custo(R$)</th>
+                <th>Lucro</th>
+                <th>Venda</th>
+                <th>Desconto</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            @foreach ($lenses as $lens)
+
+{{--                <tr>--}}
+{{--                    <td>{{ $lens->id }}</td>--}}
+{{--                    <td>{{ $lens->barcode }}</td>--}}
+{{--                    <td>{{ $lens->typeLens->type_lens }}</td>--}}
+{{--                    <td>{{ $lens->index }}</td>--}}
+{{--                    <td>{{ $lens->treatment->treatment }}</td>--}}
+{{--                    <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>--}}
+{{--                    <td>{{ $lens->sensitivity->sensitivity }}</td>--}}
+{{--                    <td>{{ $lens->name_lens }}</td>--}}
+{{--                    <td>{{ $lens->spherical_start ?? '-' }}/{{ $lenses->spherical_end ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->cylindrical_start ?? '-' }} / {{ $lenses->cylindrical_end ?? '-' }} </td>--}}
+{{--                    <td>{{ $lenses->addition_start ?? '-' }} / {{ $lenses->addition_end ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->amount }}</td>--}}
+{{--                    <td>{{ $lens->purchase_value ? formatReal($lens->purchase_value) : '-' }}</td>--}}
+{{--                    <td>{{ $lens->profit ? formatPercentage($lens->profit) : '-'}}</td>--}}
+{{--                    <td>{{ $lens->price ? formatReal($lens->price) : '-' }}</td>--}}
+{{--                    <td>{{ $lens->discount ? formatPercentage($lens->discount) : '-'}}</td>--}}
+{{--                </tr>--}}
+            @endforeach
+            </tbody>
+        </table>
+    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const printButton = document.querySelector('.action button');
+
+            if (printButton) {
+                printButton.addEventListener('click', function () {
+                    window.print();
+                });
+            }
+        });
+    </script>
+
+    @php
+        use Carbon\Carbon;
+
+        Carbon::setLocale('pt_BR');
+
+        function formatDate(string $date, string $format='d-m-Y'): string {
+            return \Carbon\Carbon::parse($date)->format($format);
         }
 
-        h1 {
-            font-weight: 700;
-            color: #1c1c1c;
-            text-align: left;
+        function formatFullDate(string $date): string {
+            return Carbon::parse($date)->translatedFormat('d \\d\\e F \\d\\e Y \\à\\s H:i');
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        function formatReal(string $value): string {
+            $value = floatval($value);
+            return 'R$ ' . number_format($value, 2, ',', '.');
         }
 
-        thead th {
-            background-color: #ff0000;
-            color: #ffffff;
-            text-align: left;
-            padding: 12px;
-            font-weight: 500;
-            font-size: 14px;
+        function formatPercentage($value) {
+            return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.') . '%';
         }
 
-        tbody td {
-            text-align: left;
-            padding: 10px;
-            font-size: 13px;
-        }
-
-        tr {
-            border-bottom: 1px solid #dadada;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h3>Ótica Mundial - Estoque de Lentes</h3>
-        <p>Registros: {{ count($lenses) }}</p>
-    </div>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Código</th>
-        <th>Tipo</th>
-        <th>Indíce</th>
-        <th>Antirreflexo</th>
-        <th>Filtro</th>
-        <th>Foco Sen.</th>
-        <th>Nome</th>
-        <th>Esf.</th>
-        <th>Cil.</th>
-        <th>Qtd</th>
-        <th>Custo(R$)</th>
-        <th>Lucro(%)</th>
-        <th>Venda(R$)</th>
-        <th>Desconto(%)</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach ($lenses as $lens)
-        <tr>
-            <td>{{ $lens->id }}</td>
-            <td>{{ $lens->barcode }}</td>
-            <td>{{ $lens->typeLens->type_lens }}</td>
-            <td>{{ $lens->index }}</td>
-            <td>{{ $lens->treatment->treatment }}</td>
-            <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>
-            <td>{{ $lens->sensitivity->sensitivity }}</td>
-            <td>{{ $lens->name_lens }}</td>
-            <td>{{ $lens->spherical }}</td>
-            <td>{{ $lens->cylindrical }}</td>
-            <td>{{ $lens->amount }}</td>
-            <td>{{ 'R$ ' . $lens->purchase_value }}</td>
-            <td>{{ $lens->profit . '%'}}</td>
-            <td>{{ 'R$ ' . $lens->price }}</td>
-            <td>{{ $lens->discount . '%'}}</td>
-        </tr>
-    @endforeach
-    </tbody>
-</table>
-</body>
+    @endphp
 </html>

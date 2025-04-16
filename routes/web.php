@@ -26,8 +26,7 @@ Route::get('password/reset/{token}', [PasswordResetController::class, 'showReset
 Route::post('password/update', [PasswordResetController::class, 'resetPassword'])
     ->name('password.update');
 
-Route::get('lens-export-pdf', 'LensController@exportPdf');
-
 Route::get('service-order/{id}', 'ServiceOrderController@exportPdf');
 
 Route::get('frame-report', 'FrameController@exportPdf');
+Route::get('lens-report', 'LensController@exportPdf');
