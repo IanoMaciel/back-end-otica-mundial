@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Frame;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\ProductPrefix;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+//use PDF;
 
 class FrameController extends Controller {
 
@@ -18,7 +18,7 @@ class FrameController extends Controller {
         $this->frame = $frame;
     }
 
-    public function exportPdf() {
+    public function exportPdf(){
         $frames = $this->frame->query()
             ->with('suppliers', 'brands', 'materials', 'promotionItems')
             ->join('brands', 'frames.brand_id', '=', 'brands.id')
@@ -26,14 +26,9 @@ class FrameController extends Controller {
             ->select('frames.*')
             ->get();
 
-        $pdf = Pdf::loadView('pdf.frames', compact('frames'))->setPaper('a4', 'landscape');
-        return $pdf->download('frames.pdf');
+        return view('pdf.frames', compact('frames'));
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function index(Request $request): JsonResponse {
         $query = $this->frame->query()
             ->with(

@@ -29,3 +29,5 @@ Route::post('password/update', [PasswordResetController::class, 'resetPassword']
 Route::get('lens-export-pdf', 'LensController@exportPdf');
 
 Route::get('service-order/{id}', 'ServiceOrderController@exportPdf');
+
+Route::get('frame-report', 'FrameController@exportPdf');
