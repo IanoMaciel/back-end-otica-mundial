@@ -137,45 +137,41 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>Código</th>
-                <th>Tipo</th>
-                <th>Indíce</th>
-                <th>Antirreflexo</th>
-                <th>Filtro</th>
-                <th>Foco Sen.</th>
-                <th>Nome</th>
-                <th>Esférico</th>
-                <th>Cilindro</th>
-                <th>Adição</th>
-                <th>QTD</th>
-                <th>Custo(R$)</th>
-                <th>Lucro</th>
-                <th>Venda</th>
-                <th>Desconto</th>
+                <th>CÓDIGO</th>
+                <th>TIPO</th>
+                <th>INDÍCE</th>
+                <th>ANTIRREFLEXO</th>
+                <th>FILTRO</th>
+                <th>FOTOSSEN.</th>
+                <th>NOME</th>
+                <th>ESFÉRICO</th>
+                <th>CILÍNDRICO</th>
+                <th>ADIÇÃO</th>
+                <th>CUSTO</th>
+                <th>LUCRO</th>
+                <th>PREÇO</th>
             </tr>
             </thead>
 
             <tbody>
             @foreach ($lenses as $lens)
 
-{{--                <tr>--}}
-{{--                    <td>{{ $lens->id }}</td>--}}
-{{--                    <td>{{ $lens->barcode }}</td>--}}
-{{--                    <td>{{ $lens->typeLens->type_lens }}</td>--}}
-{{--                    <td>{{ $lens->index }}</td>--}}
-{{--                    <td>{{ $lens->treatment->treatment }}</td>--}}
-{{--                    <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>--}}
-{{--                    <td>{{ $lens->sensitivity->sensitivity }}</td>--}}
-{{--                    <td>{{ $lens->name_lens }}</td>--}}
-{{--                    <td>{{ $lens->spherical_start ?? '-' }}/{{ $lenses->spherical_end ?? '-' }}</td>--}}
-{{--                    <td>{{ $lens->cylindrical_start ?? '-' }} / {{ $lenses->cylindrical_end ?? '-' }} </td>--}}
-{{--                    <td>{{ $lenses->addition_start ?? '-' }} / {{ $lenses->addition_end ?? '-' }}</td>--}}
-{{--                    <td>{{ $lens->amount }}</td>--}}
-{{--                    <td>{{ $lens->purchase_value ? formatReal($lens->purchase_value) : '-' }}</td>--}}
-{{--                    <td>{{ $lens->profit ? formatPercentage($lens->profit) : '-'}}</td>--}}
-{{--                    <td>{{ $lens->price ? formatReal($lens->price) : '-' }}</td>--}}
-{{--                    <td>{{ $lens->discount ? formatPercentage($lens->discount) : '-'}}</td>--}}
-{{--                </tr>--}}
+                <tr>
+                    <td>{{ $lens->id }}</td>
+                    <td>{{ $lens->barcode }}</td>
+                    <td>{{ $lens->typeLens->type_lens }}</td>
+                    <td>{{ $lens->index }}</td>
+                    <td>{{ $lens->treatment->treatment ?? '-' }}</td>
+                    <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>
+                    <td>{{ $lens->sensitivity->sensitivity ?? '-' }}</td>
+                    <td>{{ $lens->name_lens ?? '-'}}</td>
+                    <td>{{ $lens->spherical_start ?? '-' }}/{{ $lens->spherical_end ?? '-' }}</td>
+                    <td>{{ $lens->cylindrical_start ?? '-' }} / {{ $lens->cylindrical_end ?? '-' }} </td>
+                    <td>{{ $lens->addition_start ?? '-' }} / {{ $lens->addition_end ?? '-' }}</td>
+                    <td>{{ $lens->purchase_value ? formatReal($lens->purchase_value) : '-' }}</td>
+                    <td>{{ $lens->profit ? formatPercentage($lens->profit) : '-'}}</td>
+                    <td>{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
+                </tr>
             @endforeach
             </tbody>
         </table>
