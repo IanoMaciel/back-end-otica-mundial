@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Frame;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\ProductPrefix;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+//use PDF;
 
 class FrameController extends Controller {
 
@@ -17,7 +18,7 @@ class FrameController extends Controller {
         $this->frame = $frame;
     }
 
-    public function exportPdf() {
+    public function exportPdf(){
         $frames = $this->frame->query()
             ->with('suppliers', 'brands', 'materials', 'promotionItems')
             ->join('brands', 'frames.brand_id', '=', 'brands.id')
@@ -25,14 +26,9 @@ class FrameController extends Controller {
             ->select('frames.*')
             ->get();
 
-        $pdf = Pdf::loadView('pdf.frames', compact('frames'))->setPaper('a4', 'landscape');
-        return $pdf->download('frames.pdf');
+        return view('pdf.frames', compact('frames'));
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function index(Request $request): JsonResponse {
         $query = $this->frame->query()
             ->with(
@@ -269,5 +265,43 @@ class FrameController extends Controller {
 
         } while ($this->frame->query()->where('barcode', $barcode)->exists());
         return $barcode;
+    }
+
+    public function generateQrCode() {
+        $data = $this->frame->query()
+            ->with('brands')
+            ->find(1);
+
+        $brand = $data->brands->brand;
+        $code = $data->code;
+        $price = $data->price;
+
+        $qrcode = QrCode::format('svg')->size(100)->generate('test');
+
+        return view('pdf.qrcode', [
+            'brand' => $brand,
+            'code' => $code,
+            'price' => $price,
+            'qrcode' => $qrcode
+        ]);
+    }
+
+    public function downloadQrCode() {
+        $data = $this->frame->query()
+            ->with('brands')
+            ->find(1);
+
+        $brand = $data->brands->brand;
+        $code = $data->code;
+        $price = $data->price;
+
+        $content = "Marca: $brand\nCódigo: $code\nPreço: R$ $price";
+
+        $svg = QrCode::format('svg')->size(200)->generate($content);
+
+        return \Illuminate\Support\Facades\Response::make($svg, 200, [
+            'Content-Type' => 'image/svg+xml',
+            'Content-Disposition' => 'attachment; filename="qrcode.svg"',
+        ]);
     }
 }

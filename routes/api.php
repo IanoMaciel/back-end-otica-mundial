@@ -54,8 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('supplier-get-all', 'SupplierController@getAll');
 
     Route::apiResource('frame', 'FrameController');
+//    Route::get('frame-export-pdf', 'FrameController@exportPdf');
+    Route::get('frame-report', 'FrameController@exportPdf');
     Route::delete('frame-delete-multiple','FrameController@deleteMultiple');
-    Route::get('frame-export-pdf', 'FrameController@exportPdf');
+    Route::get('frame-download-qrcode', 'FrameController@downloadQrCode');
 
     // services
     Route::apiResource('service', 'ServiceController');

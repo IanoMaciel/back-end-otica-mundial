@@ -18,10 +18,6 @@ class SaleController extends Controller {
         $this->sale = $sale;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function index(Request $request): JsonResponse {
         $query = $this->sale
             ->query()
@@ -75,7 +71,6 @@ class SaleController extends Controller {
         return response()->json($sales);
     }
 
-
     public function show(int $id): JsonResponse {
         $sale = $this->sale
             ->query()
@@ -112,10 +107,6 @@ class SaleController extends Controller {
         ]);
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
     public function destroy(int $id): JsonResponse {
         if (!$this->isAuthorization()) {
             return response()->json([
@@ -166,7 +157,6 @@ class SaleController extends Controller {
         ]);
     }
 
-
     public function deleteMultiple(Request $request) {
         if (!$this->isAuthorization()) {
             return response()->json([
@@ -198,11 +188,31 @@ class SaleController extends Controller {
         }
     }
 
-    /**
-     * @return bool
-     */
     private function isAuthorization(): bool {
         $user = Auth::user();
         return $user->is_admin ?: false;
+    }
+
+    public function exportPdf() {
+        $sale = $this->sale
+            ->query()
+            ->with([
+                'customer',
+                'user',
+                'paymentMethod',
+                'frames',
+                'services',
+                'lenses',
+                'creditCards',
+                'paymentCredits',
+                'combinedPayment',
+                'cashPromotions.formPayment',
+                'cashPromotions.promotion',
+                'creditPromotions.promotion'
+            ])
+            ->find(7)
+            ->get();
+
+        return view('pdf.sales', compact('sale'));
     }
 }

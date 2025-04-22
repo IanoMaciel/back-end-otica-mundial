@@ -18,12 +18,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/qrcode', 'FrameController@generateQrCode');
+
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetForm'])
     ->name('password.reset');
 
 Route::post('password/update', [PasswordResetController::class, 'resetPassword'])
     ->name('password.update');
 
-Route::get('lens-export-pdf', 'LensController@exportPdf');
-
 Route::get('service-order/{id}', 'ServiceOrderController@exportPdf');
+
+Route::get('frame-report', 'FrameController@exportPdf');
+Route::get('lens-report', 'LensController@exportPdf');
+Route::get('sale-report', 'SaleController@exportPdf');
