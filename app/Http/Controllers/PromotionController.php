@@ -47,6 +47,10 @@ class PromotionController extends Controller {
             });
         }
 
+        if ($request->has('activated')) {
+            $promotions->whereIn('status', ['Ativa', 'Retroativa']);
+        }
+
         $perPage = $request->get('per_page', 10);
         return response()->json($promotions->paginate($perPage));
     }
