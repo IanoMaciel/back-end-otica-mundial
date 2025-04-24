@@ -58,12 +58,19 @@ class PromotionController extends Controller {
         );
 
         $dateStart = Carbon::parse($validatedData['start']);
+        $dateEnd = Carbon::parse($validatedData['end']);
         $dateCurrent = Carbon::now();
 
         # verifica se $dateStart é maior ou igual a $dateCurrent
         if ($dateStart->lte($dateCurrent)) {
             $validatedData = array_merge($validatedData, [
                 'status' => 'Ativa'
+            ]);
+        }
+
+        if ($dateStart->lt($dateCurrent) && $dateEnd->lt($dateCurrent)) {
+            $validatedData = array_merge($validatedData, [
+                'status' => 'Retroativa'
             ]);
         }
 
