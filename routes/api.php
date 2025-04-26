@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', 'AuthController@logout');
 
     Route::apiResource('user', 'UserController');
+    Route::delete('user-delete-multiple', 'UserController@deleteAll');
 
     // customer
     Route::apiResource('agreement', 'AgreementController');
@@ -50,7 +51,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // frame
     Route::apiResource('material', 'MaterialController');
     Route::apiResource('brand', 'BrandController');
+
     Route::apiResource('supplier', 'SupplierController');
+    Route::delete('supplier-delete-multiple', 'SupplierController@deleteAll');
+
     Route::get('supplier-get-all', 'SupplierController@getAll');
 
     Route::apiResource('frame', 'FrameController');

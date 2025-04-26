@@ -18,7 +18,6 @@ class SupplierController extends Controller {
         return response()->json($this->supplier->query()->orderBy('name')->get());
     }
 
-
     public function index(Request $request): JsonResponse {
         $query = $this->supplier->query()->orderBy('name');
 
@@ -34,10 +33,6 @@ class SupplierController extends Controller {
         return response()->json($suppliers);
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
             $this->supplier->rules(),
@@ -55,21 +50,12 @@ class SupplierController extends Controller {
         }
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
     public function show(int $id): JsonResponse {
         $supplier = $this->supplier->query()->find($id);
         if (!$supplier) return response()->json(['error' => 'O Fornecedor selecionado não existe na base de dados.'], 404);
         return response()->json($supplier);
     }
 
-    /**
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
     public function update(Request $request, int $id): JsonResponse {
         $supplier = $this->supplier->query()->find($id);
         if (!$supplier) return response()->json(['error' => 'O Fornecedor selecionado não existe na base de dados.'], 404);
@@ -97,10 +83,6 @@ class SupplierController extends Controller {
         }
     }
 
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
     public function destroy(int $id): JsonResponse {
         $supplier = $this->supplier->query()->find($id);
         if (!$supplier) return response()->json(['error' => 'O Fornecedor selecionado não existe na base de dados.'], 404);
@@ -108,6 +90,23 @@ class SupplierController extends Controller {
         try {
             $supplier->delete();
             return response()->json(null, 204);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteAll(Request $request): JsonResponse {
+        $validatedData = $request->validate(
+            ['id' => 'required|array', 'id.*' => 'integer|exists:suppliers,id',],
+            ['id.required' => 'O campo id é obrigatório.', 'id.*.integer' => 'O valor do campo id deve ser um número inteiro.', 'id.*.exists' => 'A promoção informada não existe na base de dados.',]
+        );
+
+        try {
+            $this->supplier->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação',

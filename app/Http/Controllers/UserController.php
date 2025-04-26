@@ -143,4 +143,21 @@ class UserController extends Controller {
             ], 500);
         }
     }
+
+    public function deleteAll(Request $request): JsonResponse {
+        $validatedData = $request->validate(
+            ['id' => 'required|array', 'id.*' => 'integer|exists:users,id',],
+            ['id.required' => 'O campo id é obrigatório.', 'id.*.integer' => 'O valor do campo id deve ser um número inteiro.', 'id.*.exists' => 'A promoção informada não existe na base de dados.',]
+        );
+
+        try {
+            $this->user->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
+        } catch (Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
