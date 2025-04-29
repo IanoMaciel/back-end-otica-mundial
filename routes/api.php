@@ -87,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Expenses
     Route::apiResource('category-expense', 'CategoryExpenseController');
     Route::apiResource('expense', 'ExpenseController');
+    Route::delete('expense-delete-multiple', 'ExpenseController@deleteAll');
 
     // cash flow
     Route::get('cash-flow', 'CashFlowController@cashFlow');
