@@ -15,6 +15,7 @@ class Lens extends Model {
         'type_lens_id',
         'index',
         'treatment_id',
+        'surfacing', // new column of type boolean
         'filter',
         'sensitivity_id',
         'name_lens',
@@ -22,13 +23,16 @@ class Lens extends Model {
         'minimum_value',
         'discount',
         'price',
+        'cost', // new colum of type decimal
         'delivery',
         'spherical_start',
         'spherical_end',
         'cylindrical_start',
         'cylindrical_end',
         'addition_start',
-        'addition_end'
+        'addition_end',
+        'diameter', // new colum of type decimal
+        'height', // new colum of type decimal
     ];
 
     # Validations
