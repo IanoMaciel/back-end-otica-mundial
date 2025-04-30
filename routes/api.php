@@ -70,8 +70,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // financial
     Route::apiResource('payment-method', 'PaymentMethodController'); //Método de pagamento principal
     Route::apiResource('form-payment', 'FormPaymentController'); //Forma de pagamento secundária
+
     Route::apiResource('card', 'CardController'); //juros do cartão
+    Route::get('find-all', 'CardController@all'); //juros do cartão
     Route::delete('card-delete-multiple', 'CardController@deleteAll'); //juros do cartão
+
     Route::apiResource('discount', 'DiscountController'); // tipos de descontos
 
     Route::apiResource('sale', 'SaleController');
