@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('payment-method', 'PaymentMethodController'); //Método de pagamento principal
     Route::apiResource('form-payment', 'FormPaymentController'); //Forma de pagamento secundária
     Route::apiResource('card', 'CardController'); //juros do cartão
+    Route::delete('card-delete-multiple', 'CardController@deleteAll'); //juros do cartão
     Route::apiResource('discount', 'DiscountController'); // tipos de descontos
 
     Route::apiResource('sale', 'SaleController');
@@ -91,7 +92,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // cash flow
     Route::get('cash-flow', 'CashFlowController@cashFlow');
-
 
     // API Communication
     Route::get('api-stock-lens', 'StockLensController@getData');

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Card;
+use http\Env\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CardController extends Controller {
 
@@ -13,8 +15,14 @@ class CardController extends Controller {
         $this->card = $card;
     }
 
-    public function index(): JsonResponse{
+    public function all(): JsonResponse{
         return response()->json($this->card->query()->orderBy('number_installment')->get());
+    }
+
+    public function index(Request $request): JsonResponse{
+        $cards = $this->card->query()->orderBy('number_installment');
+        $perPage = $request->get('per_page', 10);
+        return response()->json($cards->paginate($perPage));
     }
 
     public function store(Request $request): JsonResponse {
@@ -89,5 +97,41 @@ class CardController extends Controller {
                 'message' => $th->getMessage(),
             ]);
         }
+    }
+
+    public function deleteAll(Request $request): JsonResponse {
+        if (!$this->isAuthorization()) {
+            return response()->json([
+                'error' => 'Ops! Você não possui autorização para realizar está operação.'
+            ], 403);
+        }
+
+        $validatedData = $request->validate(
+            [
+                'id' => 'required|array',
+                'id.*' => 'integer|exists:cards,id'
+            ],
+            [
+                'id.required' => 'O campo id é obrigatório.',
+                'id.array' => 'O campo id é do tipo array.',
+                'id.*.integer' => 'Cada id deve ser um número inteiro.',
+                'id.*.exists' => 'Um ou mais registros selecionados não existe na base de dados.'
+            ]
+        );
+
+        try {
+            $this->card->query()->whereIn('id', $validatedData['id'])->delete();
+            return response()->json(['message' => 'Registros excluídos com sucesso.']);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Error ao processar a soliciatação.',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    private function isAuthorization(): bool {
+        $user = Auth::user();
+        return $user->is_admin || $user->is_manager;
     }
 }
