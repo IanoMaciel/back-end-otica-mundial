@@ -10,7 +10,7 @@ class AlterLensesAddNewColumnsTable extends Migration {
             $table->boolean('surfacing')->default(false)->nullable()->after('treatment_id');
             $table->decimal('cost', 10, 2)->nullable()->after('price');
             $table->decimal('diameter', 10, 2)->default(0)->nullable()->after('addition_end');
-            $table->decimal('height', 10, 2)->default(0)->nullable()->after('diameter');
+            $table->string('height', 10, 2)->default(0)->nullable()->after('diameter');
         });
     }
 
