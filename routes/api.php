@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', 'AuthController@logout');
 
     Route::apiResource('user', 'UserController');
+    Route::delete('user-delete-multiple', 'UserController@deleteAll');
 
     // customer
     Route::apiResource('agreement', 'AgreementController');
@@ -50,7 +51,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // frame
     Route::apiResource('material', 'MaterialController');
     Route::apiResource('brand', 'BrandController');
+
     Route::apiResource('supplier', 'SupplierController');
+    Route::delete('supplier-delete-multiple', 'SupplierController@deleteAll');
+
     Route::get('supplier-get-all', 'SupplierController@getAll');
 
     Route::apiResource('frame', 'FrameController');
@@ -66,7 +70,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // financial
     Route::apiResource('payment-method', 'PaymentMethodController'); //Método de pagamento principal
     Route::apiResource('form-payment', 'FormPaymentController'); //Forma de pagamento secundária
+
     Route::apiResource('card', 'CardController'); //juros do cartão
+    Route::get('find-all', 'CardController@all'); //juros do cartão
+    Route::delete('card-delete-multiple', 'CardController@deleteAll'); //juros do cartão
+
     Route::apiResource('discount', 'DiscountController'); // tipos de descontos
 
     Route::apiResource('sale', 'SaleController');
@@ -83,10 +91,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Expenses
     Route::apiResource('category-expense', 'CategoryExpenseController');
     Route::apiResource('expense', 'ExpenseController');
+    Route::delete('expense-delete-multiple', 'ExpenseController@deleteAll');
 
     // cash flow
     Route::get('cash-flow', 'CashFlowController@cashFlow');
-
 
     // API Communication
     Route::get('api-stock-lens', 'StockLensController@getData');

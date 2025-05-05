@@ -15,6 +15,7 @@ class Lens extends Model {
         'type_lens_id',
         'index',
         'treatment_id',
+        'surfacing', // new column of type boolean
         'filter',
         'sensitivity_id',
         'name_lens',
@@ -22,13 +23,16 @@ class Lens extends Model {
         'minimum_value',
         'discount',
         'price',
+        'cost', // new colum of type decimal
         'delivery',
         'spherical_start',
         'spherical_end',
         'cylindrical_start',
         'cylindrical_end',
         'addition_start',
-        'addition_end'
+        'addition_end',
+        'diameter', // new colum of type decimal
+        'height', // new colum of type decimal
     ];
 
     # Validations
@@ -36,6 +40,7 @@ class Lens extends Model {
         return [
             'barcode' => $update ? 'nullable|string' : 'nullable|string|unique:lenses',
             'type_lens_id' => 'required|exists:type_lenses,id',
+            'surfacing' => 'nullable|boolean',
             'index' => 'required|numeric',
             'treatment_id' => 'required|exists:treatments,id',
             'filter' => 'required|boolean',
@@ -45,13 +50,16 @@ class Lens extends Model {
             'minimum_value' => 'nullable|numeric',
             'discount' => 'nullable|numeric',
             'price' => 'required|numeric',
+            'cost' => 'nullable|numeric',
             'delivery' => 'required|integer',
             'spherical_start' => 'required|numeric',
             'spherical_end' => 'required|numeric',
             'cylindrical_start' => 'nullable|numeric',
             'cylindrical_end' => 'nullable|numeric',
             'addition_start' => 'nullable|numeric',
-            'addition_end' => 'nullable|numeric'
+            'addition_end' => 'nullable|numeric',
+            'diameter' => 'nullable|numeric',
+            'height' => 'nullable|string',
         ];
     }
 
@@ -62,6 +70,8 @@ class Lens extends Model {
 
             'type_lens_id.required' => 'O tipo de lente é obrigatório.',
             'type_lens_id.exists' => 'O tipo de lente informado não existe.',
+
+            'surfacing.boolean' => 'O campo sufarçagem é do tipo booleano.',
 
             'index.required' => 'O índice é obrigatório.',
             'index.numeric' => 'O índice deve ser um número.',
@@ -99,8 +109,13 @@ class Lens extends Model {
             'price.required' => 'O preço é obrigatório.',
             'price.numeric' => 'O preço deve ser um número.',
 
+            'cost.numeric' => 'O custo deve ser um número.',
+
             'delivery.required' => 'O prazo de entrega é obrigatório.',
             'delivery.integer' => 'O prazo de entrega deve ser um número inteiro.',
+
+            'diameter.numeric' => 'O diâmetro deve ser um número ',
+            'height.string' => 'A altura deve ser do tipo texto',
         ];
     }
 

@@ -10,8 +10,10 @@ use App\Models\Customer;
 use App\Models\FormPayment;
 use App\Models\Frame;
 use App\Models\Laboratory;
+use App\Models\Lens;
 use App\Models\Material;
 use App\Models\PaymentMethod;
+use App\Models\Sale;
 use App\Models\Sensitivity;
 use App\Models\Service;
 use App\Models\Supplier;
@@ -26,17 +28,17 @@ class DatabaseSeeder extends Seeder {
         Brand::factory()->count(4)->create(); // não remover
         Material::factory()->count(3)->create(); // não remover
 
-//         Suppliers
-//        Supplier::factory(3)->create();
+        // Suppliers
+        Supplier::factory(3)->create();
 
-//         Products and services
-//         Frame::factory(100)->create();
-//         Service::factory(20)->create();
+        // Products and services
+        Frame::factory(100)->create();
+        Service::factory(20)->create();
 
-//         Customers
-//         Agreement::factory()->count(4)->create();
-//         Customer::factory()->count(100)->create();
-//         Address::factory(100)->create();
+        // Customers
+        Agreement::factory()->count(4)->create();
+        Customer::factory()->count(100)->create();
+        Address::factory(100)->create();
 
         PaymentMethod::factory()->count(6)->create(); // Não remover
         FormPayment::factory()->count(4)->create(); // Não remover
@@ -46,5 +48,8 @@ class DatabaseSeeder extends Seeder {
         Treatment::factory()->count(3)->create(); // Não remover
         Sensitivity::factory()->count(5)->create(); // Não remover
         Laboratory::factory(5)->create(); // Não remover
+
+        Lens::factory(100)->create();
+        Sale::factory(30)->create();
     }
 }
