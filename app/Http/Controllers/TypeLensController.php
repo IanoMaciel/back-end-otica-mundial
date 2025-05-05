@@ -14,7 +14,7 @@ class TypeLensController extends Controller {
     }
 
     public function index(): JsonResponse {
-        return response()->json($this->typeLens->query()->get());
+        return response()->json($this->typeLens->query()->orderBy('type_lens')->get());
     }
 
     public function store(Request $request): JsonResponse {
