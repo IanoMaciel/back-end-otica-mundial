@@ -14,7 +14,7 @@ class TreatmentController extends Controller {
     }
 
     public function index(): JsonResponse {
-        return response()->json($this->treatment->all());
+        return response()->json($this->treatment->query()->orderBy('treatment')->get());
     }
 
     public function store(Request $request): JsonResponse {
