@@ -87,9 +87,7 @@ class LensController extends Controller {
             $lens = $this->lens->query()->create($validatedData);
             $step = 0.25;
 
-            $typeLens = TypeLens::query()->find($lens->type_lens_id);
-
-            if ($typeLens->type_lens === 'Multifocal') {
+            if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
                 for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
                     for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
                         MultifocalLens::query()->create([
@@ -101,7 +99,7 @@ class LensController extends Controller {
                     }
                 }
             } else {
-                for ($i = $lens->cylindrical_start; $i <= $lens->cylindrical_end; $i += $step) {
+                for ($i = $lens->cylindrical_start; $i >= $lens->cylindrical_end; $i -= $step) {
                     for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
                         SingleVision::query()->create([
                             'barcode' => $this->generateUniqueBarCode(),
@@ -149,6 +147,7 @@ class LensController extends Controller {
         return response()->json($lens);
     }
 
+
     public function update(Request $request, int $id): JsonResponse {
         if (!$this->isAuthorization()) {
             return response()->json([
@@ -171,47 +170,59 @@ class LensController extends Controller {
             $this->lens->messages()
         );
 
-        $barcodeExists = $this->lens->query()
-            ->where('barcode', $validatedData['barcode'])
-            ->where('id', '<>', $id)
-            ->exists();
+        if (isset($validatedData['barcode'])) {
+            $barcodeExists = $this->lens->query()
+                ->where('barcode', $validatedData['barcode'])
+                ->where('id', '<>', $id)
+                ->exists();
 
-        if ($barcodeExists) {
-            return response()->json([
-                'error' => 'O código de barra informado já existe na base de dados.'
-            ], 422);
+            if ($barcodeExists) {
+                return response()->json([
+                    'error' => 'O código de barra informado já existe na base de dados.'
+                ], 422);
+            }
         }
 
         try {
             $lens->update($validatedData);
 
-            $step = 0.25;
-            $typeLens = TypeLens::query()->find($lens->type_lens_id);
+//            // Exclui os registros existentes para recriar
+//            if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
+//                MultifocalLens::query()->where('lens_id', $lens->id)->delete();
+//            } else {
+//                SingleVision::query()->where('lens_id', $lens->id)->delete();
+//            }
+//
+//            $step = 0.25;
+//
+//            // Recria os registros baseado nos dados atualizados
+//            if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
+//                for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
+//                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+//                        MultifocalLens::query()->create([
+//                            'barcode' => $this->generateUniqueBarCode(),
+//                            'lens_id' => $lens->id,
+//                            'addition' => $i,
+//                            'spherical' => $j,
+//                        ]);
+//                    }
+//                }
+//            } else {
+//                for ($i = $lens->cylindrical_start; $i >= $lens->cylindrical_end; $i -= $step) {
+//                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+//                        SingleVision::query()->create([
+//                            'barcode' => $this->generateUniqueBarCode(),
+//                            'lens_id' => $lens->id,
+//                            'cylindrical' => $i,
+//                            'spherical' => $j,
+//                        ]);
+//                    }
+//                }
+//            }
 
-            if ($typeLens->type_lens === 'Multifocal') {
-                for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
-                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
-                        MultifocalLens::query()->create([
-                            'barcode' => $this->generateUniqueBarCode(),
-                            'lens_id' => $lens->id,
-                            'addition' => $i,
-                            'spherical' => $j,
-                        ]);
-                    }
-                }
-            } else {
-                for ($i = $lens->cylindrical_start; $i <= $lens->cylindrical_end; $i += $step) {
-                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
-                        SingleVision::query()->create([
-                            'barcode' => $this->generateUniqueBarCode(),
-                            'lens_id' => $lens->id,
-                            'cylindrical' => $i,
-                            'spherical' => $j,
-                        ]);
-                    }
-                }
-            }
-            return response()->json($lens->load('stockLens'));
+//            $lens = $lens->fresh(['singleVision', 'multifocalLens']);
+
+            return response()->json($lens);
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => 'Erro ao processar a solicitação.',
