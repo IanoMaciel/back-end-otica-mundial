@@ -35,7 +35,7 @@ class LensController extends Controller {
                 'promotionItems.promotion.cashPromotions.formPayment',
                 'promotionItems.promotion.filters',
             )
-            ->orderBy('name_lens');
+            ->orderBy('index');
 
         # filters
         if ($nameLens = $request->input('search')) {
