@@ -159,7 +159,7 @@
                 <tr>
                     <td>{{ $lens->id }}</td>
                     <td>{{ $lens->barcode }}</td>
-                    <td>{{ $lens->typeLens->type_lens }}</td>
+                    <td>{{ $lens->typeLens->type_lens ?? '-' }}</td>
                     <td>{{ $lens->index }}</td>
                     <td>{{ $lens->treatment->treatment ?? '-' }}</td>
                     <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>
