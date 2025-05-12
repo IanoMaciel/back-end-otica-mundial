@@ -18,7 +18,7 @@
         <style>
             body {
                 font-family: 'Nunito', sans-serif;
-                margin: 20px;
+                margin: 5px;
                 color: #333;
             }
 
@@ -74,9 +74,9 @@
                 font-size: 14px;
             }
 
-            tbody td {
+            tfoot td, tbody td {
                 text-align: left;
-                padding: 10px;
+                padding: 8px;
                 font-size: 12px;
             }
 
@@ -104,6 +104,10 @@
                     cursor: pointer;
                     font-weight: 600;
                 }
+            }
+
+            .nowrap {
+                white-space: nowrap;
             }
 
             @media print {
@@ -140,16 +144,24 @@
                 <th>CÓDIGO</th>
                 <th>TIPO</th>
                 <th>INDÍCE</th>
-                <th>ANTIRREFLEXO</th>
+                <th>ANT.</th>
                 <th>FILTRO</th>
-                <th>FOTOSSEN.</th>
+                <th>FOT.</th>
                 <th>NOME</th>
-                <th>ESFÉRICO</th>
-                <th>CILÍNDRICO</th>
-                <th>ADIÇÃO</th>
+                <th>ESF.</th>
+                <th>CIL.</th>
+                <th>ADI.</th>
+
+                <th>SUR.</th>
+                <th>DIÂ.</th>
+                <th>ALT.</th>
+
+
                 <th>CUSTO</th>
                 <th>LUCRO</th>
-                <th>PREÇO</th>
+                <th class="nowrap">PREÇO</th>
+                <th class="nowrap">CRIADO</th>
+                <th class="nowrap">ATU.</th>
             </tr>
             </thead>
 
@@ -157,23 +169,45 @@
             @foreach ($lenses as $lens)
 
                 <tr>
-                    <td>{{ $lens->id }}</td>
-                    <td>{{ $lens->barcode }}</td>
-                    <td>{{ $lens->typeLens->type_lens }}</td>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $lens->barcode ?? '-' }}</td>
+                    <td>{{ $lens->typeLens->type_lens ?? '-' }}</td>
                     <td>{{ $lens->index }}</td>
                     <td>{{ $lens->treatment->treatment ?? '-' }}</td>
                     <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>
                     <td>{{ $lens->sensitivity->sensitivity ?? '-' }}</td>
                     <td>{{ $lens->name_lens ?? '-'}}</td>
-                    <td>{{ $lens->spherical_start ?? '-' }}/{{ $lens->spherical_end ?? '-' }}</td>
-                    <td>{{ $lens->cylindrical_start ?? '-' }} / {{ $lens->cylindrical_end ?? '-' }} </td>
-                    <td>{{ $lens->addition_start ?? '-' }} / {{ $lens->addition_end ?? '-' }}</td>
-                    <td>{{ $lens->purchase_value ? formatReal($lens->purchase_value) : '-' }}</td>
-                    <td>{{ $lens->profit ? formatPercentage($lens->profit) : '-'}}</td>
-                    <td>{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
+                    <td class="nowrap">{{ $lens->spherical_start ?? '-' }} / {{ $lens->spherical_end ?? '-' }}</td>
+                    <td class="nowrap">{{ $lens->cylindrical_start ?? '-' }} / {{ $lens->cylindrical_end ?? '-' }} </td>
+                    <td class="nowrap">{{ $lens->addition_start ?? '-' }} / {{ $lens->addition_end ?? '-' }}</td>
+
+                    <td class="nowrap">{{ $lens->surfacing ? 'DIGITAL' : '-' }}</td>
+                    <td class="nowrap">{{ $lens->diameter ?? '-' }}</td>
+                    <td class="nowrap">{{ $lens->height ?? '-' }}</td>
+
+                    <td class="nowrap">{{ $lens->purchase_value ? formatReal($lens->purchase_value) : '-' }}</td>
+                    <td class="nowrap">{{ $lens->profit ? formatPercentage($lens->profit) : '-'}}</td>
+                    <td class="nowrap">{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
+
+                    <td class="nowrap">{{ $lens->created_at ? formatDate($lens->created_at) : '-' }}</td>
+                    <td class="nowrap">{{ $lens->updated_at ? formatDate($lens->updated_at) : '-' }}</td>
                 </tr>
             @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="19">
+                        <strong>ANT:</strong> ANTIRREFLEXO -
+                        <strong>FOT:</strong> FOTOSSENSIBILIDADE -
+                        <strong>ESF:</strong> ESFÉRICO -
+                        <strong>CIL:</strong> CILINDRO -
+                        <strong>ADI:</strong> ADIÇÃO -
+                        <strong>SUR:</strong> SURFAÇAGEM -
+                        <strong>DIÂ:</strong> DIÂMETRO -
+                        <strong>ALT:</strong> ALTURA -
+                        <strong>ATU:</strong> ATUALIZADO
+                </tr>
+            </tfoot>
         </table>
     </body>
     <script>
@@ -194,7 +228,7 @@
         Carbon::setLocale('pt_BR');
 
         function formatDate(string $date, string $format='d-m-Y'): string {
-            return \Carbon\Carbon::parse($date)->format($format);
+            return Carbon::parse($date)->format($format);
         }
 
         function formatFullDate(string $date): string {
