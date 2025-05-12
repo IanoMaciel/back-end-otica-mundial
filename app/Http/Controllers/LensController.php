@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Lens;
 use App\Models\MultifocalLens;
 use App\Models\SingleVision;
-use App\Models\TypeLens;
 use App\ProductPrefix;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
