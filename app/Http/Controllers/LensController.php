@@ -39,31 +39,31 @@ class LensController extends Controller {
         # filters
         if ($nameLens = $request->input('search')) {
             $lenses->where(function ($query) use ($nameLens) {
-                $query->where('name_lens', 'LIKE', "%$nameLens");
+                $query->where('name_lens', 'like', '%' . $nameLens . '%');
             });
         }
 
         if ($index = $request->input('indice')) {
             $lenses->where(function ($query) use ($index) {
-               $query->where('index', 'LIKE', "%$index");
+               $query->where('index', 'like', '%' . $index . '%');
             });
         }
 
         if ($typeLens = $request->input('tipo')) {
             $lenses->whereHas('typeLens', function ($query) use ($typeLens) {
-                $query->where('type_lens', 'LIKE', "%$typeLens");
+                $query->where('type_lens', 'LIKE', '%' . $typeLens . '%');
             });
         }
 
         if ($treatment = $request->input('tratamento')) {
             $lenses->whereHas('treatment', function ($query) use ($treatment) {
-                $query->where('treatment', 'LIKE', "%$treatment");
+                $query->where('treatment', 'LIKE', '%' . $treatment . '%');
             });
         }
 
         if ($sensitivity = $request->input('fotossensibilidade')) {
             $lenses->whereHas('sensitivity', function ($query) use ($sensitivity) {
-                $query->where('sensitivity', 'LIKE', "%$sensitivity");
+                $query->where('sensitivity', 'LIKE', '%' . $sensitivity . '%');
             });
         }
 

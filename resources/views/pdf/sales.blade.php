@@ -16,23 +16,15 @@
         />
 
         <style>
-            body {
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
                 font-family: 'Nunito', sans-serif;
-                margin: 20px;
-                color: #333;
-                display: flex;
-                /*justify-content: center;*/
-                flex-direction: column;
-                align-items: center;
             }
 
-            .a4 {
-                width: 210mm;
-                height: 297mm;
-                background: white;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                padding: 5px;
-                font-size: 13px;
+            body {
+                height: 100%;
             }
 
             .header {
@@ -74,8 +66,30 @@
             table {
                 width: 100%;
                 border-collapse: collapse;
-                /*margin-top: 20px;*/
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            thead th {
+                background-color: red;
+                color: #ffffff;
+                text-align: left;
+                padding: 10px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            tfoot td, tbody td {
+                text-align: left;
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            tr {
+                border-bottom: 1px solid #dadada;
+            }
+
+            .nowrap {
+                white-space: nowrap;
             }
 
             .action {
@@ -104,14 +118,24 @@
             }
 
             .customer {
-                border: 1px solid #6b7280;
+                margin-top: 20px;
                 display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
+                justify-content: space-between;
+
+                font-size: 12px;
+
                 div {
                     display: flex;
                     gap: 10px;
-                }
+                };
+
+                /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+
+                border: 1px dashed #c1c1c1;
+
+                width: 100%;
+                padding: 10px;
+                text-transform: uppercase;
             }
 
 
@@ -127,7 +151,7 @@
             }
         </style>
     </head>
-    <body class="a4">
+    <body>
         <div class="action">
             <button type="button">
                 <i class="ph-fill ph-export"></i>
@@ -146,70 +170,115 @@
         </article>
 
         <article class="customer">
-            <div>
-                <span style="color:#6b7280">NOME:</span>
-                <span style="font-weight: bold">Iano de Benedito Maciel</span>
-            </div>
-            <div>
-                <span style="color:#6b7280">CPF:</span>
-                <span style="font-weight: bold">000.000.000-00</span>
-            </div>
-            <div>
-                <span style="color:#6b7280">RG:</span>
-                <span style="font-weight: bold">Iano de Benedito Maciel</span>
-            </div>
-            <div>
-                <span style="color:#6b7280">CONTATO:</span>
-                <span style="font-weight: bold">000.000.000-00</span>
-            </div>
-            <div>
-                <span style="color:#6b7280">E-MAIL:</span>
-                <span style="font-weight: bold">iano@iano.com</span>
-            </div>
-            <div>
-                <span style="color:#6b7280">CONVÊNIO:</span>
-                <span style="font-weight: bold">fulano de tal</span>
-                <span style="font-weight: bold">asdasda</span>
+            <div style="display: flex; flex-direction: column; width: 100%">
+                <div style="display: flex; gap: 10px">
+                    <div>
+                        <span style="color:#6b7280">NOME:</span>
+                        <span style="font-weight: 500">IANO DE BENEDITO MACIEL</span>
+                    </div>
+                    <div>
+                        <span style="color:#6b7280">DATA DE NASCIMENTO:</span>
+                        <span style="font-weight: 500">07/04/2000</span>
+                    </div>
+                    <div>
+                        <span style="color:#6b7280">IDADE:</span>
+                        <span style="font-weight: 500">25 ANOS</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px">
+                    <div>
+                        <span style="color:#6b7280">CPF:</span>
+                        <span style="font-weight: 500">000.000.000-00</span>
+                    </div>
+
+                    <div>
+                        <span style="color:#6b7280">RG:</span>
+                        <span style="font-weight: 500">2701672-2</span>
+                    </div>
+
+                    <div>
+                        <span style="color:#6b7280">CONVÊNIO:</span>
+                        <span style="font-weight: 500">fulano de tal</span>
+                        <span style="font-weight: 500">asdasda</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px">
+                    <div>
+                        <span style="color:#6b7280">CONTATO:</span>
+                        <span style="font-weight: 500">(92) 98633-8449</span>
+                    </div>
+
+                    <div>
+                        <span style="color:#6b7280">E-MAIL:</span>
+                        <span style="font-weight: 500">iano@iano.com</span>
+                    </div>
+                </div>
+
+                <div>
+                    <span style="color:#6b7280">ENDEREÇO:</span>
+                    <span style="font-weight: 500">RUA ADAMASTOR DE FIGUEIREDO, 3147, JAUARY I, 69104.208, ITACOATIARA-AMAZONAS</span>
+                </div>
             </div>
         </article>
 
-        <h1>RECIBO DE VENDA</h1>
+        <h1 style="margin: 20px 0;">RECIBO DE VENDA</h1>
 
         <table>
             <thead>
-            <tr>
-                <th>ID</th>
-                <th>CÓDIGO ARMAÇÃO</th>
-                <th>COR</th>
-                <th>FORNECEDOR</th>
-                <th>MARCA</th>
-                <th>MATERIAL</th>
-            </tr>
+                <tr>
+                    <th>ITEM</th>
+                    <th>CATEGORIA</th>
+                    <th>DESCRIÇÃO</th>
+                    <th class="nowrap">QTD.</th>
+                    <th class="nowrap">V. UNI.</th>
+                    <th class="nowrap">SUBTOTAL</th>
+                </tr>
             </thead>
             <tbody>
-        {{--    @foreach ($frames as $frame)--}}
-        {{--        <tr>--}}
-        {{--            <td>{{ $frame->id }}</td>--}}
-        {{--            <td>{{ $frame->code }} {{ $frame->size}}/{{ $frame->haste }} {{ $frame->bridge }}</td>--}}
-        {{--            <td>{{ $frame->color }}</td>--}}
-        {{--            <td>{{ $frame->suppliers->name }}</td>--}}
-        {{--            <td>--}}
-        {{--                {{ $frame->brands->brand }}--}}
-        {{--                @if ($frame->brands->discount)--}}
-        {{--                    - {{ $frame->brands->discount }}--}}
-        {{--                @endif--}}
-        {{--            </td>--}}
-        {{--            <td>{{ $frame->materials->material }}</td>--}}
-        {{--            <td>{{ $frame->amount }}</td>--}}
-        {{--            <td>{{ $frame->price }}</td>--}}
-        {{--            <td>{{ $frame->purchase_value }}</td>--}}
-        {{--            <td>{{ $frame->discount }}</td>--}}
-        {{--            <td>{{ $frame->profit }}</td>--}}
-        {{--        </tr>--}}
-        {{--    @endforeach--}}
+                <tr>
+                    <td>1</td>
+                    <td>ARMAÇÃO</td>
+                    <td style="text-transform: uppercase">uisque commodo quis erat sed pretium. Curabitur sodales egestas diam, vitae hendrerit lorem venenatis et.</td>
+                    <td class="nowrap">2</td>
+                    <td class="nowrap">R$ 988,00</td>
+                    <td class="nowrap">R$ 1.976,00</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>LENTE</td>
+                    <td style="text-transform: uppercase">uisque commodo quis erat sed pretium. Curabitur sodales egestas diam, vitae hendrerit lorem venenatis et.</td>
+                    <td class="nowrap">1</td>
+                    <td class="nowrap">R$ 700,00</td>
+                    <td class="nowrap">R$ 700,00</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>ACESSORÓRIO</td>
+                    <td style="text-transform: uppercase">uisque commodo quis erat sed pretium. Curabitur sodales egestas diam, vitae hendrerit lorem venenatis et.</td>
+                    <td class="nowrap">1</td>
+                    <td class="nowrap">R$ 700,00</td>
+                    <td class="nowrap">R$ 700,00</td>
+                </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><strong>TOTAL</strong></td>
+                    <td><strong>R$ 2.676,00</strong></td>
+                </tr>
+            </tfoot>
         </table>
+        <small>
+            <strong>QTD:</strong> QUANTIDADE -
+            <strong>V. UNITÁRIO:</strong> VALOR UNITÁRIO
+        </small>
     </body>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const printButton = document.querySelector('.action button');

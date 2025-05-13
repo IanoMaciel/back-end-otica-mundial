@@ -39,7 +39,7 @@ class SaleController extends Controller {
 
         if ($status = $request->input('status')) {
             $query->where(function ($q) use ($status) {
-                $q->where('status', 'LIKE', "%$status%");
+                $q->where('status', 'LIKE', '%' . $status . '%');
             });
         }
 
