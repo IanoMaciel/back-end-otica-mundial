@@ -16,16 +16,16 @@
         />
 
         <style>
-            body {
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
                 font-family: 'Nunito', sans-serif;
-                margin: 10px;
-                color: #333;
-
-                display: flex;
-                flex-direction: column;
-                align-items: center;
             }
 
+            body {
+                height: 100%;
+            }
 
             .header {
                 display: flex;
@@ -122,15 +122,20 @@
                 display: flex;
                 justify-content: space-between;
 
+                font-size: 12px;
+
                 div {
                     display: flex;
                     gap: 10px;
                 };
 
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+
+                border: 1px dashed #c1c1c1;
 
                 width: 100%;
-                padding: 20px 0px;
+                padding: 10px;
+                text-transform: uppercase;
             }
 
 
@@ -165,43 +170,60 @@
         </article>
 
         <article class="customer">
-            <div style="display: flex; flex-direction: column">
-                <div>
-                    <span style="color:#6b7280">NOME:</span>
-                    <span style="font-weight: 500">Iano de Benedito Maciel</span>
+            <div style="display: flex; flex-direction: column; width: 100%">
+                <div style="display: flex; gap: 10px">
+                    <div>
+                        <span style="color:#6b7280">NOME:</span>
+                        <span style="font-weight: 500">IANO DE BENEDITO MACIEL</span>
+                    </div>
+                    <div>
+                        <span style="color:#6b7280">DATA DE NASCIMENTO:</span>
+                        <span style="font-weight: 500">07/04/2000</span>
+                    </div>
+                    <div>
+                        <span style="color:#6b7280">IDADE:</span>
+                        <span style="font-weight: 500">25 ANOS</span>
+                    </div>
                 </div>
-                <div>
-                    <span style="color:#6b7280">CPF:</span>
-                    <span style="font-weight: 500">000.000.000-00</span>
-                </div>
-            </div>
 
-            <div style="display: flex; flex-direction: column">
-                <div>
-                    <span style="color:#6b7280">RG:</span>
-                    <span style="font-weight: 500">2701672-2</span>
+                <div style="display: flex; gap: 10px">
+                    <div>
+                        <span style="color:#6b7280">CPF:</span>
+                        <span style="font-weight: 500">000.000.000-00</span>
+                    </div>
+
+                    <div>
+                        <span style="color:#6b7280">RG:</span>
+                        <span style="font-weight: 500">2701672-2</span>
+                    </div>
+
+                    <div>
+                        <span style="color:#6b7280">CONVÊNIO:</span>
+                        <span style="font-weight: 500">fulano de tal</span>
+                        <span style="font-weight: 500">asdasda</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px">
+                    <div>
+                        <span style="color:#6b7280">CONTATO:</span>
+                        <span style="font-weight: 500">(92) 98633-8449</span>
+                    </div>
+
+                    <div>
+                        <span style="color:#6b7280">E-MAIL:</span>
+                        <span style="font-weight: 500">iano@iano.com</span>
+                    </div>
                 </div>
 
                 <div>
-                    <span style="color:#6b7280">CONTATO:</span>
-                    <span style="font-weight: 500">(92) 98633-8449</span>
-                </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column">
-                <div>
-                    <span style="color:#6b7280">E-MAIL:</span>
-                    <span style="font-weight: 500">iano@iano.com</span>
-                </div>
-                <div>
-                    <span style="color:#6b7280">CONVÊNIO:</span>
-                    <span style="font-weight: 500">fulano de tal</span>
-                    <span style="font-weight: 500">asdasda</span>
+                    <span style="color:#6b7280">ENDEREÇO:</span>
+                    <span style="font-weight: 500">RUA ADAMASTOR DE FIGUEIREDO, 3147, JAUARY I, 69104.208, ITACOATIARA-AMAZONAS</span>
                 </div>
             </div>
         </article>
 
-        <h1>RECIBO DE VENDA</h1>
+        <h1 style="margin: 20px 0;">RECIBO DE VENDA</h1>
 
         <table>
             <thead>
@@ -209,7 +231,7 @@
                     <th>ITEM</th>
                     <th>CATEGORIA</th>
                     <th>DESCRIÇÃO</th>
-                    <th class="nowrap">QTD</th>
+                    <th class="nowrap">QTD.</th>
                     <th class="nowrap">V. UNI.</th>
                     <th class="nowrap">SUBTOTAL</th>
                 </tr>
@@ -225,7 +247,15 @@
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td>LENTES</td>
+                    <td>LENTE</td>
+                    <td style="text-transform: uppercase">uisque commodo quis erat sed pretium. Curabitur sodales egestas diam, vitae hendrerit lorem venenatis et.</td>
+                    <td class="nowrap">1</td>
+                    <td class="nowrap">R$ 700,00</td>
+                    <td class="nowrap">R$ 700,00</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>ACESSORÓRIO</td>
                     <td style="text-transform: uppercase">uisque commodo quis erat sed pretium. Curabitur sodales egestas diam, vitae hendrerit lorem venenatis et.</td>
                     <td class="nowrap">1</td>
                     <td class="nowrap">R$ 700,00</td>
