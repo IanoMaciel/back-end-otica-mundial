@@ -158,7 +158,7 @@
 
 
                 <th>CUSTO</th>
-                <th>LUCRO</th>
+                <th class="nowrap">E. MIN.</th>
                 <th class="nowrap">PREÇO</th>
                 <th class="nowrap">CRIADO</th>
                 <th class="nowrap">ATU.</th>
@@ -185,8 +185,8 @@
                     <td class="nowrap">{{ $lens->diameter ?? '-' }}</td>
                     <td class="nowrap">{{ $lens->height ?? '-' }}</td>
 
-                    <td class="nowrap">{{ $lens->purchase_value ? formatReal($lens->purchase_value) : '-' }}</td>
-                    <td class="nowrap">{{ $lens->profit ? formatPercentage($lens->profit) : '-'}}</td>
+                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>
+                    <td class="nowrap">{{ $lens->minimum_value ? formatReal($lens->minimum_value) : '-'}}</td>
                     <td class="nowrap">{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
 
                     <td class="nowrap">{{ $lens->created_at ? formatDate($lens->created_at) : '-' }}</td>
@@ -205,6 +205,7 @@
                         <strong>SUR:</strong> SURFAÇAGEM -
                         <strong>DIÂ:</strong> DIÂMETRO -
                         <strong>ALT:</strong> ALTURA -
+                        <strong>E. MIN:</strong> ENTRADA MINÍMA -
                         <strong>ATU:</strong> ATUALIZADO
                 </tr>
             </tfoot>
