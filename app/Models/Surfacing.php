@@ -10,9 +10,9 @@ class Surfacing extends Model {
     public $timestamps = false;
     protected $fillable = ['surfacing'];
 
-    public function rules(): array {
+    public function rules(bool $update = false): array {
         return [
-            'surfacing' => 'required|string',
+            'surfacing' => $update ? 'required|string' : 'required|string|unique:surfacings,surfacing',
         ];
     }
 
@@ -20,6 +20,7 @@ class Surfacing extends Model {
         return [
             'surfacing.required' => 'O campo surfaçagem é um campo obrigatório.',
             'surfacing.string' => 'O campo surfaçagem deve ser do tipo texto.',
+            'surfacing.unique' => 'A surfaçagem já existe na base de dados',
         ];
     }
 }
