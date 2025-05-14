@@ -33,6 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // lenses
     Route::apiResource('surfacing', 'SurfacingController');
+    Route::delete('surfacing-delete-multiple', 'SurfacingController@deleteAll');
+
+    Route::apiResource('index', 'IndexController');
+    Route::delete('index-delete-multiple', 'IndexController@deleteAll');
 
     Route::apiResource('type-lens', 'TypeLensController');
     Route::apiResource('treatment', 'TreatmentController');
