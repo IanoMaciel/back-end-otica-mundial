@@ -38,6 +38,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('index', 'IndexController');
     Route::delete('index-delete-multiple', 'IndexController@deleteAll');
 
+    Route::apiResource('diameter', 'DiameterController');
+    Route::delete('diameter-delete-multiple', 'IndexController@deleteAll');
+
     Route::apiResource('type-lens', 'TypeLensController');
     Route::apiResource('treatment', 'TreatmentController');
     Route::apiResource('sensitivity', 'SensitivityController');
