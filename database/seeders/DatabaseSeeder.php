@@ -44,12 +44,12 @@ class DatabaseSeeder extends Seeder {
         FormPayment::factory()->count(4)->create(); // Não remover
         Card::factory()->count(6)->create(); // Não remover
 
-        TypeLens::factory()->count(5)->create(); // Não remover
-        Treatment::factory()->count(3)->create(); // Não remover
-        Sensitivity::factory()->count(5)->create(); // Não remover
+//        TypeLens::factory()->count(5)->create(); // Não remover
+//        Treatment::factory()->count(3)->create(); // Não remover
+//        Sensitivity::factory()->count(5)->create(); // Não remover
         Laboratory::factory(5)->create(); // Não remover
 
-        Lens::factory(100)->create();
+//        Lens::factory(100)->create();
         Sale::factory(30)->create();
     }
 }

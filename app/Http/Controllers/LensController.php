@@ -299,11 +299,19 @@ class LensController extends Controller {
 
     public function exportPdf() {
         $lenses = $this->lens->query()
-            ->with(
+            ->with([
                 'typeLens',
                 'treatment',
-                'sensitivity'
-            )
+                'indices',
+                'sensitivity',
+                'laboratory',
+                'laboratoryLens',
+                'surfacings',
+                'diameters',
+                'heights',
+            ])
+            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
+            ->orderBy('indices.index')
             ->get();
 
         return view('pdf.lenses', compact('lenses'));

@@ -16,10 +16,16 @@
         />
 
         <style>
-            body {
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
                 font-family: 'Nunito', sans-serif;
-                margin: 5px;
-                color: #333;
+            }
+
+            body {
+                height: 100%;
+                color: #333
             }
 
             .header {
@@ -120,6 +126,38 @@
                     padding: 15px;
                 }
             }
+
+        /*    action */
+            #filter-header {
+                cursor: pointer;
+                position: relative;
+            }
+
+            .filter-dropdown {
+                position: absolute;
+                background: white;
+                border: 1px solid #ddd;
+                max-height: 200px;
+                overflow-y: auto;
+                z-index: 1000;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                display: none;
+            }
+
+            .filter-option {
+                padding: 8px 12px;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+
+            .filter-option:hover {
+                background-color: #f0f0f0;
+            }
+
+            .filter-option.active {
+                background-color: red;
+                color: white;
+            }
         </style>
     </head>
     <body>
@@ -142,26 +180,31 @@
             <tr>
                 <th>#</th>
                 <th>CÓDIGO</th>
-                <th>TIPO</th>
-                <th>INDÍCE</th>
-                <th>ANT.</th>
-                <th>FILTRO</th>
-                <th>FOT.</th>
+
                 <th>NOME</th>
+{{--                <th id="filter-header">TIPO</th>--}}
+{{--                <th>SUR.</th>--}}
+{{--                <th>INDÍCE</th>--}}
+{{--                <th>ANT.</th>--}}
+{{--                <th>FILTRO</th>--}}
+{{--                <th>FOT.</th>--}}
+
                 <th>ESF.</th>
                 <th>CIL.</th>
                 <th>ADI.</th>
 
-                <th>SUR.</th>
                 <th>DIÂ.</th>
                 <th>ALT.</th>
 
 
-                <th>CUSTO</th>
-                <th class="nowrap">E. MIN.</th>
+{{--                <th>CUSTO</th>--}}
+                <th class="nowrap">E. MÍN.</th>
                 <th class="nowrap">PREÇO</th>
-                <th class="nowrap">CRIADO</th>
-                <th class="nowrap">ATU.</th>
+{{--                <th class="nowrap">CRIADO</th>--}}
+{{--                <th class="nowrap">ATU.</th>--}}
+                <th class="nowrap">LAB.</th>
+                <th>ENTREGA</th>
+{{--                <th>NOME</th>--}}
             </tr>
             </thead>
 
@@ -171,26 +214,31 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $lens->barcode ?? '-' }}</td>
-                    <td>{{ $lens->typeLens->type_lens ?? '-' }}</td>
-                    <td>{{ $lens->index }}</td>
-                    <td>{{ $lens->treatment->treatment ?? '-' }}</td>
-                    <td>{{ $lens->filter ? 'Sim' : 'Não' }}</td>
-                    <td>{{ $lens->sensitivity->sensitivity ?? '-' }}</td>
+
                     <td>{{ $lens->name_lens ?? '-'}}</td>
+
+{{--                    <td>{{ $lens->typeLens->type_lens ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->surfacings->surfacing ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->indices->index ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->treatment->treatment ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->filter ? 'Filtro Azul' : '-' }}</td>--}}
+{{--                    <td>{{ $lens->sensitivity->sensitivity ?? '-' }}</td>--}}
+
                     <td class="nowrap">{{ $lens->spherical_start ?? '-' }} / {{ $lens->spherical_end ?? '-' }}</td>
                     <td class="nowrap">{{ $lens->cylindrical_start ?? '-' }} / {{ $lens->cylindrical_end ?? '-' }} </td>
                     <td class="nowrap">{{ $lens->addition_start ?? '-' }} / {{ $lens->addition_end ?? '-' }}</td>
 
-                    <td class="nowrap">{{ $lens->surfacing ? 'DIGITAL' : '-' }}</td>
-                    <td class="nowrap">{{ $lens->diameter ?? '-' }}</td>
-                    <td class="nowrap">{{ $lens->height ?? '-' }}</td>
+                    <td class="nowrap">{{ $lens->diameters->diameter ?? '-' }}</td>
+                    <td class="nowrap">{{ $lens->heights->height ?? '-' }}</td>
 
-                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>
+{{--                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>--}}
                     <td class="nowrap">{{ $lens->minimum_value ? formatReal($lens->minimum_value) : '-'}}</td>
                     <td class="nowrap">{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
 
-                    <td class="nowrap">{{ $lens->created_at ? formatDate($lens->created_at) : '-' }}</td>
-                    <td class="nowrap">{{ $lens->updated_at ? formatDate($lens->updated_at) : '-' }}</td>
+{{--                    <td class="nowrap">{{ $lens->created_at ? formatDate($lens->created_at) : '-' }}</td>--}}
+{{--                    <td class="nowrap">{{ $lens->updated_at ? formatDate($lens->updated_at) : '-' }}</td>--}}
+                    <td class="nowrap">{{ $lens->laboratory->laboratory ?? '-' }}</td>
+                    <td >{{ $lens->delivery . ' DIAS'?? '-' }}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -205,8 +253,9 @@
                         <strong>SUR:</strong> SURFAÇAGEM -
                         <strong>DIÂ:</strong> DIÂMETRO -
                         <strong>ALT:</strong> ALTURA -
-                        <strong>E. MIN:</strong> ENTRADA MINÍMA -
-                        <strong>ATU:</strong> ATUALIZADO
+                        <strong>E. MÍN:</strong> ENTRADA MÍNIMA -
+                        <strong>LAB</strong> LABORATÓRIO
+{{--                        <strong>ATU:</strong> ATUALIZADO--}}
                 </tr>
             </tfoot>
         </table>
@@ -221,6 +270,92 @@
                 });
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const printButton = document.querySelector('.action button');
+            const filterHeader = document.getElementById('filter-header');
+            let currentFilter = null;
+
+            // Função para criar o dropdown
+            function createFilterDropdown(types) {
+                const dropdown = document.createElement('div');
+                dropdown.className = 'filter-dropdown';
+
+                // Opção "Todos"
+                const allOption = document.createElement('div');
+                allOption.className = 'filter-option' + (!currentFilter ? ' active' : '');
+                allOption.textContent = 'Todos';
+                allOption.addEventListener('click', () => filterTable(''));
+                dropdown.appendChild(allOption);
+
+                // Opções de tipos
+                types.forEach(type => {
+                    const option = document.createElement('div');
+                    option.className = 'filter-option' + (currentFilter === type ? ' active' : '');
+                    option.textContent = type;
+                    option.addEventListener('click', () => filterTable(type));
+                    dropdown.appendChild(option);
+                });
+
+                return dropdown;
+            }
+
+            // Função para filtrar a tabela
+            function filterTable(type) {
+                currentFilter = type === '' ? null : type;
+                const rows = document.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const typeCell = row.querySelector('td:nth-child(4)'); // 4ª coluna é o TIPO
+                    if (!type || typeCell.textContent === type) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            // Evento de clique no header
+            if (filterHeader) {
+                filterHeader.addEventListener('click', function(e) {
+                    // Coletar todos os tipos únicos
+                    const types = [...new Set(
+                        Array.from(document.querySelectorAll('tbody td:nth-child(4)'))
+                            .map(td => td.textContent)
+                            .filter(text => text.trim() !== '-')
+                    )].sort();
+
+                    // Remover dropdown anterior
+                    const existingDropdown = document.querySelector('.filter-dropdown');
+                    if (existingDropdown) existingDropdown.remove();
+
+                    // Criar e exibir novo dropdown
+                    const dropdown = createFilterDropdown(types);
+                    this.appendChild(dropdown);
+
+                    // Posicionar dropdown
+                    const rect = this.getBoundingClientRect();
+                    dropdown.style.display = 'block';
+                    dropdown.style.top = rect.height + 'px';
+                    dropdown.style.left = '0';
+                });
+            }
+
+            // Fechar dropdown ao clicar fora
+            document.addEventListener('click', function(e) {
+                if (!filterHeader.contains(e.target)) {
+                    const dropdown = document.querySelector('.filter-dropdown');
+                    if (dropdown) dropdown.remove();
+                }
+            });
+
+            // Print button
+            if (printButton) {
+                printButton.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        });s
     </script>
 
     @php
