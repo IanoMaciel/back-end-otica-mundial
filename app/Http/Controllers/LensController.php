@@ -126,7 +126,7 @@ class LensController extends Controller {
     public function show(int $id): JsonResponse {
         $lens = $this->lens
             ->query()
-            ->with(
+            ->with([
                 'typeLens',
                 'treatment',
                 'sensitivity',
@@ -143,8 +143,8 @@ class LensController extends Controller {
                 'promotionItems.promotion.creditPromotions',
                 'promotionItems.promotion.cashPromotions',
                 'promotionItems.promotion.cashPromotions.formPayment',
-                'promotionItems.promotion.filters',
-            )
+                'promotionItems.promotion.filters'
+            ])
             ->find($id);
 
         if (!$lens) {
