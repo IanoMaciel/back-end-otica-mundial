@@ -152,26 +152,26 @@ class Lens extends Model {
     }
 
     public function laboratory(): BelongsTo {
-        return $this->belongsTo(Laboratory::class);
+        return $this->belongsTo(Laboratory::class, 'laboratory_id');
     }
 
     public function laboratoryLens(): BelongsTo {
-        return $this->belongsTo(Laboratory::class);
+        return $this->belongsTo(Laboratory::class, 'laboratory_lens_id');
     }
 
     public function diameters(): BelongsTo {
-        return $this->belongsTo(Diameter::class);
+        return $this->belongsTo(Diameter::class, 'diameter_id');
     }
 
     public function heights(): BelongsTo {
-        return $this->belongsTo(Height::class);
+        return $this->belongsTo(Height::class, 'height_id');
     }
     public function surfacings(): BelongsTo {
-        return $this->belongsTo(Surfacing::class);
+        return $this->belongsTo(Surfacing::class, 'surfacing_id');
     }
 
     public function indices(): BelongsTo {
-        return $this->belongsTo(Index::class);
+        return $this->belongsTo(Index::class, 'index_id');
     }
 
     public function promotionItems(): MorphMany {
