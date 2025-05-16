@@ -10,20 +10,18 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Lens extends Model {
     use HasFactory;
+
     protected $fillable = [
         'barcode',
         'type_lens_id',
-        'index',
+        'index_id', // new column
+        'surfacing_id', // new column
         'treatment_id',
-        'surfacing', // new column of type boolean
         'filter',
         'sensitivity_id',
         'name_lens',
-        'laboratory_id',
-        'minimum_value',
-        'discount',
-        'price',
-        'cost', // new colum of type decimal
+        'laboratory_lens_id', // new column
+        'laboratory_id', // new column
         'delivery',
         'spherical_start',
         'spherical_end',
@@ -31,8 +29,13 @@ class Lens extends Model {
         'cylindrical_end',
         'addition_start',
         'addition_end',
-        'diameter', // new colum of type decimal
-        'height', // new colum of type decimal
+        'diameter_id', // new column
+        'height_id', // new column
+        'cost', // new column
+        'minimum_value',
+        'discount',
+        'price',
+        'profit', // new column
     ];
 
     # Validations
@@ -40,26 +43,35 @@ class Lens extends Model {
         return [
             'barcode' => $update ? 'nullable|string' : 'nullable|string|unique:lenses',
             'type_lens_id' => $update ? 'nullable|exists:type_lenses,id' : 'required|exists:type_lenses,id',
-            'surfacing' => 'nullable|boolean',
-            'index' => $update ? 'nullable|numeric' : 'required|numeric',
+
+            'index_id' => $update ? 'nullable|exists:indices,id' : 'required|exists:indices,id', //alterado de 'index' para 'index_id' (new column)
+            'surfacing_id' => $update ? 'nullable|exists:surfacings,id' : 'required|exists:surfacings,id', //alterado de 'surfacing' para 'surfacing_id' (new column)
+
             'treatment_id' => $update ? 'nullable|exists:treatments,id' : 'required|exists:treatments,id',
             'filter' => $update ? 'nullable|boolean' : 'required|boolean',
             'sensitivity_id' => $update ? 'nullable|exists:sensitivities,id' : 'required|exists:sensitivities,id',
             'name_lens' => $update ? 'nullable|string' : 'required|string',
+
+            'laboratory_lens_id' => $update ? 'nullable|exists:laboratories,id' : 'required|exists:laboratories,id', // novo campo adicionado
             'laboratory_id' => $update ? 'nullable|exists:laboratories,id' : 'required|exists:laboratories,id',
-            'minimum_value' => 'nullable|numeric',
-            'discount' => 'nullable|numeric',
-            'price' => $update ? 'nullable|numeric' : 'required|numeric',
-            'cost' => 'nullable|numeric',
+
             'delivery' => $update ? 'nullable|numeric' : 'required|numeric',
+
             'spherical_start' => $update ? 'nullable|numeric' : 'required|numeric',
             'spherical_end' => $update ? 'nullable|numeric' : 'required|numeric',
             'cylindrical_start' => 'nullable|numeric',
             'cylindrical_end' => 'nullable|numeric',
             'addition_start' => 'nullable|numeric',
             'addition_end' => 'nullable|numeric',
-            'diameter' => 'nullable|numeric',
-            'height' => 'nullable|string',
+
+            'diameter_id' => $update ? 'nullable|exists:diameters,id' : 'required|exists:diameters,id', // alterado de 'diameter' para 'diameter_id' (new column)
+            'height_id' => $update ? 'nullable|exists:heights,id' : 'required|exists:heights,id', // alterado de 'height' para 'height_id' (new column)
+
+            'cost' => 'nullable|numeric', // novo campo adicionado
+            'minimum_value' => 'nullable|numeric',
+            'discount' => 'nullable|numeric',
+            'price' => $update ? 'nullable|numeric' : 'required|numeric',
+            'profit' => 'nullable|numeric', // novo campo adicionado
         ];
     }
 
@@ -71,10 +83,11 @@ class Lens extends Model {
             'type_lens_id.required' => 'O tipo de lente é obrigatório.',
             'type_lens_id.exists' => 'O tipo de lente informado não existe.',
 
-            'surfacing.boolean' => 'O campo sufarçagem é do tipo booleano.',
+            'index_id.required' => 'O índice é obrigatório.',
+            'index_id.exists' => 'O índice informado não existe.',
 
-            'index.required' => 'O índice é obrigatório.',
-            'index.numeric' => 'O índice deve ser um número.',
+            'surfacing_id.required' => 'O tipo de surfacagem é obrigatório.',
+            'surfacing_id.exists' => 'O tipo de surfacagem informado não existe.',
 
             'treatment_id.required' => 'O tratamento é obrigatório.',
             'treatment_id.exists' => 'O tratamento informado não existe.',
@@ -88,6 +101,15 @@ class Lens extends Model {
             'name_lens.required' => 'O nome da lente é obrigatório.',
             'name_lens.string' => 'O nome da lente deve ser texto.',
 
+            'laboratory_lens_id.required' => 'O laboratório da lente é obrigatório.',
+            'laboratory_lens_id.exists' => 'O laboratório da lente informado não existe.',
+
+            'laboratory_id.required' => 'O laboratório é obrigatório.',
+            'laboratory_id.exists' => 'O laboratório informado não existe.',
+
+            'delivery.required' => 'O prazo de entrega é obrigatório.',
+            'delivery.numeric' => 'O prazo de entrega deve ser um número.', // alterado de 'integer' para 'numeric' para manter consistência
+
             'spherical_start.required' => 'O grau esférico inicial é obrigatório.',
             'spherical_start.numeric' => 'O grau esférico inicial deve ser um número.',
             'spherical_end.required' => 'O grau esférico final é obrigatório.',
@@ -96,26 +118,23 @@ class Lens extends Model {
             'cylindrical_start.numeric' => 'O grau cilíndrico inicial deve ser um número.',
             'cylindrical_end.numeric' => 'O grau cilíndrico final deve ser um número.',
 
-            'addition_start.numeric' => 'A adição inicial deve ser um número',
+            'addition_start.numeric' => 'A adição inicial deve ser um número.',
             'addition_end.numeric' => 'A adição final deve ser um número.',
 
-            'laboratory_id.required' => 'O laboratório é obrigatório.',
-            'laboratory_id.exists' => 'O laboratório informado não existe.',
+            'diameter_id.required' => 'O diâmetro é obrigatório.',
+            'diameter_id.exists' => 'O diâmetro informado não existe.',
 
+            'height_id.required' => 'A altura é obrigatória.',
+            'height_id.exists' => 'A altura informada não existe.',
+
+            'cost.numeric' => 'O custo deve ser um número.', // novo campo cost
             'minimum_value.numeric' => 'O valor mínimo deve ser um número.',
-
             'discount.numeric' => 'O desconto deve ser um número.',
 
             'price.required' => 'O preço é obrigatório.',
             'price.numeric' => 'O preço deve ser um número.',
 
-            'cost.numeric' => 'O custo deve ser um número.',
-
-            'delivery.required' => 'O prazo de entrega é obrigatório.',
-            'delivery.integer' => 'O prazo de entrega deve ser um número inteiro.',
-
-            'diameter.numeric' => 'O diâmetro deve ser um número ',
-            'height.string' => 'A altura deve ser do tipo texto',
+            'profit.numeric' => 'O lucro deve ser um número.', // novo campo profit
         ];
     }
 
@@ -134,6 +153,25 @@ class Lens extends Model {
 
     public function laboratory(): BelongsTo {
         return $this->belongsTo(Laboratory::class);
+    }
+
+    public function laboratoryLens(): BelongsTo {
+        return $this->belongsTo(Laboratory::class);
+    }
+
+    public function diameters(): BelongsTo {
+        return $this->belongsTo(Diameter::class);
+    }
+
+    public function heights(): BelongsTo {
+        return $this->belongsTo(Height::class);
+    }
+    public function surfacings(): BelongsTo {
+        return $this->belongsTo(Surfacing::class);
+    }
+
+    public function indices(): BelongsTo {
+        return $this->belongsTo(Index::class);
     }
 
     public function promotionItems(): MorphMany {

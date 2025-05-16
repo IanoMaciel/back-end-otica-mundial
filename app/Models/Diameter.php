@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Diameter extends Model {
     use HasFactory;
@@ -22,5 +23,9 @@ class Diameter extends Model {
             'diameter.numeric' => 'O campo diâmetro deve ser do tipo numérico.',
             'diameter.unique' => 'O diâmetro já existe na base de dados.',
         ];
+    }
+
+    public function lens(): HasMany {
+        return $this->hasMany(Lens::class);
     }
 }

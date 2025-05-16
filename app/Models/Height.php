@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Height extends Model {
     use HasFactory;
@@ -22,5 +23,9 @@ class Height extends Model {
             'height.string' => 'O campo altura deve ser do tipo texto.',
             'height.unique' => 'A altura já existe na base de dados',
         ];
+    }
+
+    public function lens(): HasMany {
+        return $this->hasMany(Lens::class);
     }
 }
