@@ -2,103 +2,106 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Laboratory;
+use App\Models\Diameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LaboratoryController extends Controller {
-
-    protected $laboratory;
-    public function __construct(Laboratory $laboratory) {
-        $this->laboratory = $laboratory;
+class DiameterController extends Controller {
+    protected $diameter;
+    public function __construct(Diameter $diameter) {
+        $this->diameter = $diameter;
     }
 
     public function index(): JsonResponse {
-        return response()->json($this->laboratory->query()->orderBy('laboratory')->get());
+        $diameter = $this->diameter
+            ->query()
+            ->orderBy('diameter')
+            ->get();
+
+        return response()->json($diameter);
     }
 
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
-            $this->laboratory->rules(),
-            $this->laboratory->messages(),
+            $this->diameter->rules(),
+            $this->diameter->messages(),
         );
 
         try {
-            $laboratory = $this->laboratory->query()->create($validatedData);
-            return response()->json($laboratory, 201);
+            $diameter = $this->diameter->query()->create($validatedData);
+            return response()->json($diameter, 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function show(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $diameter = $this->diameter->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$diameter) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'O diâmetro informado não existe na base de dados.'
             ], 404);
         }
-
-        return response()->json($laboratory);
+        return response()->json($diameter);
     }
 
     public function update(Request $request, int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $diameter = $this->diameter->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$diameter) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'O diâmetro informado não existe na base de dados.'
             ], 404);
         }
 
         $validatedData = $request->validate(
-            $this->laboratory->rules(true),
-            $this->laboratory->messages(),
+            $this->diameter->rules(true),
+            $this->diameter->messages(),
         );
 
-        $laboratoryExists = $this->laboratory->query()
-            ->where('laboratory', $validatedData['laboratory'])
+        $existsDiameter = $this->diameter->query()
+            ->where('diameter', $validatedData['diameter'])
             ->where('id', '<>', $id)
             ->exists();
 
-        if ($laboratoryExists) {
+        if ($existsDiameter) {
             return response()->json([
-                'error' => 'O laboratório informado já existe na base de dados.',
-            ], 422);
+                'O diameter já existe na base de dados.'
+            ], 409);
         }
 
         try {
-            $laboratory->update($validatedData);
-            return response()->json($laboratory);
+            $diameter->update($validatedData);
+            return response()->json($diameter);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function destroy(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $diameter = $this->diameter->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$diameter) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'O diâmetro informado não existe na base de dados.'
             ], 404);
         }
 
         try {
-            $laboratory->delete();
+            $diameter->delete();
             return response()->json(null, 204);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -106,7 +109,7 @@ class LaboratoryController extends Controller {
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
-                'id.*' => 'integer|exists:laboratories,id',],
+                'id.*' => 'integer|exists:diameters,id',],
             [
                 'id.required' => 'O campo id é obrigatório.',
                 'id.*.integer' => 'O valor do campo id deve ser um número inteiro.',
@@ -115,7 +118,7 @@ class LaboratoryController extends Controller {
         );
 
         try {
-            $this->laboratory->query()->whereIn('id', $validatedData['id'])->delete();
+            $this->diameter->query()->whereIn('id', $validatedData['id'])->delete();
             return response()->json(['message' => 'Registros excluídos com sucesso.']);
         } catch (\Throwable $th) {
             return response()->json([

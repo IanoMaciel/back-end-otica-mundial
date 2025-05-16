@@ -2,103 +2,106 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Laboratory;
+use App\Models\Index;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LaboratoryController extends Controller {
-
-    protected $laboratory;
-    public function __construct(Laboratory $laboratory) {
-        $this->laboratory = $laboratory;
+class IndexController extends Controller {
+    protected $index;
+    public function __construct(Index $index) {
+        $this->index = $index;
     }
 
     public function index(): JsonResponse {
-        return response()->json($this->laboratory->query()->orderBy('laboratory')->get());
+        $index = $this->index
+            ->query()
+            ->orderBy('index')
+            ->get();
+
+        return response()->json($index);
     }
 
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
-            $this->laboratory->rules(),
-            $this->laboratory->messages(),
+            $this->index->rules(),
+            $this->index->messages(),
         );
 
         try {
-            $laboratory = $this->laboratory->query()->create($validatedData);
-            return response()->json($laboratory, 201);
+            $index = $this->index->query()->create($validatedData);
+            return response()->json($index, 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function show(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $index = $this->index->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$index) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'O índice informado não existe na base de dados.'
             ], 404);
         }
-
-        return response()->json($laboratory);
+        return response()->json($index);
     }
 
     public function update(Request $request, int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $index = $this->index->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$index) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'A surfaçagem informada não existe na base de dados.'
             ], 404);
         }
 
         $validatedData = $request->validate(
-            $this->laboratory->rules(true),
-            $this->laboratory->messages(),
+            $this->index->rules(true),
+            $this->index->messages(),
         );
 
-        $laboratoryExists = $this->laboratory->query()
-            ->where('laboratory', $validatedData['laboratory'])
+        $existsIndex = $this->index->query()
+            ->where('index', $validatedData['index'])
             ->where('id', '<>', $id)
             ->exists();
 
-        if ($laboratoryExists) {
+        if ($existsIndex) {
             return response()->json([
-                'error' => 'O laboratório informado já existe na base de dados.',
-            ], 422);
+                'O índice já existe na base de dados.'
+            ], 409);
         }
 
         try {
-            $laboratory->update($validatedData);
-            return response()->json($laboratory);
+            $index->update($validatedData);
+            return response()->json($index);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function destroy(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $index = $this->index->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$index) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'O índice informado não existe na base de dados.'
             ], 404);
         }
 
         try {
-            $laboratory->delete();
+            $index->delete();
             return response()->json(null, 204);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -106,7 +109,7 @@ class LaboratoryController extends Controller {
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
-                'id.*' => 'integer|exists:laboratories,id',],
+                'id.*' => 'integer|exists:indices,id',],
             [
                 'id.required' => 'O campo id é obrigatório.',
                 'id.*.integer' => 'O valor do campo id deve ser um número inteiro.',
@@ -115,7 +118,7 @@ class LaboratoryController extends Controller {
         );
 
         try {
-            $this->laboratory->query()->whereIn('id', $validatedData['id'])->delete();
+            $this->index->query()->whereIn('id', $validatedData['id'])->delete();
             return response()->json(['message' => 'Registros excluídos com sucesso.']);
         } catch (\Throwable $th) {
             return response()->json([

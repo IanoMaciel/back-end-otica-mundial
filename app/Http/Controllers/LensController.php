@@ -25,6 +25,11 @@ class LensController extends Controller {
                 'treatment',
                 'sensitivity',
                 'laboratory',
+                'laboratoryLens:id,laboratory',
+                'diameters',
+                'heights',
+                'surfacings',
+                'indices',
                 'singleVision',
                 'multifocalLens',
                 'promotionItems',
@@ -34,7 +39,9 @@ class LensController extends Controller {
                 'promotionItems.promotion.cashPromotions.formPayment',
                 'promotionItems.promotion.filters',
             )
-            ->orderBy('index');
+            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
+            ->orderBy('indices.index');
+
 
         # filters
         if ($nameLens = $request->input('search')) {
@@ -44,9 +51,7 @@ class LensController extends Controller {
         }
 
         if ($index = $request->input('indice')) {
-            $lenses->where(function ($query) use ($index) {
-               $query->where('index', 'like', '%' . $index . '%');
-            });
+            $lenses->where('indices.index', 'like', '%' . $index . '%');
         }
 
         if ($typeLens = $request->input('tipo')) {
@@ -126,6 +131,11 @@ class LensController extends Controller {
                 'treatment',
                 'sensitivity',
                 'laboratory',
+                'laboratoryLens',
+                'diameters',
+                'heights',
+                'surfacings',
+                'indices',
                 'singleVision',
                 'multifocalLens',
                 'promotionItems',
