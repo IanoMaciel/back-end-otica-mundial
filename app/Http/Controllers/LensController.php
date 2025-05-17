@@ -89,7 +89,6 @@ class LensController extends Controller {
 
         try {
             $lens = $this->lens->query()->create($validatedData);
-            dd($lens);
             $step = 0.25;
 
             if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
