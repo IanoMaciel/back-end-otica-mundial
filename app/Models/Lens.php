@@ -20,7 +20,7 @@ class Lens extends Model {
         'filter',
         'sensitivity_id',
         'name_lens',
-        'laboratory_lens_id', // new column
+        'laboratory_lens', // new column
         'laboratory_id', // new column
         'delivery',
         'spherical_start',
@@ -52,7 +52,7 @@ class Lens extends Model {
             'sensitivity_id' => $update ? 'nullable|exists:sensitivities,id' : 'required|exists:sensitivities,id',
             'name_lens' => $update ? 'nullable|string' : 'required|string',
 
-            'laboratory_lens_id' => $update ? 'nullable|exists:laboratories,id' : 'required|exists:laboratories,id', // novo campo adicionado
+            'laboratory_lens' => 'nullable|string', // novo campo adicionado
             'laboratory_id' => $update ? 'nullable|exists:laboratories,id' : 'required|exists:laboratories,id',
 
             'delivery' => $update ? 'nullable|numeric' : 'required|numeric',
@@ -101,8 +101,7 @@ class Lens extends Model {
             'name_lens.required' => 'O nome da lente é obrigatório.',
             'name_lens.string' => 'O nome da lente deve ser texto.',
 
-            'laboratory_lens_id.required' => 'O laboratório da lente é obrigatório.',
-            'laboratory_lens_id.exists' => 'O laboratório da lente informado não existe.',
+            'laboratory_lens.string' => 'A lente laboratório deve ser do tipo texto.',
 
             'laboratory_id.required' => 'O laboratório é obrigatório.',
             'laboratory_id.exists' => 'O laboratório informado não existe.',
@@ -153,10 +152,6 @@ class Lens extends Model {
 
     public function laboratory(): BelongsTo {
         return $this->belongsTo(Laboratory::class, 'laboratory_id');
-    }
-
-    public function laboratoryLens(): BelongsTo {
-        return $this->belongsTo(Laboratory::class, 'laboratory_lens_id');
     }
 
     public function diameters(): BelongsTo {
