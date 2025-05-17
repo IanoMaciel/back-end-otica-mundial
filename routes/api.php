@@ -32,10 +32,29 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('address', 'AddressController');
 
     // lenses
+    Route::apiResource('surfacing', 'SurfacingController');
+    Route::delete('surfacing-delete-multiple', 'SurfacingController@deleteAll');
+
+    Route::apiResource('index', 'IndexController');
+    Route::delete('index-delete-multiple', 'IndexController@deleteAll');
+
+    Route::apiResource('diameter', 'DiameterController');
+    Route::delete('diameter-delete-multiple', 'IndexController@deleteAll');
+
+    Route::apiResource('height', 'HeightController');
+    Route::delete('height-delete-multiple', 'HeightController@deleteAll');
+
     Route::apiResource('type-lens', 'TypeLensController');
+    Route::delete('type-lens-delete-multiple', 'TypeLensController@deleteAll');
+
     Route::apiResource('treatment', 'TreatmentController');
+    Route::delete('treatment-delete-multiple', 'TreatmentController@deleteAll');
+
     Route::apiResource('sensitivity', 'SensitivityController');
+    Route::delete('sensitivity-delete-multiple', 'SensitivityController@deleteAll');
+
     Route::apiResource('laboratory', 'LaboratoryController');
+    Route::delete('laboratory-delete-multiple', 'LaboratoryController@deleteAll');
 
     Route::apiResource('lens', 'LensController');
     Route::delete('lens-delete-multiple', 'LensController@deleteMultiple');

@@ -2,103 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Laboratory;
+use App\Models\Surfacing;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LaboratoryController extends Controller {
+class SurfacingController extends Controller {
 
-    protected $laboratory;
-    public function __construct(Laboratory $laboratory) {
-        $this->laboratory = $laboratory;
+    protected $surfacing;
+    public function __construct(Surfacing $surfacing) {
+        $this->surfacing = $surfacing;
     }
 
     public function index(): JsonResponse {
-        return response()->json($this->laboratory->query()->orderBy('laboratory')->get());
+        $surfacing = $this->surfacing
+            ->query()
+            ->orderBy('surfacing')
+            ->get();
+
+        return response()->json($surfacing);
     }
 
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
-            $this->laboratory->rules(),
-            $this->laboratory->messages(),
+            $this->surfacing->rules(),
+            $this->surfacing->messages(),
         );
 
         try {
-            $laboratory = $this->laboratory->query()->create($validatedData);
-            return response()->json($laboratory, 201);
+            $surfacing = $this->surfacing->query()->create($validatedData);
+            return response()->json($surfacing, 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function show(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $surfacing = $this->surfacing->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$surfacing) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'A surfaçagem informada não existe na base de dados.'
             ], 404);
         }
-
-        return response()->json($laboratory);
+        return response()->json($surfacing);
     }
 
     public function update(Request $request, int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $surfacing = $this->surfacing->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$surfacing) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'A surfaçagem informada não existe na base de dados.'
             ], 404);
         }
 
         $validatedData = $request->validate(
-            $this->laboratory->rules(true),
-            $this->laboratory->messages(),
+            $this->surfacing->rules(true),
+            $this->surfacing->messages(),
         );
 
-        $laboratoryExists = $this->laboratory->query()
-            ->where('laboratory', $validatedData['laboratory'])
+
+        $existsSurfacing = $this->surfacing->query()
+            ->where('surfacing', $validatedData['surfacing'])
             ->where('id', '<>', $id)
             ->exists();
 
-        if ($laboratoryExists) {
+        if ($existsSurfacing) {
             return response()->json([
-                'error' => 'O laboratório informado já existe na base de dados.',
-            ], 422);
-        }
-
-        try {
-            $laboratory->update($validatedData);
-            return response()->json($laboratory);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'error' => 'Erro ao processar a solicitação',
-                'message' => $th->getMessage(),
-            ]);
-        }
-    }
-
-    public function destroy(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
-
-        if (!$laboratory) {
-            return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'A surfaçagem já existe na base de dados.'
             ], 404);
         }
 
         try {
-            $laboratory->delete();
+            $surfacing->update($validatedData);
+            return response()->json($surfacing);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Erro ao processar a solicitação.',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function destroy(int $id): JsonResponse {
+        $surfacing = $this->surfacing->query()->find($id);
+
+        if (!$surfacing) {
+            return response()->json([
+                'A surfaçagem informada não existe na base de dados.'
+            ], 404);
+        }
+
+        try {
+            $surfacing->delete();
             return response()->json(null, 204);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -106,7 +111,7 @@ class LaboratoryController extends Controller {
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
-                'id.*' => 'integer|exists:laboratories,id',],
+                'id.*' => 'integer|exists:surfacings,id',],
             [
                 'id.required' => 'O campo id é obrigatório.',
                 'id.*.integer' => 'O valor do campo id deve ser um número inteiro.',
@@ -115,7 +120,7 @@ class LaboratoryController extends Controller {
         );
 
         try {
-            $this->laboratory->query()->whereIn('id', $validatedData['id'])->delete();
+            $this->surfacing->query()->whereIn('id', $validatedData['id'])->delete();
             return response()->json(['message' => 'Registros excluídos com sucesso.']);
         } catch (\Throwable $th) {
             return response()->json([

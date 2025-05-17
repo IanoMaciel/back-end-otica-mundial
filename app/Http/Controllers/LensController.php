@@ -20,11 +20,15 @@ class LensController extends Controller {
     public function index(Request $request): JsonResponse {
         $lenses = $this->lens
             ->query()
-            ->with(
+            ->with([
                 'typeLens',
                 'treatment',
                 'sensitivity',
                 'laboratory',
+                'diameters',
+                'heights',
+                'surfacings',
+                'indices',
                 'singleVision',
                 'multifocalLens',
                 'promotionItems',
@@ -33,8 +37,11 @@ class LensController extends Controller {
                 'promotionItems.promotion.cashPromotions',
                 'promotionItems.promotion.cashPromotions.formPayment',
                 'promotionItems.promotion.filters',
-            )
-            ->orderBy('index');
+            ])
+            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
+            ->select('lenses.*')
+            ->orderBy('indices.index');
+
 
         # filters
         if ($nameLens = $request->input('search')) {
@@ -44,9 +51,7 @@ class LensController extends Controller {
         }
 
         if ($index = $request->input('indice')) {
-            $lenses->where(function ($query) use ($index) {
-               $query->where('index', 'like', '%' . $index . '%');
-            });
+            $lenses->where('indices.index', 'like', '%' . $index . '%');
         }
 
         if ($typeLens = $request->input('tipo')) {
@@ -121,11 +126,15 @@ class LensController extends Controller {
     public function show(int $id): JsonResponse {
         $lens = $this->lens
             ->query()
-            ->with(
+            ->with([
                 'typeLens',
                 'treatment',
                 'sensitivity',
                 'laboratory',
+                'diameters',
+                'heights',
+                'surfacings',
+                'indices',
                 'singleVision',
                 'multifocalLens',
                 'promotionItems',
@@ -133,8 +142,8 @@ class LensController extends Controller {
                 'promotionItems.promotion.creditPromotions',
                 'promotionItems.promotion.cashPromotions',
                 'promotionItems.promotion.cashPromotions.formPayment',
-                'promotionItems.promotion.filters',
-            )
+                'promotionItems.promotion.filters'
+            ])
             ->find($id);
 
         if (!$lens) {
@@ -289,11 +298,19 @@ class LensController extends Controller {
 
     public function exportPdf() {
         $lenses = $this->lens->query()
-            ->with(
+            ->with([
                 'typeLens',
                 'treatment',
-                'sensitivity'
-            )
+                'indices',
+                'sensitivity',
+                'laboratory',
+                'laboratoryLens',
+                'surfacings',
+                'diameters',
+                'heights',
+            ])
+            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
+            ->orderBy('indices.index')
             ->get();
 
         return view('pdf.lenses', compact('lenses'));

@@ -2,103 +2,102 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Laboratory;
+use App\Models\Height;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LaboratoryController extends Controller {
+class HeightController extends Controller {
 
-    protected $laboratory;
-    public function __construct(Laboratory $laboratory) {
-        $this->laboratory = $laboratory;
+    protected $height;
+    public function __construct(Height $height) {
+        $this->height = $height;
     }
 
     public function index(): JsonResponse {
-        return response()->json($this->laboratory->query()->orderBy('laboratory')->get());
+        return response()->json($this->height->query()->orderBy('height')->get());
     }
 
     public function store(Request $request): JsonResponse {
         $validatedData = $request->validate(
-            $this->laboratory->rules(),
-            $this->laboratory->messages(),
+            $this->height->rules(),
+            $this->height->messages(),
         );
 
         try {
-            $laboratory = $this->laboratory->query()->create($validatedData);
-            return response()->json($laboratory, 201);
+            $height = $this->height->query()->create($validatedData);
+            return response()->json($height, 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function show(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $height = $this->height->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$height) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'A altura informado não existe na base de dados.'
             ], 404);
         }
-
-        return response()->json($laboratory);
+        return response()->json($height);
     }
 
     public function update(Request $request, int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $height = $this->height->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$height) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'A altura informada não existe na base de dados.'
             ], 404);
         }
 
         $validatedData = $request->validate(
-            $this->laboratory->rules(true),
-            $this->laboratory->messages(),
+            $this->height->rules(true),
+            $this->height->messages(),
         );
 
-        $laboratoryExists = $this->laboratory->query()
-            ->where('laboratory', $validatedData['laboratory'])
+        $existsHeight = $this->height->query()
+            ->where('height', $validatedData['height'])
             ->where('id', '<>', $id)
             ->exists();
 
-        if ($laboratoryExists) {
+        if ($existsHeight) {
             return response()->json([
-                'error' => 'O laboratório informado já existe na base de dados.',
-            ], 422);
+                'O índice já existe na base de dados.'
+            ], 409);
         }
 
         try {
-            $laboratory->update($validatedData);
-            return response()->json($laboratory);
+            $height->update($validatedData);
+            return response()->json($height);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function destroy(int $id): JsonResponse {
-        $laboratory = $this->laboratory->query()->find($id);
+        $height = $this->height->query()->find($id);
 
-        if (!$laboratory) {
+        if (!$height) {
             return response()->json([
-                'error' => 'O laboratório informado não existe na base de dados.',
+                'A altura informado não existe na base de dados.'
             ], 404);
         }
 
         try {
-            $laboratory->delete();
+            $height->delete();
             return response()->json(null, 204);
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Erro ao processar a solicitação',
+                'error' => 'Erro ao processar a solicitação.',
                 'message' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -106,7 +105,7 @@ class LaboratoryController extends Controller {
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
-                'id.*' => 'integer|exists:laboratories,id',],
+                'id.*' => 'integer|exists:heights,id',],
             [
                 'id.required' => 'O campo id é obrigatório.',
                 'id.*.integer' => 'O valor do campo id deve ser um número inteiro.',
@@ -115,7 +114,7 @@ class LaboratoryController extends Controller {
         );
 
         try {
-            $this->laboratory->query()->whereIn('id', $validatedData['id'])->delete();
+            $this->height->query()->whereIn('id', $validatedData['id'])->delete();
             return response()->json(['message' => 'Registros excluídos com sucesso.']);
         } catch (\Throwable $th) {
             return response()->json([
