@@ -20,7 +20,7 @@ class LensController extends Controller {
     public function index(Request $request): JsonResponse {
         $lenses = $this->lens
             ->query()
-            ->with(
+            ->with([
                 'typeLens',
                 'treatment',
                 'sensitivity',
@@ -37,8 +37,9 @@ class LensController extends Controller {
                 'promotionItems.promotion.cashPromotions',
                 'promotionItems.promotion.cashPromotions.formPayment',
                 'promotionItems.promotion.filters',
-            )
+            ])
             ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
+            ->select('lenses.*')
             ->orderBy('indices.index');
 
 
@@ -88,6 +89,7 @@ class LensController extends Controller {
 
         try {
             $lens = $this->lens->query()->create($validatedData);
+            dd($lens);
             $step = 0.25;
 
             if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
