@@ -45,7 +45,7 @@ class Lens extends Model {
             'type_lens_id' => $update ? 'nullable|exists:type_lenses,id' : 'required|exists:type_lenses,id',
 
             'index_id' => $update ? 'nullable|exists:indices,id' : 'required|exists:indices,id', //alterado de 'index' para 'index_id' (new column)
-            'surfacing_id' => $update ? 'nullable|exists:surfacings,id' : 'required|exists:surfacings,id', //alterado de 'surfacing' para 'surfacing_id' (new column)
+            'surfacing_id' => 'nullable|exists:surfacings,id', //alterado de 'surfacing' para 'surfacing_id' (new column)
 
             'treatment_id' => $update ? 'nullable|exists:treatments,id' : 'required|exists:treatments,id',
             'filter' => $update ? 'nullable|boolean' : 'required|boolean',
@@ -86,7 +86,6 @@ class Lens extends Model {
             'index_id.required' => 'O índice é obrigatório.',
             'index_id.exists' => 'O índice informado não existe.',
 
-            'surfacing_id.required' => 'O tipo de surfacagem é obrigatório.',
             'surfacing_id.exists' => 'O tipo de surfacagem informado não existe.',
 
             'treatment_id.required' => 'O tratamento é obrigatório.',
