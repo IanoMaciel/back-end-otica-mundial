@@ -44,12 +44,12 @@ class Lens extends Model {
             'barcode' => $update ? 'nullable|string' : 'nullable|string|unique:lenses',
             'type_lens_id' => $update ? 'nullable|exists:type_lenses,id' : 'required|exists:type_lenses,id',
 
-            'index_id' => $update ? 'nullable|exists:indices,id' : 'required|exists:indices,id', //alterado de 'index' para 'index_id' (new column)
-            'surfacing_id' => $update ? 'nullable|exists:surfacings,id' : 'required|exists:surfacings,id', //alterado de 'surfacing' para 'surfacing_id' (new column)
+            'index_id' => 'nullable|exists:indices,id', //alterado de 'index' para 'index_id' (new column)
+            'surfacing_id' => 'nullable|exists:surfacings,id', //alterado de 'surfacing' para 'surfacing_id' (new column)
 
             'treatment_id' => $update ? 'nullable|exists:treatments,id' : 'required|exists:treatments,id',
             'filter' => $update ? 'nullable|boolean' : 'required|boolean',
-            'sensitivity_id' => $update ? 'nullable|exists:sensitivities,id' : 'required|exists:sensitivities,id',
+            'sensitivity_id' => 'nullable|exists:sensitivities,id',
             'name_lens' => $update ? 'nullable|string' : 'required|string',
 
             'laboratory_lens' => 'nullable|string', // novo campo adicionado
@@ -64,8 +64,8 @@ class Lens extends Model {
             'addition_start' => 'nullable|numeric',
             'addition_end' => 'nullable|numeric',
 
-            'diameter_id' => $update ? 'nullable|exists:diameters,id' : 'required|exists:diameters,id', // alterado de 'diameter' para 'diameter_id' (new column)
-            'height_id' => $update ? 'nullable|exists:heights,id' : 'required|exists:heights,id', // alterado de 'height' para 'height_id' (new column)
+            'diameter_id' =>'nullable|exists:diameters,id', // alterado de 'diameter' para 'diameter_id' (new column)
+            'height_id' => 'nullable|exists:heights,id', // alterado de 'height' para 'height_id' (new column)
 
             'cost' => 'nullable|numeric', // novo campo adicionado
             'minimum_value' => 'nullable|numeric',
@@ -83,10 +83,8 @@ class Lens extends Model {
             'type_lens_id.required' => 'O tipo de lente é obrigatório.',
             'type_lens_id.exists' => 'O tipo de lente informado não existe.',
 
-            'index_id.required' => 'O índice é obrigatório.',
             'index_id.exists' => 'O índice informado não existe.',
 
-            'surfacing_id.required' => 'O tipo de surfacagem é obrigatório.',
             'surfacing_id.exists' => 'O tipo de surfacagem informado não existe.',
 
             'treatment_id.required' => 'O tratamento é obrigatório.',
@@ -95,8 +93,7 @@ class Lens extends Model {
             'filter.required' => 'O filtro é obrigatório.',
             'filter.boolean' => 'O filtro deve ser verdadeiro ou falso.',
 
-            'sensitivity_id.required' => 'A sensibilidade é obrigatória.',
-            'sensitivity_id.exists' => 'A sensibilidade informada não existe.',
+            'sensitivity_id.exists' => 'A fotossensibilidade informada não existe.',
 
             'name_lens.required' => 'O nome da lente é obrigatório.',
             'name_lens.string' => 'O nome da lente deve ser texto.',
@@ -120,10 +117,8 @@ class Lens extends Model {
             'addition_start.numeric' => 'A adição inicial deve ser um número.',
             'addition_end.numeric' => 'A adição final deve ser um número.',
 
-            'diameter_id.required' => 'O diâmetro é obrigatório.',
             'diameter_id.exists' => 'O diâmetro informado não existe.',
 
-            'height_id.required' => 'A altura é obrigatória.',
             'height_id.exists' => 'A altura informada não existe.',
 
             'cost.numeric' => 'O custo deve ser um número.', // novo campo cost
