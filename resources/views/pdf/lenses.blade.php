@@ -196,12 +196,11 @@
                 <th>DIÂ.</th>
                 <th>ALT.</th>
 
+                <th class="nowrap">CUSTO</th>
+                <th class="nowrap">LUCRO</th>
 
-{{--                <th>CUSTO</th>--}}
                 <th class="nowrap">E. MÍN.</th>
                 <th class="nowrap">PREÇO</th>
-{{--                <th class="nowrap">CRIADO</th>--}}
-{{--                <th class="nowrap">ATU.</th>--}}
                 <th class="nowrap">LAB.</th>
                 <th>ENTREGA</th>
 {{--                <th>NOME</th>--}}
@@ -231,7 +230,8 @@
                     <td class="nowrap">{{ $lens->diameters->diameter ?? '-' }}</td>
                     <td class="nowrap">{{ $lens->heights->height ?? '-' }}</td>
 
-{{--                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>--}}
+                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>
+                    <td class="nowrap">{{ $lens->profit ? formatPercentage($lens->profit) : '-' }}</td>
                     <td class="nowrap">{{ $lens->minimum_value ? formatReal($lens->minimum_value) : '-'}}</td>
                     <td class="nowrap">{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
 
@@ -245,12 +245,12 @@
             <tfoot>
                 <tr>
                     <td colspan="19">
-                        <strong>ANT:</strong> ANTIRREFLEXO -
-                        <strong>FOT:</strong> FOTOSSENSIBILIDADE -
+{{--                        <strong>ANT:</strong> ANTIRREFLEXO ---}}
+{{--                        <strong>FOT:</strong> FOTOSSENSIBILIDADE ---}}
                         <strong>ESF:</strong> ESFÉRICO -
                         <strong>CIL:</strong> CILINDRO -
                         <strong>ADI:</strong> ADIÇÃO -
-                        <strong>SUR:</strong> SURFAÇAGEM -
+{{--                        <strong>SUR:</strong> SURFAÇAGEM ---}}
                         <strong>DIÂ:</strong> DIÂMETRO -
                         <strong>ALT:</strong> ALTURA -
                         <strong>E. MÍN:</strong> ENTRADA MÍNIMA -

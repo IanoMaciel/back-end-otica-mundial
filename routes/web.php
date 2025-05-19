@@ -31,3 +31,4 @@ Route::get('service-order/{id}', 'ServiceOrderController@exportPdf');
 Route::get('frame-report', 'FrameController@exportPdf');
 Route::get('lens-report', 'LensController@exportPdf');
 Route::get('sale-report', 'SaleController@exportPdf');
+

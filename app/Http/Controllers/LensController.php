@@ -304,7 +304,6 @@ class LensController extends Controller {
                 'indices',
                 'sensitivity',
                 'laboratory',
-                'laboratoryLens',
                 'surfacings',
                 'diameters',
                 'heights',
@@ -318,7 +317,7 @@ class LensController extends Controller {
 
     private function isAuthorization(): bool {
         $user = Auth::user();
-        return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
+        return $user->getAttribute('is_admin');
     }
 
     private function generateUniqueBarCode(): string {
