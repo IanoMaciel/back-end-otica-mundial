@@ -52,11 +52,11 @@ class SaleController extends Controller {
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('frames', function ($query) use ($search) {
-                    $query->where('code', 'LIKE', "%$search%");
+                    $query->where('code', 'LIKE', '%' . $search. '%');
                 })->orWhereHas('services', function ($query) use ($search) {
-                   $query->where('name', 'LIKE', "%$search%");
+                   $query->where('name', 'LIKE', '%' . $search. '%');
                 })->orWhereHas('lenses', function ($query) use ($search) {
-                    $query->where('name_lens', 'LIKE', "%$search%");
+                    $query->where('name_lens', 'LIKE', '%' . $search. '%');
                 });
             });
         }
