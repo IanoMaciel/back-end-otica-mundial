@@ -58,7 +58,7 @@
             margin: 10px 0;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            /*align-items: center;*/
             gap: 10px;
             padding: 5px;
             border-radius: 1px;
@@ -82,19 +82,22 @@
             background-color: red;
             color: #ffffff;
             text-align: left;
-            padding: 10px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         tbody td {
             text-align: left;
-            padding: 8px;
+            padding: 5px;
             font-size: 12px;
         }
 
         tr {
             border-bottom: 1px solid #dadada;
+        }
+
+        small {
+            font-size: 12px;
         }
 
         .nowrap {
@@ -250,15 +253,15 @@
         <h4>LABORATÓRIO</h4>
 
         <article class="initial-information">
-            <div style="display: flex; flex-direction: column">
+            <div style="display: flex;">
                 <span style="color:#6b7280">Laboratório:</span>
                 <span style="font-weight: 500">{{ $laboratory }}</span>
             </div>
-            <div style="display: flex; flex-direction: column">
+            <div style="display: flex;">
                 <span style="color:#6b7280">Data do Laboratório:</span>
                 <span style="font-weight: 500">{{ formatDate($delivery) }}</span>
             </div>
-            <div style="display: flex; flex-direction: column">
+            <div style="display: flex;">
                 <span style="color:#6b7280">Data da Entrega:</span>
                 <span style="font-weight: 500">{{ formatDate($delivery) }}</span>
             </div>
@@ -267,7 +270,7 @@
         <h4>OBSERVAÇÕES</h4>
         <p class="initial-information">{{ $observation }}</p>
 
-        <h3>Informações do Grau</h3>
+        <h4>Informações do Grau</h4>
 
         <table>
             <thead>
@@ -304,7 +307,8 @@
         </table>
         <small>
             <strong>OE:</strong> OLHO ESQUERDO -
-            <strong>OD:</strong> OLHO DIREITO
+            <strong>OD:</strong> OLHO DIREITO -
+            <strong>DPN:</strong> DISTÂNCIA NASO-PUPILAR
         </small>
 
         <div style="margin: 20px 0"></div>
@@ -313,9 +317,9 @@
             <thead>
             <tr>
                 <th rowspan="2">Ponte</th>
-                <th rowspan="2">HM</th>
-                <th rowspan="2">VM</th>
-                <th rowspan="2">DM</th>
+                <th rowspan="2">HORIZONTAL MAIOR</th>
+                <th rowspan="2">VERTICAL MAIOR</th>
+                <th rowspan="2">DIAGONAL MAIOR</th>
                 <th colspan="2">DNP V</th>
                 <th colspan="2">ALT</th>
             </tr>
@@ -340,115 +344,113 @@
             </tbody>
         </table>
         <small>
-            <strong>HM:</strong> HORIZONTAL MAIOR -
-            <strong>HM:</strong> VERTICAL MAIOR -
-            <strong>DM:</strong> DIAGONAL MAIOR -
-            <strong>DNP V:</strong> DIAGONAL MAIOR -
-            <strong>ALT</strong> DIAGONAL MAIOR -
+            <strong>DNP V:</strong> DISTÂNCIA NASO-PUPILAR -
+            <strong>ALT</strong> ALTURA -
             <strong>OE:</strong> OLHO ESQUERDO -
             <strong>OD:</strong> OLHO DIREITO
         </small>
 
         <div style="margin: 20px 0"></div>
-
-        <h3>DADOS DA VENDA</h3>
+        <h4>DADOS DA VENDA</h4>
 
         <article class="initial-information">
-            <div style="display: flex; flex-direction: column">
-                <span style="color:#6b7280">Vendedor:</span>
+            <div style="display: flex;">
+                <span style="color:#6b7280">VENDEDOR:</span>
                 <span style="font-weight: 500">{{ $seller }}</span>
             </div>
-            <div style="display: flex; flex-direction: column">
-                <span style="color:#6b7280">Nº da Venda:</span>
+            <div style="display: flex;">
+                <span style="color:#6b7280">NÚMERO:</span>
                 <span style="font-weight: 500">{{ $numberSale }}</span>
             </div>
-            <div style="display: flex; flex-direction: column">
-                <span style="color:#6b7280">Data/Hora da venda:</span>
+            <div style="display: flex;">
+                <span style="color:#6b7280">DATA/HORA:</span>
                 <span style="font-weight: 500">{{ $createdAt }}</span>
             </div>
         </article>
 
-{{--        <h3>Descrição da venda</h3>--}}
+        <h5>DETALHES</h5>
 
-{{--        <table>--}}
-{{--            <thead>--}}
-{{--                <tr>--}}
-{{--                    <th>Produto</th>--}}
-{{--                    <th style="text-align: center">QTD</th>--}}
-{{--                    <th>Descrição da Mercadoria</th>--}}
-{{--                    <th>Valor Unit.</th>--}}
-{{--                    <th>Desc. (R$)</th>--}}
-{{--                    <th>Desc. (%)</th>--}}
-{{--                    <th>Subtotal</th>--}}
-{{--                </tr>--}}
-{{--            </thead>--}}
-{{--            <tbody>--}}
-{{--                @if(isset($frames))--}}
-{{--                    @foreach($frames as $frame)--}}
-{{--                        <tr>--}}
-{{--                            <td>Armação</td>--}}
-{{--                            <td style="text-align: center">{{ $frame->pivot->quantity }}</td>--}}
-{{--                            <td>--}}
-{{--                                <strong>Código:</strong>{{ $frame->code ?? '-' }}--}}
-{{--                                <strong>Haste:</strong>{{ $frame->haste ?? '-' }}--}}
-{{--                                <strong>Cor:</strong>{{ $frame->color ?? '-' }}--}}
-{{--                                <strong>Tamanho:</strong>{{ $frame->size ?? '-' }}--}}
-{{--                                <strong>Ponte:</strong>{{ $frame->bridge ?? '-' }}--}}
-{{--                            </td>--}}
-{{--                            <td>{{ formatReal($frame->price) }}</td>--}}
-{{--                            <td>{{ $frame->pivot->discount_value ? formatReal($frame->pivot->discount_value) : '-' }}</td>--}}
-{{--                            <td>{{ $frame->pivot->discount_percentage ? formatPercentage($frame->pivot->discount_percentage) : '-' }}</td>--}}
-{{--                            <td>{{ formatReal($frame->pivot->total) }}</td>--}}
-{{--                        </tr>--}}
-{{--                    @endforeach--}}
-{{--                @endif--}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th style="text-align: center">QTD</th>
+                    <th>Descrição</th>
+                    <th>Valor Unit.</th>
+                    <th>Desc. (R$)</th>
+                    <th>Desc. (%)</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(isset($frames))
+                    @foreach($frames as $frame)
+                        <tr>
+                            <td>Armação</td>
+                            <td style="text-align: center">{{ $frame->pivot->quantity }}</td>
+                            <td>
+                                <strong>Código:</strong>{{ $frame->code ?? '-' }}
+                                <strong>Tamanho:</strong>{{ $frame->size ?? '-' }}
+                                <strong>Ponte:</strong>{{ $frame->bridge ?? '-' }}
+                                <strong>Haste:</strong>{{ $frame->haste ?? '-' }}
+                            </td>
+                            <td>{{ formatReal($frame->price) }}</td>
+                            <td>{{ $frame->pivot->discount_value ? formatReal($frame->pivot->discount_value) : '-' }}</td>
+                            <td>{{ $frame->pivot->discount_percentage ? formatPercentage($frame->pivot->discount_percentage) : '-' }}</td>
+                            <td>{{ formatReal($frame->pivot->total) }}</td>
+                        </tr>
+                    @endforeach
+                @endif
 
-{{--                @if(isset($lenses))--}}
-{{--                    @foreach($lenses as $lens)--}}
-{{--                        <tr>--}}
-{{--                            <td>Lente</td>--}}
-{{--                            <td style="text-align: center">{{ $lens->pivot->quantity }}</td>--}}
-{{--                            <td>--}}
-{{--                                <strong>Tipo:</strong>{{ $lens->typeLens->type_lens }}--}}
-{{--                                <strong>Índice:</strong>{{ $lens->index }}--}}
-{{--                                <strong>Tratamento:</strong>{{ $lens->treatment->treatment }}--}}
-{{--                            </td>--}}
-{{--                            <td>{{ formatReal($lens->price) }}</td>--}}
-{{--                            <td>{{ $lens->pivot->discount_value ? formatReal($lens->pivot->discount_value) : '-' }}</td>--}}
-{{--                            <td>{{ $lens->pivot->discount_percentage ? formatPercentage($lens->pivot->discount_percentage) : '-' }}</td>--}}
-{{--                            <td>{{ formatReal($lens->pivot->total) }}</td>--}}
-{{--                        </tr>--}}
-{{--                    @endforeach--}}
-{{--                @endif--}}
-{{--            </tbody>--}}
-{{--            <tfoot>--}}
-{{--                <tr>--}}
-{{--                    <th colspan="6" style="text-align: right">Valor total da venda</th>--}}
-{{--                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>--}}
-{{--                </tr>--}}
-{{--            </tfoot>--}}
-{{--        </table>--}}
+                @if(isset($lenses))
+                    @foreach($lenses as $lens)
+                        <tr>
+                            <td>Lente</td>
+                            <td style="text-align: center">{{ $lens->pivot->quantity }}</td>
+                            <td>
+                                <strong>Tipo:</strong>{{ $lens->typeLens->type_lens }}
+                                <strong>Índice:</strong>{{ $lens->indices->index ?? '' }}
+                                <strong>Tratamento:</strong>{{ $lens->treatment->treatment }}
+                            </td>
+                            <td>{{ formatReal($lens->price) }}</td>
+                            <td>{{ $lens->pivot->discount_value ? formatReal($lens->pivot->discount_value) : '-' }}</td>
+                            <td>{{ $lens->pivot->discount_percentage ? formatPercentage($lens->pivot->discount_percentage) : '-' }}</td>
+                            <td>{{ formatReal($lens->pivot->total) }}</td>
+                        </tr>
+                    @endforeach
+                @endif
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="6" style="text-align: right">Valor total da venda</th>
+                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
+                </tr>
+            </tfoot>
+        </table>
 
-{{--        <h3>Informações do Pagamento</h3>--}}
+        <div style="margin: 20px 0"></div>
+        <h5>PAGAMENTO</h5>
 
-{{--        <table>--}}
-{{--            <thead>--}}
-{{--                <tr>--}}
-{{--                    <th>Pagamento Combinado</th>--}}
-{{--                    <th>Valor R$</th>--}}
-{{--                </tr>--}}
-{{--            </thead>--}}
-{{--            <tbody>--}}
-{{--                <tr>--}}
-{{--                    <td>Cartão de Crédito</td>--}}
-{{--                    <td>R$ 1020 (2x 510,00)</td>--}}
-{{--                </tr>--}}
-{{--                <tr>--}}
-{{--                    <td>Pix</td>--}}
-{{--                    <td>R$ 99</td>--}}
-{{--                </tr>--}}
-{{--            </tbody>--}}
-{{--        </table>--}}
+        <table>
+            <thead>
+                <tr>
+                    <th>FORMA DE PAGAMENTO</th>
+                    <th>Valor R$</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Cartão de Crédito</td>
+                    <td>R$ 1020 (2x 510,00)</td>
+                </tr>
+                <tr>
+                    <td>Pix</td>
+                    <td>R$ 99</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin: 20px 0"></div>
 
 {{--        @php--}}
 
@@ -458,28 +460,28 @@
 
 {{--        @dd('parou aqui');--}}
 {{--        --}}{{-- Pagamento no Crediário da Loja --}}
-{{--        <table>--}}
-{{--            <thead>--}}
-{{--                <tr>--}}
-{{--                    <th>Parcela 1</th>--}}
-{{--                    <th>Parcela 2</th>--}}
-{{--                    <th>Parcela 3</th>--}}
-{{--                    <th>Parcela 4</th>--}}
-{{--                    <th>Parcela 5</th>--}}
-{{--                    <th>Parcela 6</th>--}}
-{{--                </tr>--}}
-{{--            </thead>--}}
-{{--            <tbody>--}}
-{{--                <tr>--}}
-{{--                    <td>26-03-2025</td>--}}
-{{--                    <td>26-03-2025</td>--}}
-{{--                    <td>26-03-2025</td>--}}
-{{--                    <td>26-03-2025</td>--}}
-{{--                    <td>26-03-2025</td>--}}
-{{--                    <td>26-03-2025</td>--}}
-{{--                </tr>--}}
-{{--            </tbody>--}}
-{{--        </table>--}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Parcela 1</th>
+                    <th>Parcela 2</th>
+                    <th>Parcela 3</th>
+                    <th>Parcela 4</th>
+                    <th>Parcela 5</th>
+                    <th>Parcela 6</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                    <td>26-03-2025</td>
+                </tr>
+            </tbody>
+        </table>
     </body>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
