@@ -66,11 +66,6 @@
             font-size: 12px;
         }
 
-        .data {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
 
         table {
             width: 100%;
@@ -84,11 +79,12 @@
             text-align: left;
             font-weight: 600;
             font-size: 12px;
+            padding: 2px;
         }
 
         tbody td {
             text-align: left;
-            padding: 5px;
+            padding: 2px;
             font-size: 12px;
         }
 
@@ -158,7 +154,7 @@
             </div>
         </article>
 
-        <h4 style="margin-top: 20px">Informações do Paciente</h4>
+        <h4 style="margin-top: 20px">INFORMAÇÃO DO PACIENTE</h4>
         <h5>DETALHES</h5>
 
         <article class="initial-information">
@@ -250,7 +246,7 @@
             </div>
         </article>
 
-        <h4>LABORATÓRIO</h4>
+        <h4> INFORMAÇÃO DO LABORATÓRIO</h4>
 
         <article class="initial-information">
             <div style="display: flex;">
@@ -267,10 +263,10 @@
             </div>
         </article>
 
-        <h4>OBSERVAÇÕES</h4>
+        <h5>OBSERVAÇÕES</h5>
         <p class="initial-information">{{ $observation }}</p>
 
-        <h4>Informações do Grau</h4>
+        <h4>INFORMAÇÕES DO GRAU</h4>
 
         <table>
             <thead>
@@ -376,10 +372,10 @@
                     <th>Produto</th>
                     <th style="text-align: center">QTD</th>
                     <th>Descrição</th>
-                    <th>Valor Unit.</th>
-                    <th>Desc. (R$)</th>
-                    <th>Desc. (%)</th>
-                    <th>Subtotal</th>
+                    <th class="nowrap">V. UNIT</th>
+                    <th class="nowrap">DES(R$)</th>
+                    <th class="nowrap">DES(%)</th>
+                    <th class="nowrap">SUBTOTAL</th>
                 </tr>
             </thead>
             <tbody>
@@ -389,15 +385,16 @@
                             <td>Armação</td>
                             <td style="text-align: center">{{ $frame->pivot->quantity }}</td>
                             <td>
-                                <strong>Código:</strong>{{ $frame->code ?? '-' }}
-                                <strong>Tamanho:</strong>{{ $frame->size ?? '-' }}
-                                <strong>Ponte:</strong>{{ $frame->bridge ?? '-' }}
-                                <strong>Haste:</strong>{{ $frame->haste ?? '-' }}
+                                {{ $frame->code ?? '' }}
+                                {{ $frame->size ?? '' }}
+                                {{ $frame->bridge ?? '' }}
+                                {{ $frame->haste ?? '' }}
+                                {{ $frame->color ?? '' }}
                             </td>
-                            <td>{{ formatReal($frame->price) }}</td>
-                            <td>{{ $frame->pivot->discount_value ? formatReal($frame->pivot->discount_value) : '-' }}</td>
-                            <td>{{ $frame->pivot->discount_percentage ? formatPercentage($frame->pivot->discount_percentage) : '-' }}</td>
-                            <td>{{ formatReal($frame->pivot->total) }}</td>
+                            <td class="nowrap">{{ formatReal($frame->price) }}</td>
+                            <td class="nowrap">{{ $frame->pivot->discount_value ? formatReal($frame->pivot->discount_value) : '-' }}</td>
+                            <td class="nowrap">{{ $frame->pivot->discount_percentage ? formatPercentage($frame->pivot->discount_percentage) : '-' }}</td>
+                            <td class="nowrap">{{ formatReal($frame->pivot->total) }}</td>
                         </tr>
                     @endforeach
                 @endif
@@ -407,48 +404,60 @@
                         <tr>
                             <td>Lente</td>
                             <td style="text-align: center">{{ $lens->pivot->quantity }}</td>
-                            <td>
-                                <strong>Tipo:</strong>{{ $lens->typeLens->type_lens }}
-                                <strong>Índice:</strong>{{ $lens->indices->index ?? '' }}
-                                <strong>Tratamento:</strong>{{ $lens->treatment->treatment }}
-                            </td>
-                            <td>{{ formatReal($lens->price) }}</td>
-                            <td>{{ $lens->pivot->discount_value ? formatReal($lens->pivot->discount_value) : '-' }}</td>
-                            <td>{{ $lens->pivot->discount_percentage ? formatPercentage($lens->pivot->discount_percentage) : '-' }}</td>
-                            <td>{{ formatReal($lens->pivot->total) }}</td>
+                            <td>{{ $lens->name_lens }}</td>
+                            <td class="nowrap">{{ formatReal($lens->price) }}</td>
+                            <td class="nowrap">{{ $lens->pivot->discount_value ? formatReal($lens->pivot->discount_value) : '-' }}</td>
+                            <td class="nowrap">{{ $lens->pivot->discount_percentage ? formatPercentage($lens->pivot->discount_percentage) : '-' }}</td>
+                            <td class="nowrap">{{ formatReal($lens->pivot->total) }}</td>
                         </tr>
                     @endforeach
                 @endif
-            </tbody>
-            <tfoot>
                 <tr>
-                    <th colspan="6" style="text-align: right">Valor total da venda</th>
-                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
+                    <td colspan="6" style="text-align: right; font-weight: bold">VALOR TOTAL DA VENDA:</td>
+                    <td class="nowrap" style="font-weight: bold">{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
                 </tr>
-            </tfoot>
+            </tbody>
         </table>
+        <small>
+            <strong>QTD:</strong> QUANTIDADE -
+            <strong>V. UNIT</strong> VALOR UNITÁRIO -
+            <strong>DES:</strong> DESCONTO
+        </small>
 
         <div style="margin: 20px 0"></div>
         <h5>PAGAMENTO</h5>
 
-        <table>
-            <thead>
+        @if ($paymentMethod->payment_method === 'Pag. Combinado')
+            <table>
+                <thead>
                 <tr>
                     <th>FORMA DE PAGAMENTO</th>
                     <th>Valor R$</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
-                    <td>Cartão de Crédito</td>
-                    <td>R$ 1020 (2x 510,00)</td>
+                    <td>{{ $paymentMethod->payment_method }}</td>
+                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
                 </tr>
+                </tbody>
+            </table>
+        @else
+            <table>
+                <thead>
                 <tr>
-                    <td>Pix</td>
-                    <td>R$ 99</td>
+                    <th>FORMA DE PAGAMENTO</th>
+                    <th>Valor R$</th>
                 </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ $paymentMethod->payment_method }}</td>
+                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        @endif
 
         <div style="margin: 20px 0"></div>
 

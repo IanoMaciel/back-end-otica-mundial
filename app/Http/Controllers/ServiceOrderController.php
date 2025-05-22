@@ -51,8 +51,12 @@ class ServiceOrderController extends Controller {
         // pagamento
         $paymentMethod = PaymentMethod::query()->find($serviceOrder->sale->payment_method_id);
 
-        $payment = [];
+//        if ($paymentMethod->payment_method === 'Pag. Combinado') {
+//
+//        }
 
+        $payment = [];
+//
         if ($paymentMethod->payment_method === 'Pag. Combinado') {
             $combinedPayment = CombinedPayment::query()->with('portions')->find($serviceOrder->sale->id);
 
@@ -101,7 +105,8 @@ class ServiceOrderController extends Controller {
             'frames' => $frames,
             'services' => $services,
 
-            'payment' => $payment
+//            'payment' => $payment,
+            'paymentMethod' => $paymentMethod
         ]);
     }
 
