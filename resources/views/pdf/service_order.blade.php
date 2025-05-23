@@ -13,16 +13,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Nunito', sans-serif;
         }
 
-        .a4 {
-            width: 210mm;
-            height: 297mm;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 5px;
-            font-size: 13px;
+        body {
+            height: 100%;
+            color: #333;
+            /*font-size: 12px;*/
+            text-transform: uppercase;
         }
 
         h3 {
@@ -44,7 +42,7 @@
         }
 
         .title {
-            width: 80%;
+            width: 100%;
             height: 53px;
             background-color: red;
             color: white;
@@ -60,152 +58,215 @@
             margin: 10px 0;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            /*align-items: center;*/
             gap: 10px;
-            padding: 10px;
+            padding: 5px;
             border-radius: 1px;
-            border: 1px solid #ccc;
-            background: #f1f1f1;
+            border: 1px dashed #c1c1c1;
+            font-size: 12px;
         }
 
-        .observations {
-            padding: 10px;
-            border-radius: 1px;
-            border: 1px solid #ccc;
-            background: #f1f1f1;
-        }
-
-        .customer-information {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 1px;
-            border: 1px solid #ccc;
-            background: #f1f1f1;
-        }
-
-        .data {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        thead th {
+            background-color: red;
+            color: #ffffff;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 2px;
+        }
+
+        tbody td {
+            text-align: left;
+            padding: 2px;
             font-size: 12px;
         }
 
-        thead {
-            background: #f1f1f1;
+        tr {
+            border-bottom: 1px solid #dadada;
         }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 5px;
-            text-align: left;
+        small {
+            font-size: 12px;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        .action {
+            width: 100% ;
+            display: flex;
+            justify-content: end;
+            align-content: center;
+            margin-bottom: 20px;
+
+            button {
+                display: flex;
+                align-content: center;
+                justify-content: center;
+
+                gap: 5px;
+
+                background: red;
+                color: white;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 2px;
+
+                cursor: pointer;
+                font-weight: 600;
+            }
+        }
+
+        @media print {
+            .action {
+                display: none;
+            }
+
+            body {
+                margin: 0;
+                padding: 15px;
+            }
         }
     </style>
 
-    <body class="a4">
-
-        @php
-            use Carbon\Carbon;
-
-            function formatDate(string $date, string $format='d-m-Y'): string {
-                return \Carbon\Carbon::parse($date)->format($format);
-            }
-
-            function calculateAge(string $birthDate): int {
-                return \Carbon\Carbon::parse($birthDate)->age;
-            }
-
-            function formatReal(string $value): string {
-                $value = floatval($value);
-                return 'R$ ' . number_format($value, 2, ',', '.');
-            }
-
-            function formatPercentage($value) {
-                return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.') . '%';
-            }
-        @endphp
+    <body>
+        <div class="action">
+            <button type="button">
+                <i class="ph-fill ph-export"></i>
+                <span>IMPRIMIR</span>
+            </button>
+        </div>
 
         <article class="header">
             <div class="img-area">
                 <img src="{{ asset('images/logo.svg') }}" alt="logo" width="171px" height="53px"/>
             </div>
             <div class="title">
-                <h4>Ordem de Serviço - {{ $numberOs }}</h4>
+                <h4>ORDEM DE SERVIÇO N° {{ $numberOs }}</h4>
             </div>
         </article>
 
-        <h3>Dados da Venda</h3>
+        <h4 style="margin-top: 20px">INFORMAÇÃO DO PACIENTE</h4>
+        <h5>DETALHES</h5>
 
         <article class="initial-information">
-            <div><strong>Vendedor:</strong> <span>{{ $seller }}</span></div>
-            <div><strong>Nº da Venda:</strong> <span>{{ $numberSale }}</span></div>
-            <div><strong>Nº da OS:</strong> <span>{{ $numberOs }}</span></div>
-            <div><strong>Data/Hora da venda:</strong> <span>{{ $createdAt }}</span></div>
+            <div style="display: flex; flex-direction: column">
+                <div>
+                    <span style="color:#6b7280">Nome: </span>
+                    <span style="font-weight: 500">{{ $customer->full_name ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">CPF: </span>
+                    <span style="font-weight: 500">{{ $customer->cpf ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">RG: </span>
+                    <span style="font-weight: 500">{{ $customer->rg ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Nascimento: </span>
+                    <span style="font-weight: 500">{{ $customer->birth_date ? formatDate($customer->birth_date) : '-' }}</span>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column">
+                <div>
+                    <span style="color:#6b7280">Idade: </span>
+                    <span style="font-weight: 500">{{ $customer->birth_date ? calculateAge($customer->birth_date) : '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Email: </span>
+                    <span style="font-weight: 500">{{ $customer->email ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Contato: </span>
+                    <span style="font-weight: 500">{{ $customer->phone_primary ?? '-' }}</span>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column">
+                <div>
+                    <span style="color:#6b7280">Convênio: </span>
+                    <span style="font-weight: 500">{{ $customer->agreements->agreement ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Nº do Convênio: </span>
+                    <span style="font-weight: 500">{{ $customer->number_agreement ?? '-' }}</span>
+                </div>
+            </div>
         </article>
 
-        <h3>Laboratório</h3>
+        <h5>ENDEREÇO</h5>
+        <article class="initial-information">
+            <div style="display: flex; flex-direction: column">
+                <div>
+                    <span style="color:#6b7280">CEP: </span>
+                    <span style="font-weight: 500">{{ $address->cep ?? '-'}}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Cidade: </span>
+                    <span style="font-weight: 500">{{ $address->city ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">UF: </span>
+                    <span style="font-weight: 500">{{ $address->uf ?? '-' }}</span>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column">
+                <div>
+                    <span style="color:#6b7280">Rua: </span>
+                    <span style="font-weight: 500">{{ $address->street ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Número: </span>
+                    <span style="font-weight: 500">{{ $address->number ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Bairro: </span>
+                    <span style="font-weight: 500">{{ $address->neighborhood ?? '-' }}</span>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column">
+                <div>
+                    <span style="color:#6b7280">Referência: </span>
+                    <span style="font-weight: 500">{{ $address->reference ?? '-' }}</span>
+                </div>
+                <div>
+                    <span style="color:#6b7280">Complemento: </span>
+                    <span style="font-weight: 500">{{ $address->complement ?? '-' }}</span>
+                </div>
+            </div>
+        </article>
+
+        <h4> INFORMAÇÃO DO LABORATÓRIO</h4>
 
         <article class="initial-information">
-            <div><strong>Laboratório:</strong> <span>{{ $laboratory }}</span></div>
-            <div><strong>Data do Laboratório:</strong> <span>{{ formatDate($delivery) }}</span></div>
-            <div><strong>Data da Entrega:</strong> <span>{{ formatDate($delivery) }}</span></div>
-        </article>
-
-        <h3>Observações</h3>
-        <p class="observations">{{ $observation }}</p>
-
-        <h3>Informações do Paciente</h3>
-
-        <article class="customer-information">
-            <div class="data">
-                <div style="display: flex; flex-direction: column">
-                    <div><strong>Nome: </strong> <span>{{ $customer->full_name ?? '-' }}</span></div>
-                    <div><strong>CPF: </strong> <span>{{ $customer->cpf ?? '-' }}</span></div>
-                    <div><strong>RG: </strong> <span>{{ $customer->rg ?? '-' }}</span></div>
-                    <div><strong>Nascimento: </strong> <span>{{ $customer->birth_date ? formatDate($customer->birth_date) : '-' }}</span></div>
-                </div>
-
-                <div style="display: flex; flex-direction: column">
-                    <div><strong>Idade: </strong> <span>{{ $customer->birth_date ? calculateAge($customer->birth_date) : '-' }}</span></div>
-                    <div><strong>Email: </strong> <span>{{ $customer->email ?? '-' }}</span></div>
-                    <div><strong>Contato: </strong> <span>{{ $customer->phone_primary ?? '-' }}</span></div>
-                </div>
-
-                <div style="display: flex; flex-direction: column">
-                    <div><strong>Convênio: </strong> <span>{{ $customer->agreements->agreement ?? '-' }}</span></div>
-                    <div><strong>Nº do Convênio: </strong> <span>{{ $customer->number_agreement ?? '-' }}</span></div>
-                </div>
+            <div style="display: flex;">
+                <span style="color:#6b7280">Laboratório:</span>
+                <span style="font-weight: 500">{{ $laboratory }}</span>
             </div>
-
-            <hr style="color: #dddddd;"/>
-
-            <div class="data">
-                <div style="display: flex; flex-direction: column">
-                    <div><strong>CEP: </strong> <span>{{ $address->cep ?? '-'}}</span></div>
-                    <div><strong>Cidade: </strong> <span>{{ $address->city ?? '-' }}</span></div>
-                    <div><strong>UF: </strong> <span>{{ $address->uf ?? '-' }}</span></div>
-                </div>
-                <div style="display: flex; flex-direction: column">
-                    <div><strong>Rua: </strong> <span>{{ $address->street ?? '-' }}</span></div>
-                    <div><strong>Número: </strong> <span>{{ $address->number ?? '-' }}</span></div>
-                    <div><strong>Bairro: </strong> <span>{{ $address->neighborhood ?? '-' }}</span></div>
-                </div>
-                <div style="display: flex; flex-direction: column">
-                    <div><strong>Referência: </strong> <span>{{ $address->reference ?? '-' }}</span></div>
-                    <div><strong>Complemento: </strong> <span>{{ $address->complement ?? '-' }}</span></div>
-                </div>
+            <div style="display: flex;">
+                <span style="color:#6b7280">Data do Laboratório:</span>
+                <span style="font-weight: 500">{{ formatDate($delivery) }}</span>
+            </div>
+            <div style="display: flex;">
+                <span style="color:#6b7280">Data da Entrega:</span>
+                <span style="font-weight: 500">{{ formatDate($delivery) }}</span>
             </div>
         </article>
 
-        <h3>Informações do Grau</h3>
+        <h5>OBSERVAÇÕES</h5>
+        <p class="initial-information">{{ $observation }}</p>
+
+        <h4>INFORMAÇÕES DO GRAU</h4>
 
         <table>
             <thead>
@@ -240,22 +301,29 @@
                 </tr>
             </tbody>
         </table>
+        <small>
+            <strong>OE:</strong> OLHO ESQUERDO -
+            <strong>OD:</strong> OLHO DIREITO -
+            <strong>DPN:</strong> DISTÂNCIA NASO-PUPILAR
+        </small>
+
+        <div style="margin: 20px 0"></div>
 
         <table>
             <thead>
             <tr>
                 <th rowspan="2">Ponte</th>
-                <th rowspan="2">Horizontal Maior</th>
-                <th rowspan="2">Vertical Maior</th>
-                <th rowspan="2">Diagonal Maior</th>
-                <th colspan="2" style="text-align: center">DNP V</th>
-                <th colspan="2" style="text-align: center">ALT</th>
+                <th rowspan="2">HORIZONTAL MAIOR</th>
+                <th rowspan="2">VERTICAL MAIOR</th>
+                <th rowspan="2">DIAGONAL MAIOR</th>
+                <th colspan="2">DNP V</th>
+                <th colspan="2">ALT</th>
             </tr>
             <tr>
-                <th style="text-align: center">OE</th>
-                <th style="text-align: center">OD</th>
-                <th style="text-align: center">OE</th>
-                <th style="text-align: center">OD</th>
+                <th>OE</th>
+                <th>OD</th>
+                <th>OE</th>
+                <th>OD</th>
             </tr>
             </thead>
             <tbody>
@@ -271,19 +339,43 @@
             </tr>
             </tbody>
         </table>
+        <small>
+            <strong>DNP V:</strong> DISTÂNCIA NASO-PUPILAR -
+            <strong>ALT</strong> ALTURA -
+            <strong>OE:</strong> OLHO ESQUERDO -
+            <strong>OD:</strong> OLHO DIREITO
+        </small>
 
-        <h3>Descrição da venda</h3>
+        <div style="margin: 20px 0"></div>
+        <h4>DADOS DA VENDA</h4>
+
+        <article class="initial-information">
+            <div style="display: flex;">
+                <span style="color:#6b7280">VENDEDOR:</span>
+                <span style="font-weight: 500">{{ $seller }}</span>
+            </div>
+            <div style="display: flex;">
+                <span style="color:#6b7280">NÚMERO:</span>
+                <span style="font-weight: 500">{{ $numberSale }}</span>
+            </div>
+            <div style="display: flex;">
+                <span style="color:#6b7280">DATA/HORA:</span>
+                <span style="font-weight: 500">{{ $createdAt }}</span>
+            </div>
+        </article>
+
+        <h5>DETALHES</h5>
 
         <table>
             <thead>
                 <tr>
                     <th>Produto</th>
                     <th style="text-align: center">QTD</th>
-                    <th>Descrição da Mercadoria</th>
-                    <th>Valor Unit.</th>
-                    <th>Desc. (R$)</th>
-                    <th>Desc. (%)</th>
-                    <th>Subtotal</th>
+                    <th>Descrição</th>
+                    <th class="nowrap">V. UNIT</th>
+                    <th class="nowrap">DES(R$)</th>
+                    <th class="nowrap">DES(%)</th>
+                    <th class="nowrap">SUBTOTAL</th>
                 </tr>
             </thead>
             <tbody>
@@ -293,16 +385,16 @@
                             <td>Armação</td>
                             <td style="text-align: center">{{ $frame->pivot->quantity }}</td>
                             <td>
-                                <strong>Código:</strong>{{ $frame->code ?? '-' }}
-                                <strong>Haste:</strong>{{ $frame->haste ?? '-' }}
-                                <strong>Cor:</strong>{{ $frame->color ?? '-' }}
-                                <strong>Tamanho:</strong>{{ $frame->size ?? '-' }}
-                                <strong>Ponte:</strong>{{ $frame->bridge ?? '-' }}
+                                {{ $frame->code ?? '' }}
+                                {{ $frame->size ?? '' }}
+                                {{ $frame->bridge ?? '' }}
+                                {{ $frame->haste ?? '' }}
+                                {{ $frame->color ?? '' }}
                             </td>
-                            <td>{{ formatReal($frame->price) }}</td>
-                            <td>{{ $frame->pivot->discount_value ? formatReal($frame->pivot->discount_value) : '-' }}</td>
-                            <td>{{ $frame->pivot->discount_percentage ? formatPercentage($frame->pivot->discount_percentage) : '-' }}</td>
-                            <td>{{ formatReal($frame->pivot->total) }}</td>
+                            <td class="nowrap">{{ formatReal($frame->price) }}</td>
+                            <td class="nowrap">{{ $frame->pivot->discount_value ? formatReal($frame->pivot->discount_value) : '-' }}</td>
+                            <td class="nowrap">{{ $frame->pivot->discount_percentage ? formatPercentage($frame->pivot->discount_percentage) : '-' }}</td>
+                            <td class="nowrap">{{ formatReal($frame->pivot->total) }}</td>
                         </tr>
                     @endforeach
                 @endif
@@ -312,56 +404,71 @@
                         <tr>
                             <td>Lente</td>
                             <td style="text-align: center">{{ $lens->pivot->quantity }}</td>
-                            <td>
-                                <strong>Tipo:</strong>{{ $lens->typeLens->type_lens }}
-                                <strong>Índice:</strong>{{ $lens->index }}
-                                <strong>Tratamento:</strong>{{ $lens->treatment->treatment }}
-                            </td>
-                            <td>{{ formatReal($lens->price) }}</td>
-                            <td>{{ $lens->pivot->discount_value ? formatReal($lens->pivot->discount_value) : '-' }}</td>
-                            <td>{{ $lens->pivot->discount_percentage ? formatPercentage($lens->pivot->discount_percentage) : '-' }}</td>
-                            <td>{{ formatReal($lens->pivot->total) }}</td>
+                            <td>{{ $lens->name_lens }}</td>
+                            <td class="nowrap">{{ formatReal($lens->price) }}</td>
+                            <td class="nowrap">{{ $lens->pivot->discount_value ? formatReal($lens->pivot->discount_value) : '-' }}</td>
+                            <td class="nowrap">{{ $lens->pivot->discount_percentage ? formatPercentage($lens->pivot->discount_percentage) : '-' }}</td>
+                            <td class="nowrap">{{ formatReal($lens->pivot->total) }}</td>
                         </tr>
                     @endforeach
                 @endif
-            </tbody>
-            <tfoot>
                 <tr>
-                    <th colspan="6" style="text-align: right">Valor total da venda</th>
-                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
+                    <td colspan="6" style="text-align: right; font-weight: bold">VALOR TOTAL DA VENDA:</td>
+                    <td class="nowrap" style="font-weight: bold">{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
                 </tr>
-            </tfoot>
+            </tbody>
         </table>
+        <small>
+            <strong>QTD:</strong> QUANTIDADE -
+            <strong>V. UNIT</strong> VALOR UNITÁRIO -
+            <strong>DES:</strong> DESCONTO
+        </small>
 
-        <h3>Informações do Pagamento</h3>
+        <div style="margin: 20px 0"></div>
+        <h5>PAGAMENTO</h5>
 
-        <table>
-            <thead>
+        @if ($paymentMethod->payment_method === 'Pag. Combinado')
+            <table>
+                <thead>
                 <tr>
-                    <th>Pagamento Combinado</th>
+                    <th>FORMA DE PAGAMENTO</th>
                     <th>Valor R$</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
-                    <td>Cartão de Crédito</td>
-                    <td>R$ 1020 (2x 510,00)</td>
+                    <td>{{ $paymentMethod->payment_method }}</td>
+                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
                 </tr>
+                </tbody>
+            </table>
+        @else
+            <table>
+                <thead>
                 <tr>
-                    <td>Pix</td>
-                    <td>R$ 99</td>
+                    <th>FORMA DE PAGAMENTO</th>
+                    <th>Valor R$</th>
                 </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ $paymentMethod->payment_method }}</td>
+                    <td>{{ $serviceOrder->sale->total_amount ? formatReal($serviceOrder->sale->total_amount) : '-' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        @endif
 
-        @php
+        <div style="margin: 20px 0"></div>
 
-            dd($payment->paymentMethod);
+{{--        @php--}}
 
-        @endphp
+{{--            dd($payment->paymentMethod);--}}
 
-        @dd('parou aqui');
-        {{-- Pagamento no Crediário da Loja --}}
+{{--        @endphp--}}
+
+{{--        @dd('parou aqui');--}}
+{{--        --}}{{-- Pagamento no Crediário da Loja --}}
         <table>
             <thead>
                 <tr>
@@ -385,4 +492,35 @@
             </tbody>
         </table>
     </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const printButton = document.querySelector('.action button');
+
+            if (printButton) {
+                printButton.addEventListener('click', function () {
+                    window.print();
+                });
+            }
+        });
+    </script>
+    @php
+        use Carbon\Carbon;
+
+        function formatDate(string $date, string $format='d-m-Y'): string {
+            return Carbon::parse($date)->format($format);
+        }
+
+        function calculateAge(string $birthDate): int {
+            return Carbon::parse($birthDate)->age;
+        }
+
+        function formatReal(string $value): string {
+            $value = floatval($value);
+            return 'R$ ' . number_format($value, 2, ',', '.');
+        }
+
+        function formatPercentage($value): string {
+            return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.') . '%';
+        }
+    @endphp
 </html>
