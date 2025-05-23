@@ -157,12 +157,6 @@ class LensController extends Controller {
 
 
     public function update(Request $request, int $id): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $lens = $this->lens->query()
             ->with('typeLens', 'treatment', 'sensitivity')
             ->find($id);
@@ -240,12 +234,6 @@ class LensController extends Controller {
     }
 
     public function destroy(int $id): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $lens = $this->lens->query()->find($id);
 
         if (!$lens) {
@@ -266,12 +254,6 @@ class LensController extends Controller {
     }
 
     public function deleteMultiple(Request $request): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
@@ -313,11 +295,6 @@ class LensController extends Controller {
             ->get();
 
         return view('pdf.lenses', compact('lenses'));
-    }
-
-    private function isAuthorization(): bool {
-        $user = Auth::user();
-        return $user->getAttribute('is_admin');
     }
 
     private function generateUniqueBarCode(): string {

@@ -29,12 +29,6 @@ class CustomerController extends Controller {
     }
 
     public function store(Request $request): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $validatedData = $request->validate(
             $this->customer->rules(),
             $this->customer->messages(),
@@ -62,12 +56,6 @@ class CustomerController extends Controller {
     }
 
     public function update(Request $request, int $id): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $customer = $this->customer->query()->with('agreements')->find($id);
         if (!$customer) {
             return response()->json([
@@ -100,12 +88,6 @@ class CustomerController extends Controller {
     }
 
     public function destroy(int $id): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $customer = $this->customer->query()->with('agreements')->find($id);
         if (!$customer) {
             return response()->json([
@@ -125,12 +107,6 @@ class CustomerController extends Controller {
     }
 
     public function deleteMultiple(Request $request): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
@@ -153,10 +129,5 @@ class CustomerController extends Controller {
                 'message' => $th->getMessage()
             ], 500);
         }
-    }
-
-    private function isAuthorization(): bool {
-        $user = Auth::user();
-        return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
     }
 }

@@ -266,7 +266,7 @@
         <h5>OBSERVAÇÕES</h5>
         <p class="initial-information">{{ $observation }}</p>
 
-        <h4>INFORMAÇÕES DO GRAU E MONTAGEM</h4>
+        <h4>INFORMAÇÕES DO GRAU</h4>
 
         <table>
             <thead>
@@ -308,7 +308,6 @@
         </small>
 
         <div style="margin: 20px 0"></div>
-        <h4>MEDIDAS VISION OFFICE</h4>
 
         <table>
             <thead>
