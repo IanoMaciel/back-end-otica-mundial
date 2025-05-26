@@ -165,6 +165,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('promotion-delete-all', 'PromotionController@deleteAll');
 
     Route::apiResource('dashboard', 'DashboardController');
+
+    // Cancellations
+    Route::apiResource('cancellation', 'CancellationController');
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);
