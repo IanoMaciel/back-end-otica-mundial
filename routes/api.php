@@ -129,10 +129,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('discount', 'DiscountController'); // tipos de descontos
 
-    Route::apiResource('sale', 'SaleController');
-    Route::post('save-sale', 'SaveSaleController@createSale'); // save sale
-    Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
     Route::get('sale-search-stock', 'SaleController@searchStock');
+
+    Route::get('sale', 'SaleController@index');
+    Route::post('save-sale', 'SaveSaleController@createSale'); // save sale
+    Route::get('sale/{id}', 'SaleController@show');
+    Route::group(['middleware' => 'admin'], function () {
+        Route::delete('sale/{id}', 'SaleController@destroy');
+        Route::delete('sale-delete-multiple', 'SaleController@deleteMultiple');
+    });
 
     Route::apiResource('credit-card', 'CreditCardController'); // pagamento no crédito
     Route::apiResource('combined-payment', 'CombinedPaymentController'); // pagamento combinado
