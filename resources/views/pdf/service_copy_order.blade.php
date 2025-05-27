@@ -266,7 +266,7 @@
         <h5>OBSERVAÇÕES</h5>
         <p class="initial-information">{{ $observation }}</p>
 
-        <h4>INFORMAÇÕES DO GRAU E MONTAGEM</h4>
+        <h4>INFORMAÇÕES DO GRAU</h4>
 
         <table>
             <thead>
@@ -282,15 +282,6 @@
             </thead>
             <tbody>
                 <tr>
-                    <th>OD</th>
-                    <td>{{ $serviceOrder->spherical_right ?? '-' }}</td>
-                    <td>{{ $serviceOrder->cylindrical_right ?? '-' }}</td>
-                    <td>{{ $serviceOrder->axis_right ?? '-' }}</td>
-                    <td>{{ $serviceOrder->dnp_right ?? '-' }}</td>
-                    <td>{{ $serviceOrder->height_right ?? '-' }}</td>
-                    <td>{{ $serviceOrder->addition_right ?? '-' }}</td>
-                </tr>
-                <tr>
                     <th>OE</th>
                     <td>{{ $serviceOrder->spherical_left ?? '-' }}</td>
                     <td>{{ $serviceOrder->cylindrical_left ?? '-' }}</td>
@@ -299,16 +290,24 @@
                     <td>{{ $serviceOrder->height_left ?? '-' }}</td>
                     <td>{{ $serviceOrder->addition_left ?? '-' }}</td>
                 </tr>
+                <tr>
+                    <th>OD</th>
+                    <td>{{ $serviceOrder->spherical_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->cylindrical_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->axis_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->dnp_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->height_right ?? '-' }}</td>
+                    <td>{{ $serviceOrder->addition_right ?? '-' }}</td>
+                </tr>
             </tbody>
         </table>
         <small>
-            <strong>OD:</strong> OLHO DIREITO -
             <strong>OE:</strong> OLHO ESQUERDO -
+            <strong>OD:</strong> OLHO DIREITO -
             <strong>DPN:</strong> DISTÂNCIA NASO-PUPILAR
         </small>
 
         <div style="margin: 20px 0"></div>
-        <h4>MEDIDAS VISION OFFICE</h4>
 
         <table>
             <thead>
@@ -321,10 +320,10 @@
                 <th colspan="2">ALT</th>
             </tr>
             <tr>
-                <th>OD</th>
                 <th>OE</th>
                 <th>OD</th>
                 <th>OE</th>
+                <th>OD</th>
             </tr>
             </thead>
             <tbody>
@@ -333,10 +332,10 @@
                 <td>{{ $serviceOrder->larger_horizontal ?? '-'}}</td>
                 <td>{{ $serviceOrder->larger_vertical ?? '-'}}</td>
                 <td>{{ $serviceOrder->larger_diagonal ?? '-'}}</td>
-                <td>{{ $serviceOrder->dnp_v_right ?? '-'}}</td>
                 <td>{{ $serviceOrder->dnp_v_left ?? '-'}}</td>
-                <td>{{ $serviceOrder->alt_right ?? '-' }}</td>
+                <td>{{ $serviceOrder->dnp_v_right ?? '-'}}</td>
                 <td>{{ $serviceOrder->alt_left ?? '-' }}</td>
+                <td>{{ $serviceOrder->alt_right ?? '-' }}</td>
             </tr>
             </tbody>
         </table>

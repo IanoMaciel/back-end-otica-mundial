@@ -102,12 +102,6 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $validatedData = $request->validate(
             $this->frame->rules(),
             $this->frame->messages(),
@@ -160,12 +154,6 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $frame = $this->frame->query()->with('suppliers', 'brands', 'materials')->find($id);
         if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
 
@@ -194,12 +182,6 @@ class FrameController extends Controller {
      * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $frame = $this->frame->query()->find($id);
         if (!$frame) return response()->json(['error' => 'A Armação selecionada não existe na base de dados.'], 404);
 
@@ -215,12 +197,6 @@ class FrameController extends Controller {
     }
 
     public function deleteMultiple(Request $request): JsonResponse {
-        if (!$this->isAuthorization()) {
-            return response()->json([
-                'error' => 'Ops! Você não possui autorização para realizar está operação.'
-            ], 403);
-        }
-
         $validatedData = $request->validate(
             [
                 'id' => 'required|array',
@@ -243,11 +219,6 @@ class FrameController extends Controller {
                 'message' => $th->getMessage()
             ], 500);
         }
-    }
-
-    private function isAuthorization(): bool {
-        $user = Auth::user();
-        return $user->getAttribute('is_admin') || $user->getAttribute('is_manager');
     }
 
     private function generateUniqueBarCode(string $prefix): string {
