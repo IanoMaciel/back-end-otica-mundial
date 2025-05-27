@@ -167,7 +167,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('dashboard', 'DashboardController');
 
     // Cancellations
-    Route::apiResource('cancellation', 'CancellationController');
+//    Route::apiResource('cancellation', 'CancellationController');
+//    Route::get('cancellation', 'CancellationController@index');
+//    Route::get('c', 'CancellationController@store');
+
 });
 
 Route::post('password/forgot', [PasswordResetController::class, 'sendResetLink']);

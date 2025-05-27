@@ -37,10 +37,11 @@ class LensController extends Controller {
                 'promotionItems.promotion.cashPromotions',
                 'promotionItems.promotion.cashPromotions.formPayment',
                 'promotionItems.promotion.filters',
-            ])
-            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
-            ->select('lenses.*')
-            ->orderBy('indices.index');
+            ])->orderBy('name_lens');
+
+//            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
+//            ->select('lenses.*')
+//            ->orderBy('indices.index');
 
 
         # filters
