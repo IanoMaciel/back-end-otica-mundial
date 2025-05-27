@@ -36,13 +36,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // customer
     Route::apiResource('agreement', 'AgreementController');
 
-    Route::get('customer', 'deleteMultiple@index');
-    Route::post('customer', 'deleteMultiple@store');
-    Route::get('customer/{id}', 'deleteMultiple@show');
-    Route::patch('customer/{id}', 'deleteMultiple@update');
+    Route::get('customer', 'CustomerController@index');
+    Route::post('customer', 'CustomerController@store');
+    Route::get('customer/{id}', 'CustomerController@show');
+    Route::patch('customer/{id}', 'CustomerController@update');
     Route::group(['middleware' => 'admin'], function () {
-        Route::delete('customer/{id}', 'deleteMultiple@destroy');
-        Route::delete('customer-delete-multiple', 'deleteMultiple@deleteMultiple');
+        Route::delete('customer/{id}', 'CustomerController@destroy');
+        Route::delete('customer-delete-multiple', 'CustomerController@deleteMultiple');
     });
 
     Route::apiResource('address', 'AddressController');
