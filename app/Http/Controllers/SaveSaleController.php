@@ -11,6 +11,7 @@ use App\Models\Sale;
 use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SaveSaleController extends Controller {
     protected $sale;
@@ -32,89 +33,88 @@ class SaveSaleController extends Controller {
         $paymentMethod = PaymentMethod::query()->find($validatedData['payment_method_id']);
 
         try {
-            $sale = $this->sale->query()->create($validatedData);
-            $totalAmount = 0;
+            $sale = DB::transaction(function () use ($validatedData, $paymentMethod) {
+                $sale = $this->sale->query()->create($validatedData);
+                $totalAmount = 0;
 
-            foreach ($validatedData['items'] as $item) {
+                foreach ($validatedData['items'] as $item) {
 
-                if ($item['type'] === 'frame')
-                    $model = Frame::class;
-                else if ($item['type'] === 'lens')
-                    $model = Lens::class;
-                else $model = Service::class;
+                    if ($item['type'] === 'frame')
+                        $model = Frame::class;
+                    else if ($item['type'] === 'lens')
+                        $model = Lens::class;
+                    else $model = Service::class;
 
-                $sellable = $model::query()->find($item['id']);
+                    $sellable = $model::query()->find($item['id']);
 
-                if (!$sellable) {
-                    return response()->json([
-                        'error' => 'O item informado não existe na base de dados.',
-                    ], 404);
-                }
+                    if (!$sellable) {
+                        return response()->json([
+                            'error' => 'O item informado não existe na base de dados.',
+                        ], 404);
+                    }
 
-                $promotions = $item['promotions'] ?? null;
-                $discount = 0;
+                    $promotions = $item['promotions'] ?? null;
+                    $discount = 0;
 
-                if ($promotions) {
-                    foreach ($promotions as $promotion) {
-                        if (!$promotion) {
-                            return response()->json([
-                                'error' => 'A promoção informada não existe na base de dados.',
-                            ], 404);
-                        }
+                    if ($promotions) {
+                        foreach ($promotions as $promotion) {
+                            if (!$promotion) {
+                                return response()->json([
+                                    'error' => 'A promoção informada não existe na base de dados.',
+                                ], 404);
+                            }
 
-                        if ($promotion['paymentable_type'] === 'cash') {
-                            $cashPromotion = CashPromotion::query()->find($promotion['paymentable_id']);
-                            $discount += $cashPromotion->discount;
-                        } else if ($promotion['paymentable_type'] === 'credit') {
-                            $creditPromotion = CreditPromotion::query()->find($promotion['paymentable_id']);
-                            $discount += $creditPromotion->discount;
-                        } else if ($promotion['store_credit']) {
-                            $discount += $promotion['store_credit'];
+                            if ($promotion['paymentable_type'] === 'cash') {
+                                $cashPromotion = CashPromotion::query()->find($promotion['paymentable_id']);
+                                $discount += $cashPromotion->discount;
+                            } else if ($promotion['paymentable_type'] === 'credit') {
+                                $creditPromotion = CreditPromotion::query()->find($promotion['paymentable_id']);
+                                $discount += $creditPromotion->discount;
+                            } else if ($promotion['store_credit']) {
+                                $discount += $promotion['store_credit'];
+                            }
                         }
                     }
+
+                    $discountValue = $sellable->price * ($discount/100);
+                    $itemTotal = $this->calculatesItemTotal($sellable->price, $discount, $item['quantity']);
+
+                    $promotionData = $item['promotions'][0] ?? [];
+
+                    $mapTypes = [
+                        'cash' => 'App\Models\CashPromotion',
+                        'credit' => 'App\Models\CreditPromotion',
+                    ];
+
+                    $sale->items()->create([
+                        'sellable_type' => $model,
+                        'sellable_id' => $sellable->id,
+                        'quantity' => $item['quantity'],
+                        'price' => $sellable->price,
+                        'total' => $itemTotal,
+                        'promotion_id' => $promotionData['promotion_id'] ?? null,
+                        'paymentable_type' => isset($promotionData['paymentable_type']) ? ($mapTypes[$promotionData['paymentable_type']] ?? '') : '',
+                        'paymentable_id' => $promotionData['paymentable_id'] ?? 0,
+                        'store_credit' => $promotionData['store_credit'] ?? null,
+                        'discount_value' => $discountValue,
+                        'discount_percentage' => $discount,
+                        'user_id' => $item['user_id'] ?? null
+                    ]);
+
+                    if ($item['type'] === 'frame') {
+                        $sellable->amount -= $item['quantity'];
+                        $sellable->save();
+                    }
+
+                    $totalAmount += $itemTotal;
                 }
 
-                $discountValue = $sellable->price * ($discount/100);
-                $itemTotal = $this->calculatesItemTotal($sellable->price, $discount, $item['quantity']);
+                $sale->total_amount = $totalAmount;
+                $sale->status = $paymentMethod->payment_method === 'Crediário da Loja' ? 'Pendente' : 'Pago';
+                $sale->save();
 
-                $promotionData = $item['promotions'][0] ?? [];
-
-                $mapTypes = [
-                    'cash' => 'App\Models\CashPromotion',
-                    'credit' => 'App\Models\CreditPromotion',
-                ];
-
-                $sale->items()->create([
-                    'sellable_type' => $model,
-                    'sellable_id' => $sellable->id,
-                    'quantity' => $item['quantity'],
-                    'price' => $sellable->price,
-                    'total' => $itemTotal,
-                    'promotion_id' => $promotionData['promotion_id'] ?? null,
-                    'paymentable_type' => isset($promotionData['paymentable_type']) ? ($mapTypes[$promotionData['paymentable_type']] ?? '') : '',
-                    'paymentable_id' => $promotionData['paymentable_id'] ?? 0,
-                    'store_credit' => $promotionData['store_credit'] ?? null,
-                    'discount_value' => $discountValue,
-                    'discount_percentage' => $discount,
-                    'user_id' => $item['user_id'] ?? null
-                ]);
-
-                if ($item['type'] === 'frame') {
-                    $sellable->amount -= $item['quantity'];
-                    $sellable->save();
-                }
-
-                $totalAmount += $itemTotal;
-            }
-            $sale->total_amount = $totalAmount;
-
-            if ($paymentMethod->payment_method === 'Crediário da Loja') {
-                $sale->status = 'Pendente';
-            } else {
-                $sale->status = 'Pago';
-            }
-
-            $sale->save();
+                return $sale;
+            });
 
             return response()->json($sale->load([
                 'customer',
