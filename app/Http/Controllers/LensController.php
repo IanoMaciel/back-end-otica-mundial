@@ -9,6 +9,7 @@ use App\ProductPrefix;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LensController extends Controller {
 
@@ -89,32 +90,35 @@ class LensController extends Controller {
         ]);
 
         try {
-            $lens = $this->lens->query()->create($validatedData);
-            $step = 0.25;
+            $lens = DB::transaction(function() use ($validatedData) {
+                $lens = $this->lens->query()->create($validatedData);
+                $step = 0.25;
 
-            if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
-                for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
-                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
-                        MultifocalLens::query()->create([
-                            'barcode' => $this->generateUniqueBarCode(),
-                            'lens_id' => $lens->id,
-                            'addition' => $i,
-                            'spherical' => $j,
-                        ]);
+                if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
+                    for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
+                        for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                            MultifocalLens::query()->create([
+                                'barcode' => $this->generateUniqueBarCode(),
+                                'lens_id' => $lens->id,
+                                'addition' => $i,
+                                'spherical' => $j,
+                            ]);
+                        }
+                    }
+                } else {
+                    for ($i = $lens->cylindrical_start; $i >= $lens->cylindrical_end; $i -= $step) {
+                        for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                            SingleVision::query()->create([
+                                'barcode' => $this->generateUniqueBarCode(),
+                                'lens_id' => $lens->id,
+                                'cylindrical' => $i,
+                                'spherical' => $j,
+                            ]);
+                        }
                     }
                 }
-            } else {
-                for ($i = $lens->cylindrical_start; $i >= $lens->cylindrical_end; $i -= $step) {
-                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
-                        SingleVision::query()->create([
-                            'barcode' => $this->generateUniqueBarCode(),
-                            'lens_id' => $lens->id,
-                            'cylindrical' => $i,
-                            'spherical' => $j,
-                        ]);
-                    }
-                }
-            }
+                return $lens;
+            });
             return response()->json($lens->load('singleVision', 'multifocalLens'), 201);
         } catch (\Throwable $th) {
             return response()->json([
