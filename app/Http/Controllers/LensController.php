@@ -40,11 +40,6 @@ class LensController extends Controller {
                 'promotionItems.promotion.filters',
             ])->orderBy('name_lens');
 
-//            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
-//            ->select('lenses.*')
-//            ->orderBy('indices.index');
-
-
         # filters
         if ($nameLens = $request->input('search')) {
             $lenses->where(function ($query) use ($nameLens) {
@@ -53,7 +48,9 @@ class LensController extends Controller {
         }
 
         if ($index = $request->input('indice')) {
-            $lenses->where('indices.index', 'like', '%' . $index . '%');
+            $lenses->whereHas('indices', function ($query) use ($index) {
+                $query->where('index', 'like', '%' . $index . '%');
+            });
         }
 
         if ($typeLens = $request->input('tipo')) {
