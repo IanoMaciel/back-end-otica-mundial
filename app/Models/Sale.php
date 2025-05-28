@@ -211,4 +211,8 @@ class Sale extends Model {
     public function serviceOrder(): HasMany {
         return $this->hasMany(ServiceOrder::class);
     }
+
+    public function cancellation(): HasMany {
+        return $this->hasMany(Cancellation::class);
+    }
 }
