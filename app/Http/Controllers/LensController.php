@@ -188,43 +188,51 @@ class LensController extends Controller {
         }
 
         try {
-            $lens->update($validatedData);
+            $lens = DB::transaction(function() use ($lens, $validatedData) {
+                $lens->update($validatedData);
 
-//            // Exclui os registros existentes para recriar
-//            if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
-//                MultifocalLens::query()->where('lens_id', $lens->id)->delete();
-//            } else {
-//                SingleVision::query()->where('lens_id', $lens->id)->delete();
-//            }
-//
-//            $step = 0.25;
-//
-//            // Recria os registros baseado nos dados atualizados
-//            if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
-//                for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
-//                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
-//                        MultifocalLens::query()->create([
-//                            'barcode' => $this->generateUniqueBarCode(),
-//                            'lens_id' => $lens->id,
-//                            'addition' => $i,
-//                            'spherical' => $j,
-//                        ]);
-//                    }
-//                }
-//            } else {
-//                for ($i = $lens->cylindrical_start; $i >= $lens->cylindrical_end; $i -= $step) {
-//                    for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
-//                        SingleVision::query()->create([
-//                            'barcode' => $this->generateUniqueBarCode(),
-//                            'lens_id' => $lens->id,
-//                            'cylindrical' => $i,
-//                            'spherical' => $j,
-//                        ]);
-//                    }
-//                }
-//            }
+                // Recarrega a lente com os dados atualizados
+                $lens = $lens->fresh();
 
-//            $lens = $lens->fresh(['singleVision', 'multifocalLens']);
+                // Exclui os registros existentes para recriar
+                if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
+                    MultifocalLens::query()->where('lens_id', $lens->id)->delete();
+                } else {
+                    SingleVision::query()->where('lens_id', $lens->id)->delete();
+                }
+
+                $step = 0.25;
+
+                // Recria os registros baseado nos dados atualizados
+                if (isset($validatedData['addition_start']) && isset($validatedData['addition_end'])) {
+                    for ($i = $lens->addition_start; $i <= $lens->addition_end; $i += $step) {
+                        for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                            MultifocalLens::query()->create([
+                                'barcode' => $this->generateUniqueBarCode(),
+                                'lens_id' => $lens->id,
+                                'addition' => $i,
+                                'spherical' => $j,
+                            ]);
+                        }
+                    }
+                } else {
+                    for ($i = $lens->cylindrical_start; $i >= $lens->cylindrical_end; $i -= $step) {
+                        for ($j = $lens->spherical_start; $j <= $lens->spherical_end; $j += $step) {
+                            SingleVision::query()->create([
+                                'barcode' => $this->generateUniqueBarCode(),
+                                'lens_id' => $lens->id,
+                                'cylindrical' => $i,
+                                'spherical' => $j,
+                            ]);
+                        }
+                    }
+                }
+
+                return $lens;
+            });
+
+            // Carrega os relacionamentos atualizados
+            $lens = $lens->fresh(['singleVision', 'multifocalLens']);
 
             return response()->json($lens);
         } catch (\Throwable $th) {
