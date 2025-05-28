@@ -300,8 +300,9 @@ class LensController extends Controller {
                 'diameters',
                 'heights',
             ])
-            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
-            ->orderBy('indices.index')
+            ->orderBy('name_lens')
+//            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
+//            ->orderBy('indices.index')
             ->get();
 
         return view('pdf.lenses', compact('lenses'));
