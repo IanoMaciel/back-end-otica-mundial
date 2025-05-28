@@ -92,4 +92,7 @@ class User extends Authenticatable
         return $this->hasMany(Sale::class, 'user_id');
     }
 
+    public function cancellation(): HasMany {
+        return $this->hasMany(Cancellation::class);
+    }
 }
