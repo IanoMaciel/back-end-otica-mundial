@@ -188,7 +188,7 @@
                     <td>{{ $lens->indices->index ?? '-' }}</td>
                     <td>{{ $lens->surfacings->surfacing ?? '-' }}</td>
                     <td>{{ $lens->treatment->treatment ?? '-' }}</td>
-                    <td>{{ $lens->filter ? 'Filtro Azul' : '-' }}</td>
+                    <td>{{ $lens->filter ? 'FILTRO AZUL' : '-' }}</td>
                     <td>{{ $lens->sensitivity->sensitivity ?? '-' }}</td>
 
                     <td class="nowrap">{{ $lens->spherical_start ?? '-' }} / {{ $lens->spherical_end ?? '-' }}</td>
