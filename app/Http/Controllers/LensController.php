@@ -47,6 +47,12 @@ class LensController extends Controller {
             });
         }
 
+        if ($barcode = $request->input('barcode')) {
+            $lenses->where(function ($query) use ($barcode) {
+               $query->where('code', 'like', '%' . $barcode . '%');
+            });
+        }
+
         if ($index = $request->input('indice')) {
             $lenses->whereHas('indices', function ($query) use ($index) {
                 $query->where('index', 'like', '%' . $index . '%');
