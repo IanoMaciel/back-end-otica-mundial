@@ -47,6 +47,12 @@ class LensController extends Controller {
             });
         }
 
+        if ($barcode = $request->input('barcode')) {
+            $lenses->where(function ($query) use ($barcode) {
+               $query->where('code', 'like', '%' . $barcode . '%');
+            });
+        }
+
         if ($index = $request->input('indice')) {
             $lenses->whereHas('indices', function ($query) use ($index) {
                 $query->where('index', 'like', '%' . $index . '%');
@@ -301,11 +307,27 @@ class LensController extends Controller {
                 'heights',
             ])
             ->orderBy('name_lens')
-//            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
-//            ->orderBy('indices.index')
             ->get();
 
         return view('pdf.lenses', compact('lenses'));
+    }
+
+    public function exportLensSaller() {
+        $lenses = $this->lens->query()
+            ->with([
+                'typeLens',
+                'treatment',
+                'indices',
+                'sensitivity',
+                'laboratory',
+                'surfacings',
+                'diameters',
+                'heights',
+            ])
+            ->orderBy('name_lens')
+            ->get();
+
+        return view('pdf.lenses_saller', compact('lenses'));
     }
 
     private function generateUniqueBarCode(): string {
