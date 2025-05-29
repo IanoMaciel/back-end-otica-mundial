@@ -307,11 +307,27 @@ class LensController extends Controller {
                 'heights',
             ])
             ->orderBy('name_lens')
-//            ->leftJoin('indices', 'lenses.index_id', '=', 'indices.id')
-//            ->orderBy('indices.index')
             ->get();
 
         return view('pdf.lenses', compact('lenses'));
+    }
+
+    public function exportLensSaller() {
+        $lenses = $this->lens->query()
+            ->with([
+                'typeLens',
+                'treatment',
+                'indices',
+                'sensitivity',
+                'laboratory',
+                'surfacings',
+                'diameters',
+                'heights',
+            ])
+            ->orderBy('name_lens')
+            ->get();
+
+        return view('pdf.lenses_saller', compact('lenses'));
     }
 
     private function generateUniqueBarCode(): string {

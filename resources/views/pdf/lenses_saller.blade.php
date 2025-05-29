@@ -147,15 +147,15 @@
             <thead>
             <tr>
                 <th>#</th>
-{{--                <th>CÓDIGO</th>--}}
+                <th>CÓDIGO</th>
 
                 <th>NOME</th>
-                <th id="filter-header">TIPO</th>
+{{--                <th id="filter-header">TIPO</th>--}}
+{{--                <th>SUR.</th>--}}
                 <th>INDÍCE</th>
-                <th>SUR.</th>
-                <th>ANT.</tsh>
-                <th>FILTRO</th>
-                <th>FOT.</th>
+{{--                <th>ANT.</tsh>--}}
+{{--                <th>FILTRO</th>--}}
+{{--                <th>FOT.</th>--}}
 
                 <th>ESF.</th>
                 <th>CIL.</th>
@@ -164,8 +164,8 @@
                 <th>DIÂ.</th>
                 <th>ALT.</th>
 
-                <th class="nowrap">CUSTO</th>
-                <th class="nowrap">LUCRO</th>
+{{--                <th class="nowrap">CUSTO</th>--}}
+{{--                <th class="nowrap">LUCRO</th>--}}
 
                 <th class="nowrap">E. MÍN.</th>
                 <th class="nowrap">PREÇO</th>
@@ -180,16 +180,16 @@
 
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-{{--                    <td>{{ $lens->barcode ?? '-' }}</td>--}}
+                    <td>{{ $lens->barcode ?? '-' }}</td>
 
                     <td>{{ $lens->name_lens ?? '-'}}</td>
 
-                    <td>{{ $lens->typeLens->type_lens ?? '-' }}</td>
+{{--                    <td>{{ $lens->typeLens->type_lens ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->surfacings->surfacing ?? '-' }}</td>--}}
                     <td>{{ $lens->indices->index ?? '-' }}</td>
-                    <td>{{ $lens->surfacings->surfacing ?? '-' }}</td>
-                    <td>{{ $lens->treatment->treatment ?? '-' }}</td>
-                    <td>{{ $lens->filter ? 'Filtro Azul' : '-' }}</td>
-                    <td>{{ $lens->sensitivity->sensitivity ?? '-' }}</td>
+{{--                    <td>{{ $lens->treatment->treatment ?? '-' }}</td>--}}
+{{--                    <td>{{ $lens->filter ? 'Filtro Azul' : '-' }}</td>--}}
+{{--                    <td>{{ $lens->sensitivity->sensitivity ?? '-' }}</td>--}}
 
                     <td class="nowrap">{{ $lens->spherical_start ?? '-' }} / {{ $lens->spherical_end ?? '-' }}</td>
                     <td class="nowrap">{{ $lens->cylindrical_start ?? '-' }} / {{ $lens->cylindrical_end ?? '-' }} </td>
@@ -198,8 +198,8 @@
                     <td class="nowrap">{{ $lens->diameters->diameter ?? '-' }}</td>
                     <td class="nowrap">{{ $lens->heights->height ?? '-' }}</td>
 
-                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>
-                    <td class="nowrap">{{ $lens->profit ? formatPercentage($lens->profit) : '-' }}</td>
+{{--                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>--}}
+{{--                    <td class="nowrap">{{ $lens->profit ? formatPercentage($lens->profit) : '-' }}</td>--}}
                     <td class="nowrap">{{ $lens->minimum_value ? formatReal($lens->minimum_value) : '-'}}</td>
                     <td class="nowrap">{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
 
