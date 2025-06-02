@@ -159,6 +159,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Service Order
     Route::apiResource('service-order', 'ServiceOrderController');
+    Route::delete('service-order-delete-multiple', 'ServiceOrderController@deleteMultiple');
     Route::get('export-service-order/{id}', 'ServiceOrderController@exportPdf');
 
     Route::apiResource('promotion', 'PromotionController');
