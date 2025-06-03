@@ -37,3 +37,7 @@ Route::get('warranty', function() {
     return view('pdf.warranty');
 });
 
+Route::get('/lenses', function () {
+    return view('report.lenses');
+});
+
