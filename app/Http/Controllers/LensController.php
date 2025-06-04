@@ -309,7 +309,7 @@ class LensController extends Controller {
             ->orderBy('name_lens')
             ->get();
 
-        return view('pdf.lenses', compact('lenses'));
+        return view('report.lenses', compact('lenses'));
     }
 
     public function exportLensSaller() {
