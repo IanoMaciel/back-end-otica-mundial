@@ -224,63 +224,59 @@
     <section class="filter-group">
         <div class="select-field">
             <label>Tipo de Lente</label>
-            <select>
+            <select id="filter-type">
                 <option disabled selected hidden value="">Selecione</option>
-                <option>MULTIFOCAL CAMPO MÉDIO</option>
-                <option>VISÃO SIMPLES</option>
-                <option>MULTIFOCAL CAMPO PEQUENO</option>
+                @foreach($typeLenses as $typeLens)
+                    <option value="{{ $typeLens->type_lens }}">{{ $typeLens->type_lens }}</option>
+                @endforeach
             </select>
         </div>
 
         <div class="select-field">
             <label>Índice</label>
-            <select>
+            <select id="filter-index">
                 <option disabled selected hidden value="">Selecione</option>
-                <option>1.56</option>
-                <option>1.66</option>
-                <option>1.70</option>
+                @foreach($indices as $index)
+                    <option value="{{ $index->index }}">{{ $index->index }}</option>
+                @endforeach
             </select>
         </div>
 
         <div class="select-field">
             <label>Surfaçagem</label>
-            <select>
+            <select id="filter-surfacing">
                 <option disabled selected hidden value="">Selecione</option>
-                <option>BLOCO DIGITAL</option>
-                <option>PRONTA</option>
-                <option>BLOCO CONVENCIONAL</option>
+                @foreach($surfacings as $surfacing)
+                    <option value="{{ $surfacing->surfacing }}">{{ $surfacing->surfacing }}</option>
+                @endforeach
             </select>
         </div>
 
         <div class="select-field">
             <label>Antirreflexo</label>
-            <select>
+            <select id="filter-treatment">
                 <option disabled selected hidden value="">Selecione</option>
-                <option>AR VERDE</option>
-                <option>AR AZUL</option>
-                <option>INCOLOR</option>
+                <@foreach($treatments as $treatment)
+                     <option value="{{ $treatment->treatment }}">{{ $treatment->treatment }}</option>
+                @endforeach
             </select>
         </div>
 
         <div class="select-field">
             <label>Fotossensibilidade</label>
-            <select>
+            <select id="filter-photosensitivity">
                 <option disabled selected hidden value="">Selecione</option>
-                <option>FOTOSSENSÍVEL 80%</option>
-                <option>FOTOSSENSÍVEL 70%</option>
-                <option>FOTOSSENSÍVEL 65%</option>
+                @foreach($photosensitivities as $photosensitivity)
+                    <option value="{{ $photosensitivity->sensitivity }}">{{ $photosensitivity->sensitivity }}</option>
+                @endforeach
             </select>
         </div>
     </section>
 
     <div class="active-filters">
-        <span class="active-filters-title">Filtros ativos:</span>
-        <div class="filter-tag">VISÃO SIMPLES <i class="ph ph-x"></i></div>
-        <div class="filter-tag">1.56 <i class="ph ph-x"></i></div>
-        <div class="filter-tag">PRONTA <i class="ph ph-x"></i></div>
-        <div class="filter-tag">AR VERDE <i class="ph ph-x"></i></div>
-        <div class="filter-tag">FOTOSSENSÍVEL <i class="ph ph-x"></i></div>
-        <button class="clear-all-filter">Limpar filtro</button>
+            <span class="active-filters-title">Filtros ativos:</span>
+            <div id="active-filters-container"></div>
+        <button id="clear-all-filter" class="clear-all-filter">Limpar filtro</button>
     </div>
 </section>
 
@@ -295,8 +291,6 @@
             <thead>
             <tr>
                 <th>#</th>
-                {{--                <th>CÓDIGO</th>--}}
-
                 <th>NOME</th>
                 <th id="filter-header">TIPO</th>
                 <th>INDÍCE</th>
@@ -319,7 +313,6 @@
                 <th class="nowrap">PREÇO</th>
                 <th class="nowrap">LAB.</th>
                 <th>ENTREGA</th>
-                {{--                <th>NOME</th>--}}
             </tr>
             </thead>
 
@@ -328,8 +321,6 @@
 
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    {{--                    <td>{{ $lens->barcode ?? '-' }}</td>--}}
-
                     <td>{{ $lens->name_lens ?? '-'}}</td>
 
                     <td>{{ $lens->typeLens->type_lens ?? '-' }}</td>
@@ -350,9 +341,6 @@
                     <td class="nowrap">{{ $lens->profit ? formatPercentage($lens->profit) : '-' }}</td>
                     <td class="nowrap">{{ $lens->minimum_value ? formatReal($lens->minimum_value) : '-'}}</td>
                     <td class="nowrap">{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
-
-                    {{--                    <td class="nowrap">{{ $lens->created_at ? formatDate($lens->created_at) : '-' }}</td>--}}
-                    {{--                    <td class="nowrap">{{ $lens->updated_at ? formatDate($lens->updated_at) : '-' }}</td>--}}
                     <td class="nowrap">{{ $lens->laboratory->laboratory ?? '-' }}</td>
                     <td >{{ $lens->delivery . ' DIAS'?? '-' }}</td>
                 </tr>
@@ -361,24 +349,148 @@
             <tfoot>
             <tr>
                 <td colspan="19">
-                    {{--                        <strong>ANT:</strong> ANTIRREFLEXO ---}}
-                    {{--                        <strong>FOT:</strong> FOTOSSENSIBILIDADE ---}}
                     <strong>ESF:</strong> ESFÉRICO -
                     <strong>CIL:</strong> CILINDRO -
                     <strong>ADI:</strong> ADIÇÃO -
-                    {{--                        <strong>SUR:</strong> SURFAÇAGEM ---}}
                     <strong>DIÂ:</strong> DIÂMETRO -
                     <strong>ALT:</strong> ALTURA -
                     <strong>E. MÍN:</strong> ENTRADA MÍNIMA -
                     <strong>LAB</strong> LABORATÓRIO
-                {{--                        <strong>ATU:</strong> ATUALIZADO--}}
             </tr>
             </tfoot>
         </table>
+        <div id="no-results" class="no-results" style="display: none;">
+            Nenhuma lente encontrada com os filtros selecionados.
+        </div>
     </div>
 </section>
 
 </body>
+
+<script>
+    class LensFilter {
+        constructor() {
+            this.filters = {
+                type: '',
+                index: '',
+                surfacing: '',
+                treatment: '',
+                photosensitivity: ''
+            };
+
+            this.filterElements = {
+                type: document.getElementById('filter-type'),
+                index: document.getElementById('filter-index'),
+                surfacing: document.getElementById('filter-surfacing'),
+                treatment: document.getElementById('filter-treatment'),
+                photosensitivity: document.getElementById('filter-photosensitivity')
+            };
+
+            this.activeFiltersContainer = document.getElementById('active-filters-container');
+            this.clearAllButton = document.getElementById('clear-all-filter');
+            this.tableBody = document.getElementById('lens-table-body');
+            this.noResultsDiv = document.getElementById('no-results');
+
+            this.init();
+        }
+
+        init() {
+            // Adicionar event listeners para os selects
+            Object.keys(this.filterElements).forEach(key => {
+                this.filterElements[key].addEventListener('change', (e) => {
+                    this.updateFilter(key, e.target.value);
+                });
+            });
+
+            // Event listener para o botão limpar tudo
+            this.clearAllButton.addEventListener('click', () => {
+                this.clearAllFilters();
+            });
+
+            this.updateActiveFilters();
+            this.applyFilters();
+        }
+
+        updateFilter(filterType, value) {
+            this.filters[filterType] = value;
+            this.updateActiveFilters();
+            this.applyFilters();
+        }
+
+        updateActiveFilters() {
+            this.activeFiltersContainer.innerHTML = '';
+
+            Object.keys(this.filters).forEach(key => {
+                if (this.filters[key]) {
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'filter-tag';
+                    filterTag.innerHTML = `
+                    ${this.filters[key]}
+                    <i class="ph ph-x" data-filter="${key}"></i>
+                `;
+
+                    filterTag.querySelector('i').addEventListener('click', (e) => {
+                        this.removeFilter(e.target.dataset.filter);
+                    });
+
+                    this.activeFiltersContainer.appendChild(filterTag);
+                }
+            });
+        }
+
+        removeFilter(filterType) {
+            this.filters[filterType] = '';
+            this.filterElements[filterType].value = '';
+            this.updateActiveFilters();
+            this.applyFilters();
+        }
+
+        clearAllFilters() {
+            Object.keys(this.filters).forEach(key => {
+                this.filters[key] = '';
+                this.filterElements[key].value = '';
+            });
+            this.updateActiveFilters();
+            this.applyFilters();
+        }
+
+        applyFilters() {
+            const rows = this.tableBody.querySelectorAll('tr');
+            let visibleCount = 0;
+
+            rows.forEach((row, index) => {
+                let shouldShow = true;
+
+                Object.keys(this.filters).forEach(key => {
+                    if (this.filters[key]) {
+                        const rowValue = row.dataset[key] || '';
+                        if (rowValue !== this.filters[key]) {
+                            shouldShow = false;
+                        }
+                    }
+                });
+
+                if (shouldShow) {
+                    row.classList.remove('hidden');
+                    visibleCount++;
+                    row.cells[0].textContent = visibleCount;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+
+            if (visibleCount === 0) {
+                this.noResultsDiv.style.display = 'block';
+            } else {
+                this.noResultsDiv.style.display = 'none';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        new LensFilter();
+    });
+</script>
 
 @php
     use Carbon\Carbon;
