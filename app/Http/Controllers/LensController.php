@@ -342,7 +342,20 @@ class LensController extends Controller {
             ->orderBy('name_lens')
             ->get();
 
-        return view('pdf.lenses_saller', compact('lenses'));
+        $typeLenses = $lenses->pluck('typeLens')->unique('id')->sortBy('type_lens');
+        $indices = $lenses->pluck('indices')->unique('id')->sortBy('index');
+        $surfacings = $lenses->pluck('surfacings')->unique('id')->sortBy('surfacing');
+        $photosensitivities = $lenses->pluck('sensitivity')->unique('id')->sortBy('sensitivity');
+        $treatments = $lenses->pluck('treatment')->unique('id')->sortBy('treatment');
+
+        return view('report.lenses_saller', compact(
+            'typeLenses',
+            'indices',
+            'surfacings',
+            'photosensitivities',
+            'treatments',
+            'lenses',
+        ));
     }
 
     private function generateUniqueBarCode(): string {

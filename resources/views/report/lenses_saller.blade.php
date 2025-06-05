@@ -318,9 +318,6 @@
                 <th>DIÂ.</th>
                 <th>ALT.</th>
 
-                <th class="nowrap">CUSTO</th>
-                <th class="nowrap">LUCRO</th>
-
                 <th class="nowrap">E. MÍN.</th>
                 <th class="nowrap">PREÇO</th>
                 <th class="nowrap">LAB.</th>
@@ -331,6 +328,7 @@
             <tbody>
             @foreach ($lenses as $lens)
                 <tr data-type="{{ $lens->typeLens->type_lens ?? '' }}" data-index="{{ $lens->indices->index ?? '' }}" data-surfacing="{{ $lens->surfacings->surfacing ?? '' }}"  data-treatment="{{ $lens->treatment->treatment ?? '' }}" data-photosensitivity="{{ $lens->sensitivity->sensitivity ?? '' }}">
+
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $lens->barcode ?? '-' }}</td>
                     <td>{{ $lens->name_lens ?? '-'}}</td>
@@ -349,8 +347,6 @@
                     <td class="nowrap">{{ $lens->diameters->diameter ?? '-' }}</td>
                     <td class="nowrap">{{ $lens->heights->height ?? '-' }}</td>
 
-                    <td class="nowrap">{{ $lens->cost ? formatReal($lens->cost) : '-' }}</td>
-                    <td class="nowrap">{{ $lens->profit ? formatPercentage($lens->profit) : '-' }}</td>
                     <td class="nowrap">{{ $lens->minimum_value ? formatReal($lens->minimum_value) : '-'}}</td>
                     <td class="nowrap">{{ $lens->price ? formatReal($lens->price) : '-' }}</td>
                     <td class="nowrap">{{ $lens->laboratory->laboratory ?? '-' }}</td>
