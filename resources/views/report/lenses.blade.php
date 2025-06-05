@@ -256,7 +256,7 @@
             <label>Antirreflexo</label>
             <select id="filter-treatment">
                 <option disabled selected hidden value="">Selecione</option>
-                <@foreach($treatments as $treatment)
+                @foreach($treatments as $treatment)
                      <option value="{{ $treatment->treatment }}">{{ $treatment->treatment }}</option>
                 @endforeach
             </select>
@@ -319,7 +319,7 @@
             <tbody>
             @foreach ($lenses as $lens)
 
-                <tr>
+                <tr data-type="{{ $lens->typeLens->type_lens ?? '' }}" data-index="{{ $lens->indices->index ?? '' }}" data-surfacing="{{ $lens->surfacings->surfacing ?? '' }}"  data-treatment="{{ $lens->treatment->treatment ?? '' }}" data-photosensitivity="{{ $lens->sensitivity->sensitivity ?? '' }}">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $lens->name_lens ?? '-'}}</td>
 
@@ -365,132 +365,89 @@
     </div>
 </section>
 
-</body>
-
 <script>
-    class LensFilter {
-        constructor() {
-            this.filters = {
-                type: '',
-                index: '',
-                surfacing: '',
-                treatment: '',
-                photosensitivity: ''
-            };
+    const filters = {
+        type: '',
+        index: '',
+        surfacing: '',
+        treatment: '',
+        photosensitivity: ''
+    };
 
-            this.filterElements = {
-                type: document.getElementById('filter-type'),
-                index: document.getElementById('filter-index'),
-                surfacing: document.getElementById('filter-surfacing'),
-                treatment: document.getElementById('filter-treatment'),
-                photosensitivity: document.getElementById('filter-photosensitivity')
-            };
+    const selects = {
+        type: document.getElementById('filter-type'),
+        index: document.getElementById('filter-index'),
+        surfacing: document.getElementById('filter-surfacing'),
+        treatment: document.getElementById('filter-treatment'),
+        photosensitivity: document.getElementById('filter-photosensitivity')
+    };
 
-            this.activeFiltersContainer = document.getElementById('active-filters-container');
-            this.clearAllButton = document.getElementById('clear-all-filter');
-            this.tableBody = document.getElementById('lens-table-body');
-            this.noResultsDiv = document.getElementById('no-results');
+    const tableRows = document.querySelectorAll('tbody tr');
+    const activeFiltersContainer = document.getElementById('active-filters-container');
+    const clearAllButton = document.getElementById('clear-all-filter');
 
-            this.init();
-        }
-
-        init() {
-            // Adicionar event listeners para os selects
-            Object.keys(this.filterElements).forEach(key => {
-                this.filterElements[key].addEventListener('change', (e) => {
-                    this.updateFilter(key, e.target.value);
-                });
-            });
-
-            // Event listener para o botão limpar tudo
-            this.clearAllButton.addEventListener('click', () => {
-                this.clearAllFilters();
-            });
-
-            this.updateActiveFilters();
-            this.applyFilters();
-        }
-
-        updateFilter(filterType, value) {
-            this.filters[filterType] = value;
-            this.updateActiveFilters();
-            this.applyFilters();
-        }
-
-        updateActiveFilters() {
-            this.activeFiltersContainer.innerHTML = '';
-
-            Object.keys(this.filters).forEach(key => {
-                if (this.filters[key]) {
-                    const filterTag = document.createElement('div');
-                    filterTag.className = 'filter-tag';
-                    filterTag.innerHTML = `
-                    ${this.filters[key]}
-                    <i class="ph ph-x" data-filter="${key}"></i>
-                `;
-
-                    filterTag.querySelector('i').addEventListener('click', (e) => {
-                        this.removeFilter(e.target.dataset.filter);
-                    });
-
-                    this.activeFiltersContainer.appendChild(filterTag);
+    function applyFilters() {
+        tableRows.forEach(row => {
+            let visible = true;
+            for (let key in filters) {
+                if (filters[key] && row.dataset[key] !== filters[key]) {
+                    visible = false;
+                    break;
                 }
-            });
-        }
-
-        removeFilter(filterType) {
-            this.filters[filterType] = '';
-            this.filterElements[filterType].value = '';
-            this.updateActiveFilters();
-            this.applyFilters();
-        }
-
-        clearAllFilters() {
-            Object.keys(this.filters).forEach(key => {
-                this.filters[key] = '';
-                this.filterElements[key].value = '';
-            });
-            this.updateActiveFilters();
-            this.applyFilters();
-        }
-
-        applyFilters() {
-            const rows = this.tableBody.querySelectorAll('tr');
-            let visibleCount = 0;
-
-            rows.forEach((row, index) => {
-                let shouldShow = true;
-
-                Object.keys(this.filters).forEach(key => {
-                    if (this.filters[key]) {
-                        const rowValue = row.dataset[key] || '';
-                        if (rowValue !== this.filters[key]) {
-                            shouldShow = false;
-                        }
-                    }
-                });
-
-                if (shouldShow) {
-                    row.classList.remove('hidden');
-                    visibleCount++;
-                    row.cells[0].textContent = visibleCount;
-                } else {
-                    row.classList.add('hidden');
-                }
-            });
-
-            if (visibleCount === 0) {
-                this.noResultsDiv.style.display = 'block';
-            } else {
-                this.noResultsDiv.style.display = 'none';
             }
-        }
+            row.style.display = visible ? '' : 'none';
+        });
+        renderActiveFilters();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        new LensFilter();
+    function renderActiveFilters() {
+        activeFiltersContainer.innerHTML = '';
+        for (let key in filters) {
+            if (filters[key]) {
+                const tag = document.createElement('span');
+                tag.className = 'filter-tag';
+                tag.innerHTML = `
+                    ${filters[key]}
+                    <i class="ph-bold ph-x" data-key="${key}"></i>
+                `;
+                activeFiltersContainer.appendChild(tag);
+            }
+        }
+        attachRemoveListeners();
+    }
+
+    function attachRemoveListeners() {
+        document.querySelectorAll('.filter-tag i').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const key = icon.getAttribute('data-key');
+                filters[key] = '';
+                selects[key].value = '';
+                applyFilters();
+            });
+        });
+    }
+
+    for (let key in selects) {
+        selects[key].addEventListener('change', e => {
+            filters[key] = e.target.value;
+            applyFilters();
+        });
+    }
+
+    clearAllButton.addEventListener('click', () => {
+        for (let key in filters) {
+            filters[key] = '';
+            selects[key].value = '';
+        }
+        applyFilters();
     });
+
+    // Executa ao carregar
+    applyFilters();
 </script>
+
+
+</body>
 
 @php
     use Carbon\Carbon;
