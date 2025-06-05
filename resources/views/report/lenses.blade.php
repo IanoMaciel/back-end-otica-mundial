@@ -524,7 +524,7 @@
         return 'R$ ' . number_format($value, 2, ',', '.');
     }
 
-    function formatPercentage($value) {
+    function formatPercentage($value): string {
         return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.') . '%';
     }
 
