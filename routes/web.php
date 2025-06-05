@@ -33,6 +33,6 @@ Route::get('warranty', function() { return view('pdf.warranty'); });
 
 
 # Mexendo nesse aqui
-Route::get('/lens-report', 'LensController@exportPdf');
-Route::get('/lens-saller-report', 'LensController@exportLensSaller');
+Route::get('lens-report', 'LensController@exportPdf');
+Route::get('lens-saller-report', 'LensController@exportLensSaller');
 
