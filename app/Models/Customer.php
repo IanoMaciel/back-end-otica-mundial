@@ -19,6 +19,7 @@ class Customer extends Model {
         'email',
         'agreement_id',
         'number_agreement',
+        'flag'
     ];
 
     public function rules(bool $update=false): array {
@@ -31,6 +32,7 @@ class Customer extends Model {
             'email' => 'nullable|string|email',
             'agreement_id' => 'nullable|exists:agreements,id',
             'number_agreement' => 'nullable|string',
+            'flag' => 'nullable|in:green,orange,red'
         ];
     }
 
@@ -54,6 +56,7 @@ class Customer extends Model {
 
             'agreement_id.exists' => 'O Convênio informado não existe na base de dados.',
             'number_agreement.string' => 'O campo Número do Convênio deve ser tipo texto.',
+            'flag.in' => 'O campo flag deve conter um dos seguintes valores: green, orange ou red.'
         ];
     }
 

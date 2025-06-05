@@ -65,15 +65,17 @@ class CustomerController extends Controller {
 
         $validatedData = $request->validate($this->customer->rules(true), $this->customer->messages());
 
-        $cpfExists = $this->customer->query()
-            ->where('cpf', $validatedData['cpf'])
-            ->where('id', '<>', $id)
-            ->exists();
+        if (isset($validatedData['cpf'])) {
+            $cpfExists = $this->customer->query()
+                ->where('cpf', $validatedData['cpf'])
+                ->where('id', '<>', $id)
+                ->exists();
 
-        if ($cpfExists) {
-            return response()->json([
-                'error' => 'O CPF informado já está cadastrado na base de dados.'
-            ], 409);
+            if ($cpfExists) {
+                return response()->json([
+                    'error' => 'O CPF informado já está cadastrado na base de dados.'
+                ], 409);
+            }
         }
 
         try {

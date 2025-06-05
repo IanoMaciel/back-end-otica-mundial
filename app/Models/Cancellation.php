@@ -35,11 +35,11 @@ class Cancellation extends Model {
         ];
     }
 
-    public function sales(): BelongsTo {
-        return $this->belongsTo(Sale::class);
+    public function sale(): BelongsTo {
+        return $this->belongsTo(Sale::class, 'sale_id');
     }
 
-    public function users(): BelongsTo {
-        return $this->belongsTo(User::class);
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
