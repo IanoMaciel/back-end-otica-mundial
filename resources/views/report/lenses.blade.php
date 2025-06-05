@@ -463,47 +463,47 @@
 {{--        const tableContent = document.getElementById('table-to-print').innerHTML;--}}
 {{--        const printWindow = window.open('', '', 'width=1000,height=800');--}}
 
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Estoque de Lentes</title>
-                    <style>
-                        body {
-                            font-family: 'Segoe UI', sans-serif;
-                            padding: 20px;
-                        }
-                        table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        }
-                        th, td {
-                            /*border: 1px solid #ccc;*/
-                            padding: 8px;
-                            text-align: left;
-                            font-size: 10px;
-                        }
-                        thead {
-                            background-color: #f3f4f6;
-                        }
-                        tbody tr:nth-child(even) {
-                            background-color: #f9fafb;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h1>Estoque de Lentes</h1>
-                    ${tableContent}
-                </body>
-            </html>
-        `);
+{{--        printWindow.document.write(`--}}
+{{--            <html>--}}
+{{--                <head>--}}
+{{--                    <title>Estoque de Lentes</title>--}}
+{{--                    <style>--}}
+{{--                        body {--}}
+{{--                            font-family: 'Segoe UI', sans-serif;--}}
+{{--                            padding: 20px;--}}
+{{--                        }--}}
+{{--                        table {--}}
+{{--                            width: 100%;--}}
+{{--                            border-collapse: collapse;--}}
+{{--                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);--}}
+{{--                        }--}}
+{{--                        th, td {--}}
+{{--                            /*border: 1px solid #ccc;*/--}}
+{{--                            padding: 8px;--}}
+{{--                            text-align: left;--}}
+{{--                            font-size: 10px;--}}
+{{--                        }--}}
+{{--                        thead {--}}
+{{--                            background-color: #f3f4f6;--}}
+{{--                        }--}}
+{{--                        tbody tr:nth-child(even) {--}}
+{{--                            background-color: #f9fafb;--}}
+{{--                        }--}}
+{{--                    </style>--}}
+{{--                </head>--}}
+{{--                <body>--}}
+{{--                    <h1>Estoque de Lentes</h1>--}}
+{{--                    ${tableContent}--}}
+{{--                </body>--}}
+{{--            </html>--}}
+{{--        `);--}}
 
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-    });
-</script>
+{{--        printWindow.document.close();--}}
+{{--        printWindow.focus();--}}
+{{--        printWindow.print();--}}
+{{--        printWindow.close();--}}
+{{--    });--}}
+{{--</script>--}}
 
 </body>
 @php
@@ -524,7 +524,7 @@
         return 'R$ ' . number_format($value, 2, ',', '.');
     }
 
-    function formatPercentage($value) {
+    function formatPercentage($value): string {
         return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.') . '%';
     }
 
