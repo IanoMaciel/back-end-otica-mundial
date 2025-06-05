@@ -149,7 +149,6 @@
         }
 
         .table-container {
-            margin-top: 2rem;
             max-height: 500px;
             overflow: auto;
             border-radius: 12px;
@@ -211,6 +210,13 @@
 
         .nowrap {
             white-space: nowrap;
+        }
+
+        .print {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 2px 5px;
         }
     </style>
 </head>
@@ -285,8 +291,13 @@
     <div class="title">
         <i class="ph-bold ph-table"></i>
         <h1>Estoque de Lentes</h1>
+
+        <button type="button" class="print">
+            <i class="ph-bold ph-printer"></i>
+            Imprimir
+        </button>
     </div>
-    <div class="table-container">
+    <div class="table-container" id="table-to-print">
         <table>
             <thead>
             <tr>
@@ -318,7 +329,6 @@
 
             <tbody>
             @foreach ($lenses as $lens)
-
                 <tr data-type="{{ $lens->typeLens->type_lens ?? '' }}" data-index="{{ $lens->indices->index ?? '' }}" data-surfacing="{{ $lens->surfacings->surfacing ?? '' }}"  data-treatment="{{ $lens->treatment->treatment ?? '' }}" data-photosensitivity="{{ $lens->sensitivity->sensitivity ?? '' }}">
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $lens->name_lens ?? '-'}}</td>
@@ -446,9 +456,54 @@
     applyFilters();
 </script>
 
+<script>
+    document.querySelector('.print').addEventListener('click', function () {
+        const tableContent = document.getElementById('table-to-print').innerHTML;
+        const printWindow = window.open('', '', 'width=1000,height=800');
+
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Estoque de Lentes</title>
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', sans-serif;
+                            padding: 20px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }
+                        th, td {
+                            /*border: 1px solid #ccc;*/
+                            padding: 8px;
+                            text-align: left;
+                            font-size: 10px;
+                        }
+                        thead {
+                            background-color: #f3f4f6;
+                        }
+                        tbody tr:nth-child(even) {
+                            background-color: #f9fafb;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Estoque de Lentes</h1>
+                    ${tableContent}
+                </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    });
+</script>
 
 </body>
-
 @php
     use Carbon\Carbon;
 
