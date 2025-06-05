@@ -458,10 +458,10 @@
     applyFilters();
 </script>
 
-<script>
-    document.querySelector('.print').addEventListener('click', function () {
-        const tableContent = document.getElementById('table-to-print').innerHTML;
-        const printWindow = window.open('', '', 'width=1000,height=800');
+{{--<script>--}}
+{{--    document.querySelector('.print').addEventListener('click', function () {--}}
+{{--        const tableContent = document.getElementById('table-to-print').innerHTML;--}}
+{{--        const printWindow = window.open('', '', 'width=1000,height=800');--}}
 
         printWindow.document.write(`
             <html>
