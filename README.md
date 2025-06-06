@@ -63,8 +63,8 @@ O projeto foi desenvolvido em colaboração com outros profissionais, demonstran
 
 | Método | Endpoint | Descrição | Autenticação |
 |--------|----------|-----------|--------------|
-| `POST` | `/api/auth/login` | Login do usuário | ❌ |
-| `POST` | `/api/auth/register` | Registro de usuário | ❌ |
+| `POST` | `/api/auth/login` | Login do usuário | ✅ |
+| `POST` | `/api/auth/register` | Registro de usuário | ✅ |
 | `POST` | `/api/auth/logout` | Logout do usuário | ✅ |
 | `GET` | `/api/users` | Listar usuários | ✅ |
 | `POST` | `/api/users` | Criar usuário | ✅ |
